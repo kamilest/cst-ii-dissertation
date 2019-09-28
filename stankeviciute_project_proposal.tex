@@ -1,0 +1,150 @@
+\documentclass[12pt,a4paper,twoside]{article}
+\usepackage{bookmark}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage[margin=25mm]{geometry}
+% \usepackage[backend=biber]{biblatex}
+% \addbibresource{stankeviciute-proposal.bib}
+
+\begin{document}
+
+\begin{center}
+\Large
+Computer Science Tripos -- Part II -- Project Proposal\\[4mm]
+\LARGE
+A graph convolutional network for Alzheimer's disease classification\\[4mm]
+
+\large
+Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
+
+\today % October 2019
+\end{center}
+
+\vspace{5mm}
+\textbf{Project Originator:} Tiago Azevedo
+
+\textbf{Project Supervisor:} Tiago Azevedo
+
+\textbf{Directors of Studies:} Dr T.~M.~Jones, Prof P.~Robinson, Dr G.~Titmus
+
+\textbf{Project Overseers:} 
+
+% Main document
+
+\section*{Introduction}
+% The problem to be addressed.
+
+\textsc{todo:} \textit{Description of/introduction to Alzheimer's disease—answering the question why is it important to study it and model it using neural networks.}
+
+The use of neural networks provides the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments. 
+
+One way of modelling the population with some patients having Alzheimer's is a graph, with vertices representing individuals and their features (including the diagnosis), and nodes corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful in incorporate multiple modalities of data (e.g. imaging and non-imaging) that may help with discovery of additional patterns while mitigating the problem of incomplete patient information (e.g. not all patients have been imaged). 
+
+This project will explore such graph convolutional networks in the context of  classification of patients into healthy controls and those having Alzheimer's in a semi-supervised manner. 
+
+\textit{Usability of the Parisot et al. paper is limited because the edges are set arbitrarily based on the specific set of features in the dataset and are not learnt by the model model as well as improve the performance through the use of GPUs.}
+
+\section*{Starting point}
+
+% Describe existing state of the art, previous work in this area,
+%   libraries and databases to be used. Describe the state of any
+%   existing codebase that is to be built on.
+
+This project will be based on a state-of-the-art graph convolutional network (GCN) as described in a paper by Parisot et al. \cite{parisot2018disease} In this paper, the GCN was used to classify Autism Spectrum Disorder and Alzheimer's patients and achieved the accuracies of 70.4\% and 80.0\% respectively. 
+
+The source code of this paper (written in TensorFlow) is publicly available at \url{github.com/parisots/population-gcn}. This will used as a basis for replication of the results on PyTorch and building additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data (particularly the \texttt{pytorch\_geometric} package), which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
+
+This project will use the ADNI dataset (same as in the paper) as the benchmark. The database is available at \url{adni.loni.usc.edu}.
+
+\textsc{todo:} \textit{consider possible extension of the project to apply the improvements to other datasets, to demonstrate the flexibility in model transfer to the similar tasks on different dataset. This could be the ABIDE dataset for Autism Spectrum Disorder, PPMI (Parkinson's) dataset...}
+
+\section*{Resources required}
+
+For the most part of this project I will be using my personal MacBook Pro (2019, quad-core 1.4 GHz Intel Core i5 processor, 8 GB LPDDR3 RAM) running macOS Catalina. Training the model will most likely require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò).
+
+The following measures will be taken to store the work and reduce the likelihood of any loss of data: 
+\begin{itemize}
+  \item Saving the source code of the project on a GitHub repository;
+  \item Storing the \LaTeX\ source (as well as source code) on my machine, Google Drive and MCS.
+  \item Regularly backing up the contents of my laptop on an external HDD.
+\end{itemize}
+
+The data required for training (ADNI database) is available on \url{adni.loni.usc.edu}, for which I requested and was granted access.
+
+\section*{Work to be done}
+
+% Describe the technical work.
+
+\textsc{todo}
+
+\section*{Success criteria}
+
+% Describe what you expect to be able to demonstrate at the
+% end of the project and how you are going to evaluate your achievement.
+
+\begin{itemize}
+  \item Reimplement the model in PyTorch (\texttt{pytorch\_geometric}) package with the base accuracy of at least 80.0\% as in \cite{parisot2018disease}
+  \item \textsc{todo}
+\end{itemize}
+
+
+\section*{Possible extensions}
+
+% Potential further envisaged evaluation metrics or extensions.
+
+Given the main success criteria have been achieved early and there is time left, some possible extensions include: 
+\begin{itemize}
+  \item \textsc{todo}
+\end{itemize}
+
+
+\section*{Timetable}
+
+% A work plan of perhaps ten or so two-week work-packages,
+% as well as milestones to be achieved along the way. Provide a
+% target date for each milestone.
+
+Planned starting date is 07/10/2019.
+
+
+\begin{enumerate}
+\item 07/10/2019—18/10/2019
+
+Work on the proposal, finalise the goals of the project. [\textsc{milestone}: submit draft proposal.]
+
+Get familiar with PyTorch and \texttt{pytorch\_geometric} through small problems and documentation.
+
+
+
+\item \textbf{Michaelmas weeks 2--4} Learn to use X. Read book Y. Read papers Z.
+
+\item \textbf{Michaelmas weeks 5--6} Do preliminary test of Q.
+
+\item \textbf{Michaelmas weeks 7--8} Start implementation of main task A.
+
+\item \textbf{Michaelmas vacation} Finish A and start main task B.
+
+\item \textbf{Lent weeks 0--2} Write progress report. Generate corpus of
+  test examples. Finish task B.
+
+\item \textbf{Lent weeks 3--5} Run main experiments and achieve working project.
+
+\item \textbf{Lent weeks 6--8} Second main deliverable here.
+
+\item \textbf{Easter vacation:} Extensions and writing dissertation main
+  chapters.
+
+\item \textbf{Easter term 0--2:}  Further evaluation and complete dissertation.
+
+\item \textbf{Easter term 3:} Proof reading and then an early submission
+  so as to concentrate on examination revision.
+
+\end{enumerate}
+
+% \medskip 
+% \printbibliography
+\bibliographystyle{plain}
+\bibliography{stankeviciute-proposal}
+
+\end{document}
