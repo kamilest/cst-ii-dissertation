@@ -51,7 +51,7 @@ This project will explore such graph convolutional networks in the context of  c
 %   libraries and databases to be used. Describe the state of any
 %   existing codebase that is to be built on.
 
-This project will be based on a state-of-the-art graph convolutional network (GCN) as described in a paper by Parisot et al. \cite{parisot2018disease} In this paper, the GCN was used to classify Autism Spectrum Disorder and Alzheimer's patients and achieved the accuracies of 70.4\% and 80.0\% respectively. 
+This project will be based on a state-of-the-art graph convolutional network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral} \cite{parisot2018disease} In this paper, the GCN was used to classify Autism Spectrum Disorder and Alzheimer's patients and achieved the accuracies of 70.4\% and 80.0\% respectively. 
 
 The source code of this paper (written in TensorFlow) is publicly available at \url{github.com/parisots/population-gcn}. This will used as a basis for replication of the results on PyTorch and building additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data (particularly the \texttt{pytorch\_geometric} package), which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
 
@@ -83,20 +83,20 @@ The data required for training (ADNI database) is available on \url{adni.loni.us
 % Describe what you expect to be able to demonstrate at the
 % end of the project and how you are going to evaluate your achievement.
 
-\begin{itemize}
-  \item Reimplement the model in PyTorch (\texttt{pytorch\_geometric}) package with the base accuracy of at least 80.0\% as in \cite{parisot2018disease}
-  \item \textsc{todo}
-\end{itemize}
+% \begin{itemize}
+%   \item Reimplement the model in PyTorch (\texttt{pytorch\_geometric}) package with the base accuracy of at least 80.0\% as in \cite{parisot2018disease}
+%   \item \textsc{todo}
+% \end{itemize}
 
 
 \section*{Possible extensions}
 
 % Potential further envisaged evaluation metrics or extensions.
 
-Given the main success criteria have been achieved early and there is time left, some possible extensions include: 
-\begin{itemize}
-  \item \textsc{todo}
-\end{itemize}
+% Given the main success criteria have been achieved early and there is time left, some possible extensions include: 
+% \begin{itemize}
+%   \item \textsc{todo}
+% \end{itemize}
 
 
 \section*{Timetable}
@@ -144,7 +144,7 @@ Get familiar with PyTorch and \texttt{pytorch\_geometric} through small problems
 
 % \medskip 
 % \printbibliography
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{stankeviciute-proposal}
 
 \end{document}
