@@ -1,5 +1,22 @@
 # Project proposal notes
 
+Table of contents:
+- [Project proposal notes](#project-proposal-notes)
+  - [Inspiration for the project](#inspiration-for-the-project)
+    - [Papers](#papers)
+    - [Codebase](#codebase)
+    - [Datasets](#datasets)
+  - [Reimplement + extend](#reimplement--extend)
+    - [Using another geometric deep learning library](#using-another-geometric-deep-learning-library)
+    - [Evaluating the robustness of GCNs](#evaluating-the-robustness-of-gcns)
+    - [Incorporating more types of data](#incorporating-more-types-of-data)
+    - [Other ideas](#other-ideas)
+      - [Dimensionality reduction](#dimensionality-reduction)
+      - [Using Cayley polynomials instead of Chebyshev polynomials](#using-cayley-polynomials-instead-of-chebyshev-polynomials)
+  - [Solving a related problem](#solving-a-related-problem)
+    - [Application to another problem: dynamic graphs](#application-to-another-problem-dynamic-graphs)
+    - [Application to another dataset](#application-to-another-dataset)
+
 ## Inspiration for the project
 
 The papers and the code (described below) describe a semi-supervised graph convolutional network (GCN) to predict  
@@ -73,19 +90,61 @@ These libraries are also nice because they could be easily used to *customise th
 
 The method proposed in the original papers relies on semi-supervised classification, therefore the decision for some patient could depend on the information of the patient's neighbourhood. This is especially useful when the patient in question has *incomplete data* (e.g. no imaging data) but the neighbouring nodes have more information as well as the diagnosis. In this way the graph structure helps to spread some patterns occurring in the population between the individuals.
 
-**Question to explore: how robust is the graph performance to incomplete information?**
+**Question to explore: how robust is the graph performance to missing or incorrect data?**
 
 Would accuracy stay the same if 5% of the labels/features/edges were missing? What about 10%? Would other geometric deep learning (GDL) libraries perform better in this metric?
 
 This is important if we were to add new patients to the population (with incomplete information) and would want to find out their diagnosis. This would also indicate how much information do we need to have about the patient to correctly determine if they are healthy or suffering, or what proportion of *incorrect labels* can the algorithm tolerate. It could also indicate the *ability to generalise* to other datasets.
 
-**Goal: measure robustness of the baseline implementation and find a more robust algorithm.** [Robustness to incorrect labels and/or missing data]. I like that this question is more on the computer science than pure software engineering side. In any case it also serves as a *good evaluation criterion* to compare the baseline model to any extensions.
+**Goal: measure robustness of the baseline implementation and find a more robust algorithm.** [Robustness to incorrect labels and/or missing data]. I like that this question is more on the computer science than pure software engineering side. In any case it also serves as a *good evaluation criterion* to compare the baseline model to any extensions—proving the *new model does not overfit* the data.
+
+### Incorporating more types of data
+
+ADNI database contains various clinical, genetic, MRI image, PET image and biospecimen data (see full description at http://adni.loni.usc.edu/data-samples/data-types/).
+
+However, the original papers only use a limited set of features to construct the graph. In particular,
+* Feature vectors (for vertices) are derived purely from the *volumes of segmented brain structures*, which have proved to be highly effective in classifying stable vs. progressive MCI. *Feature selection was not used*, because of "much smaller and tractable feature vector size". 
+* Graph edges are based on *sex and gender* information because this information highly affects feature vector values—i.e. it was aimed to connect the nodes that simply share age and gender to connect related brain volumes.
+
+There is potential for 
+* exploring if any other features might be useful apart from combinations explored in the papers (*sex, age, acquisition site*)
+* *learning* the edge weights instead of being binary (edge exists if sex/age of the adjacent vertices matches)
+
+**Goal: explore more similarity metrics and feature combinations to improve performance.**
+
+### Other ideas
+
+#### Dimensionality reduction
+The 2018 paper mentions that this is *irrelevant to ADNI database* because the imaging data features are tractable without this.
+
+On the other hand, **if new features were used** dimensionality reduction could be one approach to manage the new data. Some methods that could be considered
+* PCA
+* autoencoders and VAEs
+
+#### Using Cayley polynomials instead of Chebyshev polynomials
+
+These polynomials are used to efficiently compute the graph convolutions. The 2018 paper uses Chebyshev polynomials but mentions that the recently introduced Cayley polynomials [1] could improve the results.
 
 
+[1]: Levie, R., Monti, F., Bresson, X., Bronstein, M.M., 2017. Cayleynets: Graph convolutional neural networks with complex rational spectral filters. arXiv preprint arXiv:1705.07664.
+
+<!-- #### Interpretability?
+
+Ultimately the goal of the GCN (I think) is to see new patterns that are shared between the suffering patients in the population. A (really hard to evaluate) section could *speculate* what is that the model learnt :) -->
 
 ## Solving a related problem 
 
-### Application to another problem
+This section looks at a broader set of problems that go outside of improving the results of this particular paper.
+
+### Application to another problem: dynamic graphs
+
+The 2018 paper mentions that the limitation of GCNs/Chebyshev polynomials is that the graph needs to have a known structure. This means that once the model is trained the graph cannot be altered (and if it does the model needs to be retrained). 
+
+It could be an interesting problem to support dynamic graphs (*adding*) a patient with unknown diagnosis, but it has been suggested that this change would not really add much value—the ultimate goal is to *understand the patterns* that the suffering patients share rather than simply classify a patient, a doctor can do that themselves :)
+
 
 ### Application to another dataset
 
+GCNs could be used to classify the patients of another disease, for example using the PPMI dataset for Parkinson's disease. 
+
+In this case success criteria could be tricky because I can't know the accuracy that is achievable using the GCN method in advance.

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+        <title>Project proposal notes</title>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        
+    </head>
+    <body>
+        <h1 id="project-proposal-notes">Project proposal notes</h1>
+<p>Table of contents:</p>
+<ul>
+<li><a href="#project-proposal-notes">Project proposal notes</a>
+<ul>
+<li><a href="#inspiration-for-the-project">Inspiration for the project</a>
+<ul>
+<li><a href="#papers">Papers</a></li>
+<li><a href="#codebase">Codebase</a></li>
+<li><a href="#datasets">Datasets</a></li>
+</ul>
+</li>
+<li><a href="#reimplement--extend">Reimplement + extend</a>
+<ul>
+<li><a href="#using-another-geometric-deep-learning-library">Using another geometric deep learning library</a></li>
+<li><a href="#evaluating-the-robustness-of-gcns">Evaluating the robustness of GCNs</a></li>
+<li><a href="#incorporating-more-types-of-data">Incorporating more types of data</a></li>
+<li><a href="#other-ideas">Other ideas</a>
+<ul>
+<li><a href="#dimensionality-reduction">Dimensionality reduction</a></li>
+<li><a href="#using-cayley-polynomials-instead-of-chebyshev-polynomials">Using Cayley polynomials instead of Chebyshev polynomials</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#solving-a-related-problem">Solving a related problem</a>
+<ul>
+<li><a href="#application-to-another-problem-dynamic-graphs">Application to another problem: dynamic graphs</a></li>
+<li><a href="#application-to-another-dataset">Application to another dataset</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="inspiration-for-the-project">Inspiration for the project</h2>
+<p>The papers and the code (described below) describe a semi-supervised graph convolutional network (GCN) to predict</p>
+<ul>
+<li>whether the patient suffers from Autism Spectrum Disorder (ASD) and</li>
+<li>whether the patient suffering from Mild Cognitive Impairment (MCI) will develop Alzheimer's disease (AD).</li>
+</ul>
+<p>The graph is used to exploit both</p>
+<ul>
+<li><em>the individual features</em> of patients (stored as vertex features in the graph) and the</li>
+<li><em>similarity between patients</em> (represented as possibly weighted edges in the graph).</li>
+</ul>
+<p>This is thought to be better than using just graphs (which ignore individual features of patients) or just non-graph classifiers (which would not allow for patients to share the data and infer the diagnosis from patient's neighbourhood, especially when imaging data is not available for all patients). The graph also allows to exploit <em>multimodality</em> of data—the approach uses both imaging (fMRI, MRI, brain volume, longitudinal brain scans etc.) and non-imaging (gender, age, acquisition site (determining the imaging data collection protocol), possibly genetic) data.</p>
+<h3 id="papers">Papers</h3>
+<p>The main papers on which the project would be based are:</p>
+<p>Parisot, S., Ktena, S. I., Ferrante, E., Lee, M., Moreno, R. G., Glocker, B., &amp; Rueckert, D. (2017). <br/>
+<a href="https://arxiv.org/abs/1703.03020">Spectral Graph Convolutions for Population-based Disease Prediction</a>. <br/>
+MICCAI 2017.</p>
+<p>and</p>
+<p>*Parisot, S., *Ktena, S. I., Ferrante, E., Lee, M., Moreno, R. G., Glocker, B., &amp; Rueckert, D. (2017). <br/>
+<a href="https://arxiv.org/abs/1806.01738">Disease Prediction using Graph Convolutional Networks: Application to Autism Spectrum Disorder and Alzheimer’s Disease</a>. <br/>
+Medical Image Analysis, 2018.</p>
+<p>The graph convolutional network used in the implementation is first introduced in</p>
+<p>Thomas N. Kipf, Max Welling (2017). <br/>
+<a href="http://arxiv.org/abs/1609.02907">Semi-Supervised Classification with Graph Convolutional Networks</a>. <br/>
+ICLR, 2017</p>
+<h3 id="codebase">Codebase</h3>
+<p>The code used for the papers above (<strong>applied to ABIDE database but not for ADNI</strong>) is publicly available at <a href="https://github.com/parisots/population-gcn">https://github.com/parisots/population-gcn</a>.</p>
+<p>The implementation for ADNI should be similar, but would need:</p>
+<ul>
+<li>coding the data parser and processor from scratch;</li>
+<li>adapting the model to different features and different similarity metrics.</li>
+</ul>
+<p>which could be a fair amount of work.</p>
+<p>The GCN is based on <a href="https://github.com/tkipf/gcn">https://github.com/tkipf/gcn</a> (and further customised for the papers). It uses TensorFlow which does not support deep learning on graph structured data as well as some other libraries/frameworks like <code>torch_geometric</code> (PyG) or Deep Graph Library (DGL) would, and so is less extensible/applicable to other problems and datasets.</p>
+<h3 id="datasets">Datasets</h3>
+<p>The project will primarily only use ADNI for Alzheimer's disease as the benchmark, but some ideas could incorporate such datasets as ABIDE (ASD) and PPMI (Parkinson's disease) as alternative datasets/benchmarks:</p>
+<ul>
+<li>ADNI (Alzheimer's Disease Neuroimaging Initiative): <a href="http://adni.loni.usc.edu">http://adni.loni.usc.edu</a> [<em>Access requested and retrieved</em>]</li>
+<li>ABIDE (Autism Brain Imaging Data Exchange): <a href="http://fcon_1000.projects.nitrc.org/indi/abide/">http://fcon_1000.projects.nitrc.org/indi/abide/</a></li>
+<li>PPMI (Parkinson's Progression Markers Initiative): <a href="https://www.ppmi-info.org/">https://www.ppmi-info.org/</a></li>
+</ul>
+<h2 id="reimplement--extend">Reimplement + extend</h2>
+<p>This seems to be a common approach to Part II projects and I like that it gives some direction to what should be achievable (i.e. at least reproducing the results).</p>
+<p>This approach also currently has more ideas for the project.</p>
+<p>Addressing some problems with the current implementation could lead to new state-of-the-art results while making the API more accessible and extensible.</p>
+<p>The sections below list the things that could be considered as part of the project. They also list the potential goals that could be set in the project and used as success criteria, such as the following:</p>
+<p><strong>Goal: at least 80.0% accuracy for the ADNI dataset in classifying MCI to AD progression in patients.</strong></p>
+<h3 id="using-another-geometric-deep-learning-library">Using another geometric deep learning library</h3>
+<p>The original implementation was TensorFlow with a custom implementation of a GCN. This indicates the lack of common TensorFlow APIs for graph processing. Some alternatives (both in Python) that could improve the usability of the code and make it more flexible are:</p>
+<ul>
+<li><a href="https://pytorch-geometric.readthedocs.io/en/latest/">PyTorch Geometric (PyG)</a></li>
+<li><a href="https://www.dgl.ai/pages/about.html">Deep Graph Library (DGL)</a></li>
+</ul>
+<p>These libraries are also nice because they could be easily used to <em>customise the graph neural network</em> and potentially explore other methods other than graph convolution. For example, the list of <em>geometric deep learning methods</em> in PyG is available at <a href="https://github.com/rusty1s/pytorch_geometric/blob/master/README.md">https://github.com/rusty1s/pytorch_geometric/blob/master/README.md</a> (the graph convolution method used in the papers is available as <code>GCNConv</code> package).</p>
+<p><strong>Goal: find the convolution method that could give better performance</strong> (measured in accuracy, speed or some other metrics described below).</p>
+<h3 id="evaluating-the-robustness-of-gcns">Evaluating the robustness of GCNs</h3>
+<p>The method proposed in the original papers relies on semi-supervised classification, therefore the decision for some patient could depend on the information of the patient's neighbourhood. This is especially useful when the patient in question has <em>incomplete data</em> (e.g. no imaging data) but the neighbouring nodes have more information as well as the diagnosis. In this way the graph structure helps to spread some patterns occurring in the population between the individuals.</p>
+<p><strong>Question to explore: how robust is the graph performance to missing or incorrect data?</strong></p>
+<p>Would accuracy stay the same if 5% of the labels/features/edges were missing? What about 10%? Would other geometric deep learning (GDL) libraries perform better in this metric?</p>
+<p>This is important if we were to add new patients to the population (with incomplete information) and would want to find out their diagnosis. This would also indicate how much information do we need to have about the patient to correctly determine if they are healthy or suffering, or what proportion of <em>incorrect labels</em> can the algorithm tolerate. It could also indicate the <em>ability to generalise</em> to other datasets.</p>
+<p><strong>Goal: measure robustness of the baseline implementation and find a more robust algorithm.</strong> [Robustness to incorrect labels and/or missing data]. I like that this question is more on the computer science than pure software engineering side. In any case it also serves as a <em>good evaluation criterion</em> to compare the baseline model to any extensions—proving the <em>new model does not overfit</em> the data.</p>
+<h3 id="incorporating-more-types-of-data">Incorporating more types of data</h3>
+<p>ADNI database contains various clinical, genetic, MRI image, PET image and biospecimen data (see full description at <a href="http://adni.loni.usc.edu/data-samples/data-types/">http://adni.loni.usc.edu/data-samples/data-types/</a>).</p>
+<p>However, the original papers only use a limited set of features to construct the graph. In particular,</p>
+<ul>
+<li>Feature vectors (for vertices) are derived purely from the <em>volumes of segmented brain structures</em>, which have proved to be highly effective in classifying stable vs. progressive MCI. <em>Feature selection was not used</em>, because of &quot;much smaller and tractable feature vector size&quot;.</li>
+<li>Graph edges are based on <em>sex and gender</em> information because this information highly affects feature vector values—i.e. it was aimed to connect the nodes that simply share age and gender to connect related brain volumes.</li>
+</ul>
+<p>There is potential for</p>
+<ul>
+<li>exploring if any other features might be useful apart from combinations explored in the papers (<em>sex, age, acquisition site</em>)</li>
+<li><em>learning</em> the edge weights instead of being binary (edge exists if sex/age of the adjacent vertices matches)</li>
+</ul>
+<p><strong>Goal: explore more similarity metrics and feature combinations to improve performance.</strong></p>
+<h3 id="other-ideas">Other ideas</h3>
+<h4 id="dimensionality-reduction">Dimensionality reduction</h4>
+<p>The 2018 paper mentions that this is <em>irrelevant to ADNI database</em> because the imaging data features are tractable without this.</p>
+<p>On the other hand, <strong>if new features were used</strong> dimensionality reduction could be one approach to manage the new data. Some methods that could be considered</p>
+<ul>
+<li>PCA</li>
+<li>autoencoders and VAEs</li>
+</ul>
+<h4 id="using-cayley-polynomials-instead-of-chebyshev-polynomials">Using Cayley polynomials instead of Chebyshev polynomials</h4>
+<p>These polynomials are used to efficiently compute the graph convolutions. The 2018 paper uses Chebyshev polynomials but mentions that the recently introduced Cayley polynomials [1] could improve the results.</p>
+<p>[1]: Levie, R., Monti, F., Bresson, X., Bronstein, M.M., 2017. Cayleynets: Graph convolutional neural networks with complex rational spectral filters. arXiv preprint arXiv:1705.07664.</p>
+<!-- #### Interpretability?
+
+Ultimately the goal of the GCN (I think) is to see new patterns that are shared between the suffering patients in the population. A (really hard to evaluate) section could *speculate* what is that the model learnt :) -->
+<h2 id="solving-a-related-problem">Solving a related problem</h2>
+<p>This section looks at a broader set of problems that go outside of improving the results of this particular paper.</p>
+<h3 id="application-to-another-problem-dynamic-graphs">Application to another problem: dynamic graphs</h3>
+<p>The 2018 paper mentions that the limitation of GCNs/Chebyshev polynomials is that the graph needs to have a known structure. This means that once the model is trained the graph cannot be altered (and if it does the model needs to be retrained).</p>
+<p>It could be an interesting problem to support dynamic graphs (<em>adding</em>) a patient with unknown diagnosis, but it has been suggested that this change would not really add much value—the ultimate goal is to <em>understand the patterns</em> that the suffering patients share rather than simply classify a patient, a doctor can do that themselves :)</p>
+<h3 id="application-to-another-dataset">Application to another dataset</h3>
+<p>GCNs could be used to classify the patients of another disease, for example using the PPMI dataset for Parkinson's disease.</p>
+<p>In this case success criteria could be tricky because I can't know the accuracy that is achievable using the GCN method in advance.</p>
+
+    </body>
+    </html>
