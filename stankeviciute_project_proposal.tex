@@ -36,7 +36,7 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 \section*{Introduction}
 % The problem to be addressed.
 
-\textsc{todo:} \textit{Description of/introduction to Alzheimer's disease—answering the question why is it important to study it and model it using neural networks.}
+\textsc{todo:} \textit{Introduction to Alzheimer's disease—answering the question why is it important to study it and model it using neural networks.}
 
 The use of neural networks provides the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments. 
 
@@ -54,7 +54,7 @@ This project will explore such graph convolutional networks in the context of  c
 
 This project will be based on a state-of-the-art graph convolutional network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral} \cite{parisot2018disease} In this paper, the GCN was used to classify Autism Spectrum Disorder and Alzheimer's patients and achieved the accuracies of 70.4\% and 80.0\% respectively. 
 
-The source code of this paper (written in TensorFlow) is publicly available at \url{github.com/parisots/population-gcn}. This will used as a basis for replication of the results on PyTorch and building additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data (particularly the \texttt{pytorch\_geometric} package), which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
+The source code of this paper (written in TensorFlow) is publicly available at \url{github.com/parisots/population-gcn}. This will used as a basis for replication of the results on PyTorch and building additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data (particularly the \texttt{torch\_geometric} package), which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
 
 This project will use the ADNI dataset (same as in the paper) as the benchmark. The database is available at \url{adni.loni.usc.edu}.
 
@@ -66,18 +66,36 @@ For the most part of this project I will be using my personal MacBook Pro (2019,
 
 The following measures will be taken to store the work and reduce the likelihood of any loss of data: 
 \begin{itemize}
-  \item Saving the source code of the project on a GitHub repository;
-  \item Storing the \LaTeX\ source (as well as source code) on my machine, Google Drive and MCS.
+  \item Saving the source code and \LaTeX\ source of the project on my machine, GitHub repositories, Google Drive (and possibly MCS).
   \item Regularly backing up the contents of my laptop on an external HDD.
 \end{itemize}
 
-The data required for training (ADNI database) is available on \url{adni.loni.usc.edu}, for which I requested and was granted access.
+The data required for training (ADNI database) is available on \url{http://adni.loni.usc.edu}, for which I requested and was granted access.
 
 \section*{Work to be done}
+\label{section:work}
+
+\textsc{todo}: decide on the main work/extensions split of the tasks below, write a coherent section.
 
 % Describe the technical work.
+The tasks shall start from this (semi-ordered) list which can then be allocated to the slots in the \hyperref[section:timetable]{Timetable}. 
 
-\textsc{todo}
+This list includes both the core work and the possible extensions (not sure about the split, but this hopefully is enough work).
+
+\begin{itemize}
+  \item (Project proposal)
+  \item Read Kipf and Welling's GCN paper \cite{kipf2017semi} and blog post. Read about spectral graph theory because that seems to be the basis of graph convolutions [difficult]
+  \item Get familiar with \texttt{torch\_geometric} (PyG), DGL, TensorFlow
+  \item Write the ADNI data fetcher
+  \item Get the working implementation for TensorFlow GCN for ADNI dataset, reproduce results (80.0\% accuracy)
+  \item Measure robustness of the original model in TensorFlow GCN
+  \item Write the ADNI implementation using PyG, measure accuracy (aim for at least 80.0\%)
+  \item Find alternative methods in PyG that might work better and improve accuracy
+  \item Measure robustness of the new model—if robustness decreases the new model from previous step might be overfitting
+  \item Incorporate more data from ADNI, if there is too much data consider using autoencoders and other dimensionality reduction techniques.
+  \item Learn the custom similarity metric instead of using the one arbitrarily defined in \cite{parisot2017spectral,parisot2018disease}
+  \item Improve[?] the convolution filters: use Cayley polynomials instead of Chebyshev polynomials [easy to replace, difficult to understand?]
+\end{itemize}
 
 \section*{Success criteria}
 
@@ -89,6 +107,11 @@ The data required for training (ADNI database) is available on \url{adni.loni.us
 %   \item \textsc{todo}
 % \end{itemize}
 
+\textsc{todo}: define more/more specific criteria
+
+The above list suggests that reproducing the result from \cite{parisot2018disease} (80\% accuracy and probably similar AUC) should be the baseline. Then extensions to the model should increase those results.
+
+Another metric that could be defined is \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the vertex features only.
 
 \section*{Possible extensions}
 
@@ -99,8 +122,10 @@ The data required for training (ADNI database) is available on \url{adni.loni.us
 %   \item \textsc{todo}
 % \end{itemize}
 
+\textsc{todo}: see \hyperref[section:work]{work to be done}.
 
 \section*{Timetable}
+\label{section:timetable}
 
 % A work plan of perhaps ten or so two-week work-packages,
 % as well as milestones to be achieved along the way. Provide a
@@ -108,56 +133,49 @@ The data required for training (ADNI database) is available on \url{adni.loni.us
 
 Planned starting date is 10/10/2019.
 
+\textsc{todo} once I finalise \textit{what exactly} do I want to do! The slots are as suggested in the proposal template. I have added the deadlines as \textsc{milestones}.
 
 \begin{enumerate}[leftmargin=*, align=left, font=\bfseries]
 \item[10/10/2019—16/10/2019] \hfill \smallskip
 
-Work on the proposal, finalise the goals of the project.
+[\textsc{milestone}: submit Phase 1 report by 14/10/2019]
 
-[\textsc{milestone}: submit draft proposal.]
-
-Get familiar with PyTorch and \texttt{pytorch\_geometric} through small problems and documentation.
-
+[\textsc{milestone}: submit draft proposal by 18/10/2019]
 
 \item[17/10/2019—06/11/2019] (Michaelmas weeks 2--4) \hfill \smallskip 
 
-Learn to use X. Read book Y. Read papers Z.
+[\textsc{milestone}: submit final project proposal by 25/10/2019]
 
 \item[07/11/2019—20/11/2019] (Michaelmas weeks 5--6) \hfill \smallskip
  
-Do preliminary test of Q.
+
 
 \item[21/11/2019—04/12/2019] (Michaelmas weeks 7--8) \hfill \smallskip
  
-Start implementation of main task A.
+
 
 \item[Michaelmas vacation] \hfill \smallskip
 
-Finish A and start main task B.
+
 
 \item[16/01/2020—29/01/2020] (Lent weeks 0--2) \hfill \smallskip
  
-Write progress report. Generate corpus of
-  test examples. Finish task B.
+[\textsc{milestone}: submit progress report by 31/01/2020]
 
 \item[30/01/2020—19/02/2020] (Lent weeks 3--5) \hfill \smallskip
 
-Run main experiments and achieve working project.
+
 
 \item[20/02/2020—11/03/2020] (Lent weeks 6--8) \hfill \smallskip
 
-Second main deliverable here.
 
 \item[Easter vacation] \hfill \smallskip
 
-Extensions and writing dissertation main
-  chapters.
 
-\item[24/04/2020—06/05/2020] [Easter term 0--2]  \hfill \smallskip
+\item[24/04/2020—06/05/2020] (Easter term 0--2)  \hfill \smallskip
 
-Further evaluation and complete dissertation.
+[\textsc{milestone}: submit the dissertation by 08/05/2020]
 
-\item[08/05/2020] Dissertation submission deadline.
 
 \end{enumerate}
 
