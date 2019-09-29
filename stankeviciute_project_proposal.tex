@@ -36,15 +36,15 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 \section*{Introduction}
 % The problem to be addressed.
 
-\textsc{todo:} \textit{Introduction to Alzheimer's disease—answering the question why is it important to study it and model it using neural networks.}
+\textsc{todo:} \textit{introduction to Alzheimer's disease—answering the question why is it important to study it and model it using neural networks.}
 
 The use of neural networks provides the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments. 
 
-One way of modelling the population with some patients having Alzheimer's is a graph, with vertices representing individuals and their features (including the diagnosis), and nodes corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful in incorporate multiple modalities of data (e.g. imaging and non-imaging) that may help with discovery of additional patterns while mitigating the problem of incomplete patient information (e.g. not all patients have been imaged). 
+One way of modelling the population with some patients having Alzheimer's disease is a graph, with vertices representing individuals and their features (including the diagnosis), and nodes corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
 
-This project will explore such graph convolutional networks in the context of  classification of patients into healthy controls and those having Alzheimer's in a semi-supervised manner. 
+One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (vertex feature vectors) and the trends in the population (graph edges), inferring a patient's diagnosis from their neighbourhood. 
 
-\textit{Usability of the Parisot et al. paper is limited because the edges are set arbitrarily based on the specific set of features in the dataset and are not learnt by the model model as well as improve the performance through the use of GPUs.}
+This project will explore such graph convolutional networks (GCNs) as well as alternative geometric deep learning approaches to classify the two forms of Mild Cognitive Impairment (MCI): \textit{stable} and \textit{progressive} (progressing to Alzheimer's disease).
 
 \section*{Starting point}
 
