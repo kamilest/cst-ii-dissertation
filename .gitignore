@@ -2,8 +2,8 @@
 # Created by https://www.gitignore.io/api/tex,latex,macos
 # Edit at https://www.gitignore.io/?templates=tex,latex,macos
 
-./stankeviciute_project_proposal.pdf
-./project-proposal-notes.pdf
+stankeviciute_project_proposal.pdf
+project-proposal-notes.pdf
 
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
