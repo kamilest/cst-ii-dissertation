@@ -4,6 +4,7 @@
 \usepackage{parskip}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\usepackage{xcolor}
 \usepackage[margin=25mm]{geometry}
 % \usepackage[backend=biber]{biblatex}
 % \addbibresource{stankeviciute-proposal.bib}
@@ -35,14 +36,13 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 
 \section*{Introduction}
 % The problem to be addressed.
-
-\textsc{todo:} \textit{introduction to Alzheimer's disease}
+\textbf{TODO: add what is a graph convolutional network, introduce the data to be studied with it.}
 
 The use of neural networks provides the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments. 
 
-One way of modelling the population with some patients having Alzheimer's disease (AD) is a graph, with vertices representing individuals and their features (including the diagnosis), and nodes corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
+One way of modelling the population with some patients having Alzheimer's disease (AD) is a graph, with nodes representing individuals and their features (including the diagnosis), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
 
-One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (vertex feature vectors) and the trends in the population or pairwise similarities between different patients (graph edges), inferring the patient's diagnosis from their neighbourhood. 
+One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (node feature vectors) and the trends in the population or pairwise similarities between different patients (graph edges), inferring the patient's diagnosis from their neighbourhood. 
 
 This project will explore such graph convolutional networks (GCNs) as well as alternative geometric deep learning approaches to classify the two forms of Mild Cognitive Impairment (MCI): \textit{stable} and \textit{progressive} (progressing to AD).
 
@@ -54,11 +54,11 @@ This project will explore such graph convolutional networks (GCNs) as well as al
 
 This project will be based on a state-of-the-art graph convolutional network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf \& Welling \cite{kipf2017semi}) was used for two classification tasks: 1) whether a patient is  healthy or suffering from Autism Spectrum Disorder) and 2) whether a patient having Mild Cognitive Impairment has a stable form or the one progressing to Alzheimer's disease. The GCN has achieved the accuracies of 70.4\% and 80.0\% for the two tasks respectively. 
 
-The source code of this paper (written in TensorFlow) is publicly available at \url{github.com/parisots/population-gcn}. It is fully implemented for the first classification task and not the second. This will be used as a basis for replication of the results on PyTorch (or DGL) and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
+The source code of this paper (written in TensorFlow) is publicly available at \url{github.com/parisots/population-gcn}. It is fully implemented for the first classification task and not the second. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
 
 This project will use the ADNI dataset (same as in \cite{parisot2017spectral,parisot2018disease}). The database is available at \url{http://adni.loni.usc.edu}.
 
-I am not particularly familiar with any of the frameworks above (no experience with PyTorch, PyG or DGL but basic TensorFlow experience doing Andrew Ng's deep learning courses) or graph neural networks—a lot of learning to do! :)
+I am not particularly familiar with any of the frameworks above (no experience with PyTorch or PyG, but basic TensorFlow experience doing Andrew Ng's deep learning courses) or graph neural networks—a lot of learning to do! :)
 
 \section*{Resources required}
 
@@ -70,12 +70,10 @@ The following measures will be taken to store the work and reduce the likelihood
   \item Regularly backing up the contents of my laptop on an external HDD.
 \end{itemize}
 
-The data required for training (ADNI database) is available on \url{http://adni.loni.usc.edu}, for which I requested and was granted access.
+{\color{red} The data required for training (ADNI database) is available on \url{http://adni.loni.usc.edu}, for which I requested and was granted access.}
 
 \section*{Work to be done}
 \label{section:work}
-
-\textsc{todo}: decide on the main work/extensions split of the tasks below, write a coherent section.
 
 % Describe the technical work.
 The tasks shall start from this (semi-ordered) list which can then be allocated to the slots in the \hyperref[section:timetable]{Timetable}. 
@@ -85,7 +83,7 @@ This list includes both the core work and the possible extensions (not sure abou
 \begin{itemize}
   \item (Project proposal)
   \item Read Kipf and Welling's GCN paper \cite{kipf2017semi} and blog post. Read about spectral graph theory because that seems to be the basis of graph convolutions [seems difficult to grasp—also revise/study more linear algebra]
-  \item Get familiar with \texttt{torch\_geometric} (PyG), DGL, TensorFlow
+  \item Get familiar with \texttt{torch\_geometric} (PyG), TensorFlow
   \item Write the ADNI data fetcher
   \item Get the working implementation for TensorFlow GCN for ADNI dataset, reproduce results (80.0\% accuracy)
   \item Measure robustness of the original model in TensorFlow GCN
@@ -93,8 +91,6 @@ This list includes both the core work and the possible extensions (not sure abou
   \item Find alternative methods in PyG that might work better and improve accuracy
   \item Measure robustness of the new model—if robustness decreases the new model from previous step might be overfitting
   \item Incorporate more data from ADNI, if there is too much data consider using autoencoders and other dimensionality reduction techniques.
-  \item Learn the custom similarity metric instead of using the one arbitrarily defined in \cite{parisot2017spectral, parisot2018disease}
-  \item Improve[?] the convolution filters: use Cayley polynomials instead of Chebyshev polynomials [easy to replace, difficult to understand?]
 \end{itemize}
 
 \section*{Success criteria}
@@ -107,14 +103,17 @@ This list includes both the core work and the possible extensions (not sure abou
 %   \item \textsc{todo}
 % \end{itemize}
 
-\textsc{todo}: define more/more specific criteria
 
 The above list suggests that reproducing the result from \cite{parisot2018disease} (80\% accuracy and probably similar AUC) should be the baseline. Then extensions to the model should increase those results.
 
-Another metric that could be defined is \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the vertex features only.
+Another metric that could be defined is \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
+\begin{itemize}
+  \item Improve the spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
+  \item Implement a \textit{custom similarity metric}. Currently the metrics used are defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more features {\color{red} [such as...]} could possibly result in a better performance of the classifier.
+\end{itemize}
 
 
 \section*{Timetable}
@@ -124,9 +123,7 @@ Another metric that could be defined is \textit{robustness to missing or incorre
 % as well as milestones to be achieved along the way. Provide a
 % target date for each milestone.
 
-Planned starting date is 10/10/2019.
-
-\textsc{todo} once I finalise \textit{what exactly} do I want to do! The slots are as suggested in the proposal template. I have added the deadlines as milestones.
+Planned starting date is 01/10/2019.
 
 % 10/10/2019—16/10/2019
 \subsection*{Michaelmas weeks 0-1}
@@ -162,7 +159,8 @@ Planned starting date is 10/10/2019.
 
 \textbf{Milestones.} Send out the complete draft for review by 27/03/2020. Early dissertation submission by 20/04/2020.
 
-\subsection*{24/04/2020—06/05/2020}
+% 24/04/2020—06/05/2020
+\subsection*{Easter weeks 0-2}
  Time reserved for any unexpected issues.
 
 % \medskip 
