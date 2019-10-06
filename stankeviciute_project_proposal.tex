@@ -15,7 +15,7 @@
 \Large
 Computer Science Tripos -- Part II -- Project Proposal\\[4mm]
 \LARGE
-A graph convolutional network for Alzheimer's disease classification\\[4mm]
+A graph convolutional network for [...] disease classification\\[4mm]
 
 \large
 Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
@@ -36,15 +36,27 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 
 \section*{Introduction}
 % The problem to be addressed.
-\textbf{TODO: add what is a graph convolutional network, introduce the data to be studied with it.}
 
-The use of neural networks provides the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments. 
+\subsection*{Background}
 
-One way of modelling the population with some patients having Alzheimer's disease (AD) is a graph, with nodes representing individuals and their features (including the diagnosis), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
+\textit{Description of the subject of the graph convolutional network, e.g. Alzheimer's, Autism Spectrum Disease,...}
+
+Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments. A \textit{graph convolutional network} 
+
+\textit{give more information on graph neural networks + spectral convolutions}
+
+\textit{Application of the GCN to patient population context.} One way of modelling the population with some patients having [...] is a graph, with nodes representing individuals and their features (including the diagnosis), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
 
 One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (node feature vectors) and the trends in the population or pairwise similarities between different patients (graph edges), inferring the patient's diagnosis from their neighbourhood. 
 
-This project will explore such graph convolutional networks (GCNs) as well as alternative geometric deep learning approaches to classify the two forms of Mild Cognitive Impairment (MCI): \textit{stable} and \textit{progressive} (progressing to AD).
+% This project will explore such graph convolutional networks (GCNs) as well as alternative geometric deep learning approaches to classify the two forms of Mild Cognitive Impairment (MCI): \textit{stable} and \textit{progressive} (progressing to AD).
+
+\subsection*{Project Description}
+\begin{itemize}
+  \item applying GCN to patient populations
+  \item diagnosis classification task (e.g. MCI to AD progression—stable vs progressive MCI—using ADNI dataset, or ASD diagnosis using the ABIDE dataset)
+  \item using PyTorch rather than TensorFlow to make use of the broader range of APIs supporting graph data in PyG—\textit{making the final library more accessible and extensible}
+\end{itemize}
 
 \section*{Starting point}
 
@@ -54,7 +66,7 @@ This project will explore such graph convolutional networks (GCNs) as well as al
 
 This project will be based on a state-of-the-art graph convolutional network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf \& Welling \cite{kipf2017semi}) was used for two classification tasks: 1) whether a patient is  healthy or suffering from Autism Spectrum Disorder) and 2) whether a patient having Mild Cognitive Impairment has a stable form or the one progressing to Alzheimer's disease. The GCN has achieved the accuracies of 70.4\% and 80.0\% for the two tasks respectively. 
 
-The source code of this paper (written in TensorFlow) is publicly available at \url{github.com/parisots/population-gcn}. It is fully implemented for the first classification task and not the second. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
+The source code of this paper (written in TensorFlow) is publicly available at \url{http://github.com/parisots/population-gcn}. It is fully implemented for the first classification task and not the second. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
 
 This project will use the ADNI dataset (same as in \cite{parisot2017spectral,parisot2018disease}). The database is available at \url{http://adni.loni.usc.edu}.
 
