@@ -51,6 +51,8 @@ One reason why such graph representation is considered to be useful is that it m
 
 % This project will explore such graph convolutional networks (GCNs) as well as alternative geometric deep learning approaches to classify the two forms of Mild Cognitive Impairment (MCI): \textit{stable} and \textit{progressive} (progressing to AD).
 
+\textit{Description of the dataset.}
+
 \subsection*{Project Description}
 \textbf{Data, Models, Evaluation}
 
@@ -58,7 +60,7 @@ One reason why such graph representation is considered to be useful is that it m
   \item Applying GCN to patient populations
   \item Diagnosis classification task (e.g. MCI to AD progression—stable vs progressive MCI—using ADNI dataset, or ASD diagnosis using the ABIDE dataset)
   \item Using PyTorch rather than TensorFlow to make use of the broader range of APIs supporting graph data in PyG—\textit{making the final library more accessible and extensible}
-  \item \textit{training and test data}
+  \item \textit{Training and test data}
 \end{itemize}
 
 \section*{Starting point}
@@ -69,7 +71,7 @@ One reason why such graph representation is considered to be useful is that it m
 
 This project will be based on a state-of-the-art graph convolutional network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf \& Welling \cite{kipf2017semi}) was used for two classification tasks: 1) whether a patient is  healthy or suffering from Autism Spectrum Disorder) and 2) whether a patient having Mild Cognitive Impairment has a stable form or the one progressing to Alzheimer's disease. The GCN has achieved the accuracies of 70.4\% and 80.0\% for the two tasks respectively. 
 
-The source code of this paper (written in TensorFlow) is publicly available at \url{http://github.com/parisots/population-gcn}. It is fully implemented for the first classification task and not the second. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
+The source code of this paper (written in TensorFlow) is publicly available at \url{http://github.com/parisots/population-gcn}. It is fully implemented for the first classification task but not the second. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
 
 This project will use the ADNI dataset (same as in \cite{parisot2017spectral,parisot2018disease}). The database is available at \url{http://adni.loni.usc.edu}.
 
@@ -95,13 +97,22 @@ The data required for training (ADNI database) is available on \url{http://adni.
 
 % Describe the technical work.
 \textit{Clearly list the \textbf{deliverables}.}
-
 \begin{itemize}
-  \item (Project proposal)
+  \item Preprocess the data (depending on the dataset). For example, ADNI would require fetching the data from the database and preprocessing the brain volumes into $C=138$ longitudinal scans ("large scale segmentation analysis (into 138 anatomical structures using MALP-EM (Ledig et al., 2015))") as in the Parisot paper. Fetching for the other datasets. \textit{Deliverable}: data processing pipeline.
+  \item Connecting the datapoints into the graph based on similarity criteria as defined in the paper (if the dataset is applicable). \textit{Deliverable}: processing the fetched datapoints to connect them into the graph based on pairwise similarity and the definition of the similarity metric/threshold.
+  \item Implement of the GCN that reproduces the results of the paper (depending on the dataset). \textit{Deliverable}: Kipf's GCN (\texttt{GCNConv} in PyG) that can be trained on the graph constructed into the previous point. \textit{Deliverable}: The implementation of the graph neural network with the hyperparameters as listed in the paper (if applicable for the dataset) that reproduces the results.
+  \item An alternative graph neural network for performance comparison. One interesting choice could be a Graph Attention Network (GAT), different from \texttt{GCNConv} due to the use of weighted edges. Note that for this to be used a custom similarity metric should be implemented that gives continuous (rather than binary) edge weights. \textit{Deliverable}: a graph neural network that uses a different approach for convolutions, such as GAT.
+  \item \textit{Testing framework.} This is a good software engineering practice that makes it more likely that the code does not contain significant logic errors or other bugs. An exact testing framework could be developed for the preprocessing part, perhaps some \textit{small} edge cases in the graph neural network could be verified using random seeds. \textit{Deliverable}: Testing framework.
+  \item \textit{Evaluation framework.} One interesting evaluation criterion that is not listed in the Parisot papers (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: an API that takes in the algorithm and the GCN, reports the accuracy measures at each level of removed input data. Should be able to return the actual graph of this accuracy dropping.
+\end{itemize}
+
+
+\textit{Rough list of things to do (based on ADNI, change to another dataset if appropriate).}
+\begin{itemize}
   \item Read Kipf and Welling's GCN paper \cite{kipf2017semi} and blog post. Read about spectral graph theory because that seems to be the basis of graph convolutions [seems difficult to grasp—also revise/study more linear algebra]
   \item Get familiar with \texttt{torch\_geometric} (PyG), TensorFlow
-  \item Write the ADNI data fetcher
-  \item Get the working implementation for TensorFlow GCN for ADNI dataset, reproduce results (80.0\% accuracy)
+  \item Work on fetching and pre-processing the data (e.g. fetch ADNI dataset).
+  \item Get the working implementation for TensorFlow GCN for ADNI dataset, reproduce the results.
   \item Measure robustness of the original model in TensorFlow GCN
   \item Write the ADNI implementation using PyG, measure accuracy (aim for at least 80.0\%)
   \item Find alternative methods in PyG that might work better and improve accuracy
@@ -128,7 +139,7 @@ Another metric that could be defined is \textit{robustness to missing or incorre
 % Potential further envisaged evaluation metrics or extensions.
 \begin{itemize}
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
-  \item Implement a \textit{custom similarity metric}. Currently the metrics used are defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more features {\color{red} [such as...]} could possibly result in a better performance of the classifier.
+  \item Implement a \textit{custom similarity metric}. Currently the metrics used are defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more features (such as genetic sequencing—SNPs in APOE gene, TOMM40 gene, whole genome sequencing, more types of MRI or PET images in ADNI) could possibly result in a better performance of the classifier.
 \end{itemize}
 
 
