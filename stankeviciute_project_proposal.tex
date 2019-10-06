@@ -52,11 +52,13 @@ One reason why such graph representation is considered to be useful is that it m
 % This project will explore such graph convolutional networks (GCNs) as well as alternative geometric deep learning approaches to classify the two forms of Mild Cognitive Impairment (MCI): \textit{stable} and \textit{progressive} (progressing to AD).
 
 \subsection*{Project Description}
+\textbf{Data, Models, Evaluation}
+
 \begin{itemize}
-  \item \textbf{Data, Models, Evaluation}
   \item Applying GCN to patient populations
   \item Diagnosis classification task (e.g. MCI to AD progression—stable vs progressive MCI—using ADNI dataset, or ASD diagnosis using the ABIDE dataset)
   \item Using PyTorch rather than TensorFlow to make use of the broader range of APIs supporting graph data in PyG—\textit{making the final library more accessible and extensible}
+  \item \textit{training and test data}
 \end{itemize}
 
 \section*{Starting point}
@@ -125,7 +127,7 @@ Another metric that could be defined is \textit{robustness to missing or incorre
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
 \begin{itemize}
-  \item Improve the spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
+  \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
   \item Implement a \textit{custom similarity metric}. Currently the metrics used are defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more features {\color{red} [such as...]} could possibly result in a better performance of the classifier.
 \end{itemize}
 
@@ -141,35 +143,45 @@ Planned starting date is 01/10/2019.
 
 % 10/10/2019—16/10/2019
 \subsection*{Michaelmas weeks 0-1}
+\textit{Preparation.}
 
 \textbf{Milestones.} Submit Phase 1 report by 14/10/2019. Submit draft proposal by 18/10/2019.
 
 % (Michaelmas weeks 2--4), 17/10/2019—06/11/2019
 \subsection*{Michaelmas weeks 2-4}
+\textit{Preparation.}
 
 \textbf{Milestones.} Submit final project proposal by 25/10/2019.
 
 % (Michaelmas weeks 5--6), 07/11/2019—20/11/2019
 \subsection*{Michaelmas weeks 5-6}
- 
+\textit{Core work.}
 
 % (Michaelmas weeks 7--8), 21/11/2019—04/12/2019
 \subsection*{Michaelmas weeks 7-8}
+\textit{Core work.}
 
 \subsection*{Michaelmas vacation}
+\textit{Core work. Some write-up. Progress report and presentation.}
+
+\textbf{Milestones.} Complete the implementation of the main part of the project.
 
 % (Lent weeks 0--2), 16/01/2020—29/01/2020
 \subsection*{Lent weeks 0-2}
+\textit{Extensions.}
  
 \textbf{Milestones.} Submit progress report by 31/01/2020.
 
 % (Lent weeks 3--5), 30/01/2020—19/02/2020
 \subsection*{Lent weeks 3-5} 
+\textit{Extensions, start evaluation.}
 
 % (Lent weeks 6--8), 20/02/2020—11/03/2020
 \subsection*{Lent weeks 6-8}
+\textit{Extensions, evaluation, write-up.}
 
 \subsection*{Easter vacation}
+\textit{Write-up.}
 
 \textbf{Milestones.} Send out the complete draft for review by 27/03/2020. Early dissertation submission by 20/04/2020.
 
