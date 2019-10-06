@@ -73,9 +73,25 @@ This project will be based on a state-of-the-art graph convolutional network (GC
 
 The source code of this paper (written in TensorFlow) is publicly available at \url{http://github.com/parisots/population-gcn}. It is fully implemented for the first classification task but not the second. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
 
-This project will use the ADNI dataset (same as in \cite{parisot2017spectral,parisot2018disease}). The database is available at \url{http://adni.loni.usc.edu}.
+This project will use the ADNI dataset (same as in \cite{parisot2017spectral,parisot2018disease}). The database is available at \url{http://adni.loni.usc.edu}. [to change depending on the actual dataset chosen]
 
-I am not particularly familiar with any of the frameworks above (no experience with PyTorch or PyG, but basic TensorFlow experience doing Andrew Ng's deep learning courses) or graph neural networks—a lot of learning to do! :)
+\textbf{Relevant Computer Science Tripos courses:}
+\begin{itemize}
+  \item Machine Learning and Real-World Data (IA 75\%)
+  \item Scientific Computing (IA 75\%)
+  \item Foundations of Data Science (IB 75\%)
+  \item Artificial Intelligence (IB 75\%)
+  \item Bioinformatics (II 75\%)
+  \item Data Science: Principles and Practice (II 75\%)
+  \item Machine Learning and Bayesian Inference (II 75\%)
+  \item \textit{any software engineering courses that told me that I should do the tests}
+\end{itemize}
+
+\textbf{Relevant previous knowledge about the topic:}
+\begin{itemize}
+  \item 5-course Deep Learning specialisation by deeplearning.ai on Coursera (with basics of TensorFlow and Python APIs).
+  \item Google's Machine Learning Crash Course along with follow-up courses on data preparation, problem framing, testing and debugging (basics of TensorFlow and Python APIs).
+\end{itemize}
 
 \section*{Resources required}
 
@@ -96,7 +112,7 @@ The data required for training (ADNI database) is available on \url{http://adni.
 \label{section:work}
 
 % Describe the technical work.
-\textit{Clearly list the \textbf{deliverables}.}
+List of explicit \textbf{deliverables}.
 \begin{itemize}
   \item Preprocess the data (depending on the dataset). For example, ADNI would require fetching the data from the database and preprocessing the brain volumes into $C=138$ longitudinal scans ("large scale segmentation analysis (into 138 anatomical structures using MALP-EM (Ledig et al., 2015))") as in the Parisot paper. Fetching for the other datasets. \textit{Deliverable}: data processing pipeline.
   \item Connecting the datapoints into the graph based on similarity criteria as defined in the paper (if the dataset is applicable). \textit{Deliverable}: processing the fetched datapoints to connect them into the graph based on pairwise similarity and the definition of the similarity metric/threshold.
@@ -104,6 +120,7 @@ The data required for training (ADNI database) is available on \url{http://adni.
   \item An alternative graph neural network for performance comparison. One interesting choice could be a Graph Attention Network (GAT), different from \texttt{GCNConv} due to the use of weighted edges. Note that for this to be used a custom similarity metric should be implemented that gives continuous (rather than binary) edge weights. \textit{Deliverable}: a graph neural network that uses a different approach for convolutions, such as GAT.
   \item \textit{Testing framework.} This is a good software engineering practice that makes it more likely that the code does not contain significant logic errors or other bugs. An exact testing framework could be developed for the preprocessing part, perhaps some \textit{small} edge cases in the graph neural network could be verified using random seeds. \textit{Deliverable}: Testing framework.
   \item \textit{Evaluation framework.} One interesting evaluation criterion that is not listed in the Parisot papers (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: an API that takes in the algorithm and the GCN, reports the accuracy measures at each level of removed input data. Should be able to return the actual graph of this accuracy dropping.
+  \item Statistical processing?
 \end{itemize}
 
 
