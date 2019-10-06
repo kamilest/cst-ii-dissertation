@@ -121,6 +121,7 @@ List of explicit \textbf{deliverables}.
   \item \textit{Testing framework.} This is a good software engineering practice that makes it more likely that the code does not contain significant logic errors or other bugs. An exact testing framework could be developed for the preprocessing part, perhaps some \textit{small} edge cases in the graph neural network could be verified using random seeds. \textit{Deliverable}: Testing framework.
   \item \textit{Evaluation framework.} One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers—accuracy, AUC—for direct comparison with the baseline methods. \textit{Deliverable}: an API that takes in the algorithm and the GCN, reports the accuracy measures at each level of removed input data. Should be able to return the actual graph of this accuracy dropping.
   \item (?) Statistical processing (for evaluation).
+  \item Writing up the dissertation. \textit{Deliverable}: obvious.
 \end{itemize}
 
 
