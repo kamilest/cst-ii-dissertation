@@ -125,18 +125,18 @@ List of explicit \textbf{deliverables}.
 \end{itemize}
 
 
-\textit{Rough list of things to do (based on ADNI, change to another dataset if appropriate).}
-\begin{itemize}
-  \item Read Kipf and Welling's GCN paper \cite{kipf2017semi} and blog post. Read about spectral graph theory because that seems to be the basis of graph convolutions [seems difficult to grasp—also revise/study more linear algebra]
-  \item Get familiar with \texttt{torch\_geometric} (PyG), TensorFlow
-  \item Work on fetching and pre-processing the data (e.g. fetch ADNI dataset).
-  \item Get the working implementation for TensorFlow GCN for ADNI dataset, reproduce the results.
-  \item Measure robustness of the original model in TensorFlow GCN
-  \item Write the ADNI implementation using PyG, measure accuracy (aim for at least 80.0\%)
-  \item Find alternative methods in PyG that might work better and improve accuracy
-  \item Measure robustness of the new model—if robustness decreases the new model from previous step might be overfitting
-  \item Incorporate more data from ADNI, if there is too much data consider using autoencoders and other dimensionality reduction techniques.
-\end{itemize}
+% \textit{Rough list of things to do (based on ADNI, change to another dataset if appropriate).}
+% \begin{itemize}
+%   \item Read Kipf and Welling's GCN paper \cite{kipf2017semi} and blog post. Read about spectral graph theory because that seems to be the basis of graph convolutions [seems difficult to grasp—also revise/study more linear algebra]
+%   \item Get familiar with \texttt{torch\_geometric} (PyG), TensorFlow
+%   \item Work on fetching and pre-processing the data (e.g. fetch ADNI dataset).
+%   \item Get the working implementation for TensorFlow GCN for ADNI dataset, reproduce the results.
+%   \item Measure robustness of the original model in TensorFlow GCN
+%   \item Write the ADNI implementation using PyG, measure accuracy (aim for at least 80.0\%)
+%   \item Find alternative methods in PyG that might work better and improve accuracy
+%   \item Measure robustness of the new model—if robustness decreases the new model from previous step might be overfitting
+%   \item Incorporate more data from ADNI, if there is too much data consider using autoencoders and other dimensionality reduction techniques.
+% \end{itemize}
 
 \section*{Success criteria}
 
@@ -149,9 +149,9 @@ List of explicit \textbf{deliverables}.
 % \end{itemize}
 
 
-The above list suggests that reproducing the result from \cite{parisot2018disease} (80\% accuracy and probably similar AUC) should be the baseline. Then extensions to the model should increase those results.
+The above list suggests that implementing the graph convolution network and reproducing the result from \cite{parisot2018disease} (e.g. 80\% accuracy on ADNI) should be the baseline [\textit{dataset dependent}, might not be applicable]. The extensions to the model should increase those results. [An alternative approach to the baseline GCN should be implemented and their performance should be compared].
 
-Another metric that could be defined is \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
+Another criterion is that by the end of the project the evaluation framework should be implemented that clearly compares two alternative graph neural network models. An evaluation criterion that could be defined and implemented is \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
