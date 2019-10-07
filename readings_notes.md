@@ -27,6 +27,18 @@
 What?
 > Around 10%–15% of MCI patients per year convert to AD over a relatively short time (Braak and Braak, 1995; Mitchell and Shiri-Feshki, 2008), although the annual conversion rate tends to progressively diminish. The mean conversion rate from MCI to AD is approximately 4% per year.
 
+## Data preprocessing
+* common space (use templates for MRI imaging)
+  * two templates for measuring robustness
+  * >symmetrical diffeomorphic mapping and employed five total iterations
+    * center and mass alignment, rigid, similarity and fully affine transformations; sampling, neighbourhood cross-correlation
+    * winsorisation, numerical normalisation
+    * smoothing signals, shrink factors, resolution levels
+  * MNI152_T1_1mm template
+* local Jacobian Determinant images of nonlinear part of deformational field [???]
+* definition of regions of interest (ROIs)
+* ANTs package (Avants et al., 2010, 2011)
+
 
 **Evaluation of the classifier:**
 * sampling strategy: divide samples in training/validation/test set splits
@@ -36,3 +48,5 @@ What?
 * robustness of network to structural misalignment in the MNI space
   * *random permutation of training labels*
 
+
+# Handedness, language areas and neuropsychiatric diseases: insights from brain imaging and genetics
