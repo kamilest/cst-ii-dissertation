@@ -27,7 +27,7 @@
 What?
 > Around 10%–15% of MCI patients per year convert to AD over a relatively short time (Braak and Braak, 1995; Mitchell and Shiri-Feshki, 2008), although the annual conversion rate tends to progressively diminish. The mean conversion rate from MCI to AD is approximately 4% per year.
 
-## Data preprocessing
+### Data preprocessing
 * common space (use templates for MRI imaging)
   * two templates for measuring robustness
   * >symmetrical diffeomorphic mapping and employed five total iterations
@@ -49,4 +49,10 @@ What?
   * *random permutation of training labels*
 
 
-# Handedness, language areas and neuropsychiatric diseases: insights from brain imaging and genetics
+## Handedness, language areas and neuropsychiatric diseases: insights from brain imaging and genetics
+
+### Data preprocessing
+* volumetric, area, thickness measures
+* quantile normalisation, temporal synchronisation
+
+
