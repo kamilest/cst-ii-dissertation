@@ -56,3 +56,11 @@ What?
 * quantile normalisation, temporal synchronisation
 
 
+## Co-Attentive Cross-Modal Deep Learning for Complex Disease Analysis
+
+* multi-head co-attention (MHCA) CNN, taking in both SPECT image (3D image of brain to model dopamine transporter functionality) and DNA methylation (DNAm) data in separate channels and then combining the extracted features
+* go through separate encoders with additional feature selection algorithm on methylation data—XGBoost for getting feature importance weights, recursive feature elimination (RFE) for removing based on those importance weights
+* feature importance/attention weights tell which features are considered more important (for *interpretability*)
+* train (80%) and hold-out test (20%) sets, 5-fold cross-validation on test set to measure mean and standard deviation of overall evaluation metrics—accuracy, AUC (and additional bonus for small number of parameters)
+
+
