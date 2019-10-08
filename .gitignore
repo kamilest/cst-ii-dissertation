@@ -5,6 +5,10 @@
 stankeviciute_project_proposal.pdf
 project-proposal-notes.pdf
 
+
+.vscode 
+
+
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
 *.aux
