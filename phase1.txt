@@ -14,7 +14,19 @@ Director of Studies: Dr G. Titmus, Dr T. M. Jones
 Please complete 1, 2 and 3 below.
 
 1. Please write 100 words on your current project ideas.
+The project is inspired by the ideas from two papers by Parisot
+et al. involving classification of healthy controls and Alzheimer's/
+Autism Spectrum Disorder patients using Graph Convolutional
+Networks in a semi-supervised manner. 
 
+This project will either reproduce and improve the presented results
+presented in the paper for one of the datasets (ABIDE or ADNI), or apply
+this idea to a different classification/regression problem on a different 
+dataset (e.g. predicting age from UK Biobank's brain imaging data).
+
+The project could also compare this approach to other Graph Neural Network
+architectures such as Graph Attention Networks, and evaluate their robustness
+by observing the changes in performance as the training data is removed.
 
 2. Please list names of potential project supervisors.
 Dr Tiago Azevedo, Prof Pietro Liò
