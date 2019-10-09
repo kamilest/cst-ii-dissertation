@@ -1,5 +1,5 @@
 Subject: Phase 1 - Stankeviciute: Prediction of Age using Graph Neural networks
-(or Semi-Supervised Convolutional Neural Networks)
+(or Semi-Supervised Graph Convolutional Networks, or a combination/comparison)
 
 Phase 1 Project Selection Status Report
 
@@ -19,14 +19,15 @@ et al. involving classification of healthy controls and Alzheimer's/
 Autism Spectrum Disorder patients using Graph Convolutional
 Networks in a semi-supervised manner. 
 
-This project will either reproduce and improve the presented results
+This project will either reproduce and improve the results
 presented in the paper for one of the datasets (ABIDE or ADNI), or apply
 this idea to a different classification/regression problem on a different 
-dataset (e.g. predicting age from UK Biobank's brain imaging data).
+dataset (e.g. predicting age or another label from UK Biobank's brain 
+imaging and other data).
 
-The project could also compare this approach to other Graph Neural Network
+The project could also compare this approach to other graph neural network
 architectures such as Graph Attention Networks, and evaluate their robustness
-by observing the changes in performance as the training data is removed.
+by observing the changes in performance as more training data is removed.
 
 2. Please list names of potential project supervisors.
 Dr Tiago Azevedo, Prof Pietro Liò
@@ -43,8 +44,3 @@ If so indicate below what, and what it is needed for.
 I will need my own machine as well as the GPUs provided by the 
 Computational Biology Group to increase the training speed of the 
 neural networks.
-                                                                 
-                                                                 
-                                                                 
-                                                                 
-                                                                 
