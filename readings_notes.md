@@ -64,3 +64,21 @@ What?
 * train (80%) and hold-out test (20%) sets, 5-fold cross-validation on test set to measure mean and standard deviation of overall evaluation metrics—accuracy, AUC (and additional bonus for small number of parameters)
 
 
+## Personalised intrinsic network topography mapping and functional connectivity deficits in Autism Spectrum Disorder
+
+* individually specific variation in brain architecture
+* >  there is some literature on the notion that resting-state network in autism are topologically slightly different [paper] which might mean that imposing a normal generic template to a disease population (by averaging across nodes within a parcel) may obscure subtle differences. Thus it would actually be interesting to see if using a latent time-series from a parcel instead of a mean also improves disease classification
+
+
+## Heterogeneous graph attention network
+* containing different types of nodes and links
+* attention mechanism has a lot of potential and has attracted a lot of attention recently
+* hierarchical node- and semantic-based attention mechanism
+  * *node-level attention*: learn the importance between node and meta-path neighbours
+  * *semantic-level attention*: learn importance between various meta-paths
+* generating node embedding by aggregating features from meta-path based neighbours
+* previous approaches: *deep neural networks* generating node representation based on features and neighbours; *graph convolutional networks* extend this by applying convolution operator; *attention mechanisms* encouraging to focus on the most informative parts of the structure
+* *Graph Attention Network (GAT)* has convolution and attention but only on one type of node or link
+* *Heterogeneous Information Network (HIN)*: multiple types of nodes and edges
+* *meta-path*: composite relation between two subjects (e.g. co-actor represented by film-actor-film)
+  * resembles database design
