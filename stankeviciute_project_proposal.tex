@@ -4,7 +4,9 @@
 \usepackage{parskip}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\urlstyle{same}
 \usepackage{xcolor}
+\usepackage[multiple]{footmisc}
 \usepackage[margin=25mm]{geometry}
 % \usepackage[backend=biber]{biblatex}
 % \addbibresource{stankeviciute-proposal.bib}
@@ -34,7 +36,7 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 
 % Main document
 
-\section*{Introduction and description of the work}
+\section*{Introduction}
 % The problem to be addressed.
 
 % [Tiago] Why NNs and not something else? You probably want one sentence of motivation saying they have been very successful in other fields, and then one sentence that as a consequence they might help physicians.
@@ -44,12 +46,12 @@ Neural networks provide the opportunity to capture the similarities between pati
 
 One way of modelling the population is a graph, with nodes representing individuals (their features and the label), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
 
-
-% [Tiago] maybe "inferring information about the patient's diagnosis", as the diagnosis itself is not 100% inferred from the neighbours
-One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about the patient's label from their neighbourhood. 
-
+One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about the patient's label from their neighbourhood.
 
 \subsection*{Project description}
+
+This project was inspired by a state-of-the-art Graph Convolutional Network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used for two tasks: 1) prediction of Autism Spectrum Disorder from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment that develops into Alzheimer's disease from the ADNI dataset.
+
 \textbf{Data, Models, Evaluation}
 
 \begin{itemize}
@@ -66,31 +68,15 @@ One reason why such graph representation is considered to be useful is that it m
 %   libraries and databases to be used. Describe the state of any
 %   existing codebase that is to be built on.
 
-This project will be based on a state-of-the-art graph convolutional network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf \& Welling \cite{kipf2017semi}) was used for two classification tasks: 1) whether a patient is  healthy or suffering from Autism Spectrum Disorder) and 2) whether a patient having Mild Cognitive Impairment has a stable form or the one progressing to Alzheimer's disease. The GCN has achieved the accuracies of 70.4\% and 80.0\% for the two tasks respectively. 
+The source code for the implementation of Kipf and Welling's\cite{kipf2017semi} GCNs and Parisot et al.'s \cite{parisot2018disease} first classification task is publicly available online.\footnote{\url{https://github.com/tkipf/gcn}}\footnote{\url{https://github.com/parisots/population-gcn}}
 
-The source code of this paper (in TensorFlow) for the first classification task is publicly available.\footnote{\url{http://github.com/parisots/population-gcn}}. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
+I will be using PyTorch for this project because of its support for machine learning on structured graph data. In particular, PyTorch Geometric (PyG)\footnote{\url{https://github.com/rusty1s/pytorch_geometric}}—a geometric deep learning extension library—will make the implementation, iteration and extensions to the model more flexible in addition to performance improvements and simplified APIs.
 
-
-\textbf{Relevant Computer Science Tripos courses:}
-\begin{itemize}
-  \item Machine Learning and Real-World Data (IA 75\%)
-  \item Scientific Computing (IA 75\%)
-  \item Foundations of Data Science (IB 75\%)
-  \item Artificial Intelligence (IB 75\%)
-  \item Bioinformatics (II 75\%)
-  \item Data Science: Principles and Practice (II 75\%)
-  \item Machine Learning and Bayesian Inference (II 75\%)
-\end{itemize}
-
-\textbf{Relevant previous knowledge about the topic:}
-\begin{itemize}
-  \item 5-course Deep Learning specialisation by deeplearning.ai on Coursera (with basics of TensorFlow and Python APIs).
-  \item Google's Machine Learning Crash Course along with follow-up courses on data preparation, problem framing, testing and debugging (basics of TensorFlow and Python APIs).
-\end{itemize}
+I have experience with the basics of TensorFlow\footnote{Five-course Deep Learning specialisation by deeplearning.ai on Coursera}\footnote{Google's Machine Learning Crash Course and follow-up courses.} and no experience with PyTorch or graph neural networks. I have attended or will study (possibly in advance) the CST courses related to the subject of this project (such as IA Machine Learning and Real-World Data, IB Artificial Intelligence, II Bioinformatics, II Machine Learning and Bayesian Inference).
 
 \section*{Resource declaration}
 
-For the most part of this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, the source code and \LaTeX\ source of the project will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
+For the most part of this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
 
 \section*{Work to be done}
 \label{section:work}
@@ -138,7 +124,7 @@ List of explicit \textbf{deliverables}.
 % \end{itemize}
 
 
-The above list suggests that implementing the graph convolution network and reproducing the result from Parisot et al. [2]\cite{parisot2018disease} (e.g. 80\% accuracy on ADNI) should be the baseline [\textit{dataset dependent}, might not be applicable]. The extensions to the model should increase those results. [An alternative approach to the baseline GCN should be implemented and their performance should be compared].
+The above list suggests that implementing the graph convolution network and reproducing the result from Parisot et al. \cite{parisot2018disease} (e.g. 80\% accuracy on ADNI) should be the baseline [\textit{dataset dependent}, might not be applicable]. The extensions to the model should increase those results. [An alternative approach to the baseline GCN should be implemented and their performance should be compared].
 
 Another criterion is that by the end of the project the evaluation framework should be implemented that clearly compares two alternative graph neural network models. An evaluation criterion that could be defined and implemented is \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
 
@@ -157,12 +143,10 @@ Another criterion is that by the end of the project the evaluation framework sho
 % as well as milestones to be achieved along the way. Provide a
 % target date for each milestone.
 
-Planned starting date is 01/10/2019.
-
 % [Tiago] you can specify which parts of the work you intend to implement in each 2-week time frame. This will help you having a better idea of how you are keeping up/behind.
 
-%  (10/10/2019 – 16/10/2019)
-\textbf{Michaelmas week 1}
+%  (01/10/2019 – 16/10/2019)
+\textbf{Michaelmas weeks 0-1}
 
 \textit{Preparation.}
 
