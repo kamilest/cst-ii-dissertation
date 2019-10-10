@@ -52,7 +52,7 @@ One reason why such graph representation is considered to be useful in the patie
 \section*{Project description}
 This project was inspired by a state-of-the-art application of a type of graph neural network called Graph Convolutional Network (GCN), as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used in a semi-supervised manner for two tasks: 1) prediction of Autism Spectrum Disorder from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment that develops into Alzheimer's disease from the ADNI dataset.
 
-The aim of this project will be to adapt this approach to a regression task on the UK Biobank data, predicting the subject's age based on brain imaging, genetic, biomarker and other data, and comparing it to other geometric deep learning architectures that have also proved successful, such as Graph Attention Networks. \textit{Brain age prediction has recently been published in the literature in relation to psychiatric diseases...}
+The aim of this project will be to adapt this approach to a regression task on the UK Biobank data, predicting the subject's age based on brain imaging, genetic, biomarker and other data, and comparing it to other successful geometric deep learning architectures, such as Graph Attention Networks. \textit{Brain age prediction has recently been published in the literature in relation to psychiatric diseases...}
 
 \textit{The main deliverable will be... a library? An open-source API?}
 
@@ -68,6 +68,8 @@ I will be using PyTorch for this project because of its support for machine lear
 
 I have experience with the basics of TensorFlow\footnote{Five-course Deep Learning specialisation by deeplearning.ai on Coursera}\footnote{Google's Machine Learning Crash Course and follow-up courses.} and no experience with PyTorch or graph neural networks. I have attended or will study (possibly in advance) the CST courses related to the subject of this project (such as IA Machine Learning and Real-World Data, IB Artificial Intelligence, II Bioinformatics, II Machine Learning and Bayesian Inference).
 
+I will be using the data from the UK Biobank, kindly preprocessed and provided by Dr~Richard Bethlehem of the Department of Psychiatry.
+
 \section*{Resource declaration}
 
 For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
@@ -78,54 +80,33 @@ For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Qua
 % [Tiago] bullet points should start with the same sentence structure
 
 % Describe the technical work.
-List of explicit \textbf{deliverables}.
+List of explicit tasks and \textbf{deliverables}.
 \begin{itemize}
-  \item Preprocess the data (depending on the dataset). For example, ADNI would require fetching the data from the database and preprocessing the brain volumes into $C=138$ longitudinal scans (“large scale segmentation analysis (into 138 anatomical structures using MALP-EM (Ledig et al., 2015))”) as in the Parisot paper. Fetching for the other datasets. \textit{Deliverable}: data processing pipeline. % [Tiago] "data cleaned and is ready for analysis"
-  \item Connecting the datapoints into the graph based on similarity criteria as defined in the paper (if the dataset is applicable). \textit{Deliverable}: Datapoints are fetched and connected into the graph based on pairwise similarity. \textit{Deliverable}: definition of the similarity metric/threshold. % [Tiago] deliverable is something specific, not a verb/action
-  \item Implement of the GCN that reproduces the results of the paper (depending on the dataset). \textit{Deliverable}: Kipf's GCN (\texttt{GCNConv} in PyG) that can be trained on the graph constructed into the previous point. \textit{Deliverable}: The implementation of the graph neural network with the hyperparameters as listed in the paper (if applicable for the dataset) that reproduces the results.
+  \item \textit{Deliverable}: Data is cleaned and ready for analysis. [what if the data is already pre-processed?] % [Tiago] "data cleaned and is ready for analysis" 
+  \item \textit{Deliverable}: Definition of the similarity metric and threshold to be used in connecting the graph. \textit{especially with the custom dataset}
+  \item \textit{Deliverable}: Datapoints connected into the graph based on the pairwise similarity metric.
+  \item \textit{Deliverable}: Implementation of Kipf's GCN \cite{kipf2017semi} (\texttt{GCNConv} in PyG) that can be trained on the previously constructed graph.
   % [Tiago] GAT originally doesn't allow for weighted edges. You probably want to say GAT because of interesting results in previous literature. Thus, you can probably divide this point: (1) implementation of another graph NN layer, (2) Include weights (in theory you can even edit the message passing mechanism in GCN to multiply by the weights, just like you are suggesting for GAT) 
-  \item An alternative graph neural network for performance comparison. One interesting choice could be a Graph Attention Network (GAT), different from \texttt{GCNConv} due to the use of weighted edges. Note that for this to be used a custom similarity metric should be implemented that gives continuous (rather than binary) edge weights. \textit{Deliverable}: a graph neural network that uses a different approach for convolutions, such as GAT.
+  \item \textit{Deliverable}: An alternative graph neural network for performance comparison.
   % [Tiago] What exactly would you be testing points? Eg. what a unit test would consist of?
-  \item \textit{Testing framework.} This is a good software engineering practice that makes it more likely that the code does not contain significant logic errors or other bugs. An exact testing framework could be developed for the preprocessing part, perhaps some \textit{small} edge cases in the graph neural network could be verified using random seeds. \textit{Deliverable}: Testing framework.
+  \item \textit{Testing framework.} is this needed?
   % [Tiago] I just recalled that one thing we discussed could be how it handles missing data (eg. a certain percentage without some data), which could create an interesting view on robustness and semi-supervised learning. Maybe this could go to extension (or "personal" extension in case you have time and you can say you had one more extension than initially planned)
-  \item \textit{Evaluation framework.} One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers—accuracy, AUC—for direct comparison with the baseline methods. \textit{Deliverable}: an API that takes in the algorithm and the GCN, reports the accuracy measures at each level of removed input data. Should be able to return the actual graph of this accuracy dropping.
-  \item (?) Statistical processing (for evaluation).
-  \item Writing up the dissertation. \textit{Deliverable}: obvious.
+  \item \textit{Deliverable}: An evaluation framework. \textit{Deliverable}: Comparison of the alternative graph neural network models. \textit{Deliverable}: A robustness measure for the GCN due to missing data. Comparison of robustness. \medskip \\  One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers—accuracy, AUC—for direct comparison with the baseline methods.
 \end{itemize}
 
-
-% \textit{Rough list of things to do (based on ADNI, change to another dataset if appropriate).}
-% \begin{itemize}
-%   \item Read Kipf and Welling's GCN paper \cite{kipf2017semi} and blog post. Read about spectral graph theory because that seems to be the basis of graph convolutions [seems difficult to grasp—also revise/study more linear algebra]
-%   \item Get familiar with \texttt{torch\_geometric} (PyG), TensorFlow
-%   \item Work on fetching and pre-processing the data (e.g. fetch ADNI dataset).
-%   \item Get the working implementation for TensorFlow GCN for ADNI dataset, reproduce the results.
-%   \item Measure robustness of the original model in TensorFlow GCN
-%   \item Write the ADNI implementation using PyG, measure accuracy (aim for at least 80.0\%)
-%   \item Find alternative methods in PyG that might work better and improve accuracy
-%   \item Measure robustness of the new model—if robustness decreases the new model from previous step might be overfitting
-%   \item Incorporate more data from ADNI, if there is too much data consider using autoencoders and other dimensionality reduction techniques.
-% \end{itemize}
-
 \section*{Success criteria}
-
 % Describe what you expect to be able to demonstrate at the
 % end of the project and how you are going to evaluate your achievement.
+Implemented deliverables.
 
-% \begin{itemize}
-%   \item Reimplement the model in PyTorch (\texttt{pytorch\_geometric}) package with the base accuracy of at least 80.0\% as in \cite{parisot2018disease}
-%   \item \textsc{todo}
-% \end{itemize}
-
-
-The above list suggests that implementing the graph convolution network and reproducing the result from Parisot et al. \cite{parisot2018disease} (e.g. 80\% accuracy on ADNI) should be the baseline [\textit{dataset dependent}, might not be applicable]. The extensions to the model should increase those results. [An alternative approach to the baseline GCN should be implemented and their performance should be compared].
-
-Another criterion is that by the end of the project the evaluation framework should be implemented that clearly compares two alternative graph neural network models. An evaluation criterion that could be defined and implemented is \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
+\section*{Evaluation of the project}
+Measured the \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
 \begin{itemize}
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
+  \item Implement weighted Graph Convolutional Network/Graph Attention Network.
   \item Implement a \textit{custom similarity metric}. The metrics used in the work by Parisot et al. \cite{parisot2018disease} were defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more combinations of features could possibly result in a better performance of the classifier.
 \end{itemize}
 
@@ -142,55 +123,54 @@ Another criterion is that by the end of the project the evaluation framework sho
 %  (01/10/2019 – 16/10/2019)
 \textbf{Michaelmas weeks 0-1}
 
-\textit{Preparation.}
-
+\textit{Preparation.} Read Graph Convolutional Network papers, get familiar with PyTorch Geometric, work on project proposal [...]
 
 \textbf{Milestones.} Submit Phase 1 report by 14/10/2019. Submit draft proposal by 18/10/2019.
 
 % (17/10/2019 – 06/11/2019)
 \textbf{Michaelmas weeks 2–4}
 
-\textit{Preparation.}
+\textit{Preparation.} Get familiar with the features of UK Biobank data, define a similarity metric.
 
 \textbf{Milestones.} Submit final project proposal by 25/10/2019.
 
 % (07/11/2019 – 20/11/2019)
 \textbf{Michaelmas weeks 5–6}
 
-\textit{Core work.}
+\textit{Core work.} Work on the implementation of the Graph Convolutional Network on PyTorch for UK Biobank data.
 
 % (21/11/2019 – 04/12/2019)
-\textbf{Michaelmas weeks 7–8}
+\textbf{Michaelmas weeks 7–8} 
 
-\textit{Core work.}
+\textit{Core work.} Work on the implementation of the Graph Attention Network for the same task.
 
 \textbf{Michaelmas vacation}
 
-\textit{Core work. Some write-up. Progress report and presentation.}
+\textit{Core work. Some write-up. Progress report and presentation.}  Write the implementation for evaluation framework, measuring robustness and other metrics of the alternative approaches. Write some relevant chapters for the dissertation.
 
 \textbf{Milestones.} Complete the implementation of the main part of the project.
 
 % (16/01/2020 – 29/01/2020)
 \textbf{Lent weeks 0–2}
 
-\textit{Extensions.}
+\textit{Extensions.} Work on progress report and presentation, implement Cayley polynomials.
  
 \textbf{Milestones.} Submit progress report by 31/01/2020.
 
 
 % (30/01/2020 – 19/02/2020)
-\textbf{Lent weeks 3–5} 
+\textbf{Lent weeks 3–5}
 
-\textit{Extensions, start evaluation.}
+\textit{Extensions, start evaluation.} Weighting the edges/learning custom similarity metrics.
 
 % (20/02/2020 – 11/03/2020)
 \textbf{Lent weeks 6–8}
 
-\textit{Extensions, evaluation, write-up.}
+\textit{Extensions, evaluation, write-up.} Write the dissertation.
 
 \textbf{Easter vacation}
 
-\textit{Write-up.}
+\textit{Write-up.} Work on the dissertation draft.
 
 \textbf{Milestones.} Send out the complete draft for review by 27/03/2020. Submit dissertation early by 20/04/2020.
 
