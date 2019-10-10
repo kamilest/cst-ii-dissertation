@@ -30,7 +30,7 @@ architectures such as Graph Attention Networks, and evaluate their robustness
 by observing the changes in performance as more training data is removed.
 
 2. Please list names of potential project supervisors.
-Dr Tiago Azevedo, Prof Pietro Liò
+Mr Tiago Azevedo, Prof Pietro Liò
 
 3. Is there any chance that your project will involve any
 computing resources other than the Computing Service's MCS and
