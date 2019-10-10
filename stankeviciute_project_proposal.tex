@@ -39,44 +39,38 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 \section*{Introduction}
 % The problem to be addressed.
 
+\textit{Deep learning/graph neural networks intro}
+
 % [Tiago] Why NNs and not something else? You probably want one sentence of motivation saying they have been very successful in other fields, and then one sentence that as a consequence they might help physicians.
-Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments.
+\textit{...Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments...}
 
-\textit{Give more information on graph neural networks + spectral convolutions}
+One way of modelling the population is a graph, with nodes representing individuals (their features and the label), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging). \textit{Graph neural network approaches are popular and have proved successful in a broad range of tasks...}
 
-One way of modelling the population is a graph, with nodes representing individuals (their features and the label), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
+One reason why such graph representation is considered to be useful in the patient population context is that it makes use of both the individual patient data (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about the patient's label from their neighbourhood.
 
-One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about the patient's label from their neighbourhood.
 
-\subsection*{Project description}
+\section*{Project description}
+This project was inspired by a state-of-the-art application of a type of graph neural network called Graph Convolutional Network (GCN), as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used in a semi-supervised manner for two tasks: 1) prediction of Autism Spectrum Disorder from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment that develops into Alzheimer's disease from the ADNI dataset.
 
-This project was inspired by a state-of-the-art Graph Convolutional Network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used for two tasks: 1) prediction of Autism Spectrum Disorder from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment that develops into Alzheimer's disease from the ADNI dataset.
+The aim of this project will be to adapt this approach to a regression task on the UK Biobank data, predicting the subject's age based on brain imaging, genetic, biomarker and other data, and comparing it to other geometric deep learning architectures that have also proved successful, such as Graph Attention Networks. \textit{Brain age prediction has recently been published in the literature in relation to psychiatric diseases...}
 
-\textbf{Data, Models, Evaluation}
-
-\begin{itemize}
-  \item Applying GCN to patient populations
-  % [Tiago] in order to be easier to read (more fluid) you probably want each word in the beginning of the list to follow the same structure (ie. you are using present continuous in all bullet points except here)
-  \item Predicting the subject's age from their brain imaging and other data.
-  \item Using PyTorch rather than TensorFlow to make use of the broader range of APIs supporting graph data in PyG—\textit{making the final library more accessible and extensible, contributing to the open-source community} % [Tiago]
-  \item \textit{Training and test data}
-\end{itemize}
+\textit{The main deliverable will be... a library? An open-source API?}
 
 \section*{Starting point}
-
 % Describe existing state of the art, previous work in this area,
 %   libraries and databases to be used. Describe the state of any
 %   existing codebase that is to be built on.
 
-The source code for the implementation of Kipf and Welling's\cite{kipf2017semi} GCNs and Parisot et al.'s \cite{parisot2018disease} first classification task is publicly available online.\footnote{\url{https://github.com/tkipf/gcn}}\footnote{\url{https://github.com/parisots/population-gcn}}
+The source code for the implementation of Kipf and Welling's \cite{kipf2017semi} GCNs and Parisot et al.'s \cite{parisot2018disease} first classification task is publicly available online.\footnote{\url{https://github.com/tkipf/gcn}}\footnote{\url{https://github.com/parisots/population-gcn}}
 
 I will be using PyTorch for this project because of its support for machine learning on structured graph data. In particular, PyTorch Geometric (PyG)\footnote{\url{https://github.com/rusty1s/pytorch_geometric}}—a geometric deep learning extension library—will make the implementation, iteration and extensions to the model more flexible in addition to performance improvements and simplified APIs.
+% making the final library more accessible and extensible, contributing to the open-source community
 
 I have experience with the basics of TensorFlow\footnote{Five-course Deep Learning specialisation by deeplearning.ai on Coursera}\footnote{Google's Machine Learning Crash Course and follow-up courses.} and no experience with PyTorch or graph neural networks. I have attended or will study (possibly in advance) the CST courses related to the subject of this project (such as IA Machine Learning and Real-World Data, IB Artificial Intelligence, II Bioinformatics, II Machine Learning and Bayesian Inference).
 
 \section*{Resource declaration}
 
-For the most part of this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
+For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
 
 \section*{Work to be done}
 \label{section:work}
@@ -132,7 +126,7 @@ Another criterion is that by the end of the project the evaluation framework sho
 % Potential further envisaged evaluation metrics or extensions.
 \begin{itemize}
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
-  \item Implement a \textit{custom similarity metric}. Currently the metrics used are defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more features (such as genetic sequencing—SNPs in APOE gene, TOMM40 gene, whole genome sequencing, more types of MRI or PET images in ADNI) could possibly result in a better performance of the classifier.
+  \item Implement a \textit{custom similarity metric}. The metrics used in the work by Parisot et al. \cite{parisot2018disease} were defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more combinations of features could possibly result in a better performance of the classifier.
 \end{itemize}
 
 
