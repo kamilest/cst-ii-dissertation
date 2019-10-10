@@ -15,7 +15,7 @@
 \Large
 Computer Science Tripos -- Part II -- Project Proposal\\[4mm]
 \LARGE
-A graph convolutional network for [...] disease classification\\[4mm]
+A graph convolutional network for age prediction \\[4mm]
 
 \large
 Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
@@ -24,9 +24,9 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 \end{center}
 
 \vspace{5mm}
-\textbf{Project Originator:} Tiago Azevedo
+\textbf{Project Originator:} Mr Tiago Azevedo
 
-\textbf{Project Supervisors:} Tiago Azevedo, Prof Pietro Liò
+\textbf{Project Supervisors:} Mr Tiago Azevedo, Prof Pietro Liò
 
 \textbf{Directors of Studies:} Dr Timothy~M.~Jones, Dr Graham~Titmus
 
@@ -34,39 +34,28 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 
 % Main document
 
-\section*{Introduction}
+\section*{Introduction and description of the work}
 % The problem to be addressed.
 
-\subsection*{Background}
-
-\textit{Description of the subject of the graph convolutional network, e.g. Alzheimer's, Autism Spectrum disease,...}
-
-
 % [Tiago] Why NNs and not something else? You probably want one sentence of motivation saying they have been very successful in other fields, and then one sentence that as a consequence they might help physicians.
-
 Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments.
 
 \textit{Give more information on graph neural networks + spectral convolutions}
 
-\textit{Application of the GCN to patient population context.} One way of modelling the population with some patients having [...] is a graph, with nodes 
-% [Tiago] diagnosis is the label not the feature
-representing individuals and their features (including the diagnosis), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
+One way of modelling the population is a graph, with nodes representing individuals (their features and the label), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging).
 
-One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (node feature vectors) and the trends in the population or pairwise similarities between different patients 
+
 % [Tiago] maybe "inferring information about the patient's diagnosis", as the diagnosis itself is not 100% inferred from the neighbours
-(graph edges), inferring the patient's diagnosis from their neighbourhood. 
+One reason why such graph representation is considered to be useful is that it makes use of both the individual patient data (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about the patient's label from their neighbourhood. 
 
-% This project will explore such graph convolutional networks (GCNs) as well as alternative geometric deep learning approaches to classify the two forms of Mild Cognitive Impairment (MCI): \textit{stable} and \textit{progressive} (progressing to AD).
 
-\textit{Description of the dataset—but not sure which section it should appear in, right now it's in Introduction, Starting point and Resources.}
-
-\subsection*{Project Description}
+\subsection*{Project description}
 \textbf{Data, Models, Evaluation}
 
 \begin{itemize}
   \item Applying GCN to patient populations
   % [Tiago] in order to be easier to read (more fluid) you probably want each word in the beginning of the list to follow the same structure (ie. you are using present continuous in all bullet points except here)
-  \item Classifying the diagnosis (e.g. MCI to AD progression—stable vs progressive MCI—using ADNI dataset, or ASD diagnosis using the ABIDE dataset)
+  \item Predicting the subject's age from their brain imaging and other data.
   \item Using PyTorch rather than TensorFlow to make use of the broader range of APIs supporting graph data in PyG—\textit{making the final library more accessible and extensible, contributing to the open-source community} % [Tiago]
   \item \textit{Training and test data}
 \end{itemize}
@@ -79,13 +68,8 @@ One reason why such graph representation is considered to be useful is that it m
 
 This project will be based on a state-of-the-art graph convolutional network (GCN) as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf \& Welling \cite{kipf2017semi}) was used for two classification tasks: 1) whether a patient is  healthy or suffering from Autism Spectrum Disorder) and 2) whether a patient having Mild Cognitive Impairment has a stable form or the one progressing to Alzheimer's disease. The GCN has achieved the accuracies of 70.4\% and 80.0\% for the two tasks respectively. 
 
-The source code of this paper (written in TensorFlow) is publicly available at 
-% [Tiago] probably fine to remove this link for a project proposal
-% I think it still wouldn't hurt to keep it in a footnote
-\url{http://github.com/parisots/population-gcn}. It is fully implemented for the first classification task but not the second. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
+The source code of this paper (in TensorFlow) for the first classification task is publicly available.\footnote{\url{http://github.com/parisots/population-gcn}}. This will be used as a basis for replication of the results on PyTorch and extending the model additional improvements. PyTorch has been chosen for its libraries specialised for machine learning on structured graph data—particularly the \texttt{torch\_geometric} (PyG) package—which will make iteration and extensions to the model more flexible as well as improve its performance and simplify the APIs.
 
-This project will use the ADNI dataset (same as in \cite{parisot2017spectral,parisot2018disease}). The database is publicly available at \url{http://adni.loni.usc.edu}. % [Tiago] maybe remove link?
-[to change depending on the actual dataset chosen]
 
 \textbf{Relevant Computer Science Tripos courses:}
 \begin{itemize}
@@ -96,7 +80,6 @@ This project will use the ADNI dataset (same as in \cite{parisot2017spectral,par
   \item Bioinformatics (II 75\%)
   \item Data Science: Principles and Practice (II 75\%)
   \item Machine Learning and Bayesian Inference (II 75\%)
-  \item \textit{any software engineering courses that told me that I should do the tests}
 \end{itemize}
 
 \textbf{Relevant previous knowledge about the topic:}
@@ -105,20 +88,9 @@ This project will use the ADNI dataset (same as in \cite{parisot2017spectral,par
   \item Google's Machine Learning Crash Course along with follow-up courses on data preparation, problem framing, testing and debugging (basics of TensorFlow and Python APIs).
 \end{itemize}
 
-\section*{Resources required}
+\section*{Resource declaration}
 
-For the most part of this project I will be using my personal MacBook Pro (2019, quad-core 1.4 GHz Intel Core i5 processor, 8 GB LPDDR3 RAM) running macOS Catalina. Training the model will most likely require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò).
-
-The following measures will be taken to store the work and reduce the likelihood of any loss of data: 
-\begin{itemize}
-  \item Saving the source code and \LaTeX\ source of the project on my machine, private GitHub repositories, and Google Drive (possibly MCS).
-  \item Regularly backing up the contents of my laptop on an external HDD.
-\end{itemize}
-
-\subsection*{Dataset}
-\textit{Change to another dataset if appropriate.}
-
-The data required for training (ADNI database) is available on \url{http://adni.loni.usc.edu}, for which I requested and was granted access.
+For the most part of this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, the source code and \LaTeX\ source of the project will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
 
 \section*{Work to be done}
 \label{section:work}
@@ -178,7 +150,7 @@ Another criterion is that by the end of the project the evaluation framework sho
 \end{itemize}
 
 
-\section*{Timetable}
+\section*{Timetable and milestones}
 \label{section:timetable}
 
 % A work plan of perhaps ten or so two-week work-packages,
@@ -189,52 +161,64 @@ Planned starting date is 01/10/2019.
 
 % [Tiago] you can specify which parts of the work you intend to implement in each 2-week time frame. This will help you having a better idea of how you are keeping up/behind.
 
-% 10/10/2019—16/10/2019
-\subsection*{Michaelmas weeks 0-1}
+%  (10/10/2019 – 16/10/2019)
+\textbf{Michaelmas week 1}
+
 \textit{Preparation.}
+
 
 \textbf{Milestones.} Submit Phase 1 report by 14/10/2019. Submit draft proposal by 18/10/2019.
 
-% (Michaelmas weeks 2--4), 17/10/2019—06/11/2019
-\subsection*{Michaelmas weeks 2-4}
+% (17/10/2019 – 06/11/2019)
+\textbf{Michaelmas weeks 2–4}
+
 \textit{Preparation.}
 
 \textbf{Milestones.} Submit final project proposal by 25/10/2019.
 
-% (Michaelmas weeks 5--6), 07/11/2019—20/11/2019
-\subsection*{Michaelmas weeks 5-6}
+% (07/11/2019 – 20/11/2019)
+\textbf{Michaelmas weeks 5–6}
+
 \textit{Core work.}
 
-% (Michaelmas weeks 7--8), 21/11/2019—04/12/2019
-\subsection*{Michaelmas weeks 7-8}
+% (21/11/2019 – 04/12/2019)
+\textbf{Michaelmas weeks 7–8}
+
 \textit{Core work.}
 
-\subsection*{Michaelmas vacation}
+\textbf{Michaelmas vacation}
+
 \textit{Core work. Some write-up. Progress report and presentation.}
 
 \textbf{Milestones.} Complete the implementation of the main part of the project.
 
-% (Lent weeks 0--2), 16/01/2020—29/01/2020
-\subsection*{Lent weeks 0-2}
+% (16/01/2020 – 29/01/2020)
+\textbf{Lent weeks 0–2}
+
 \textit{Extensions.}
  
 \textbf{Milestones.} Submit progress report by 31/01/2020.
 
-% (Lent weeks 3--5), 30/01/2020—19/02/2020
-\subsection*{Lent weeks 3-5} 
+
+% (30/01/2020 – 19/02/2020)
+\textbf{Lent weeks 3–5} 
+
 \textit{Extensions, start evaluation.}
 
-% (Lent weeks 6--8), 20/02/2020—11/03/2020
-\subsection*{Lent weeks 6-8}
+% (20/02/2020 – 11/03/2020)
+\textbf{Lent weeks 6–8}
+
 \textit{Extensions, evaluation, write-up.}
 
-\subsection*{Easter vacation}
+\textbf{Easter vacation}
+
 \textit{Write-up.}
 
-\textbf{Milestones.} Send out the complete draft for review by 27/03/2020. Early dissertation submission by 20/04/2020.
+\textbf{Milestones.} Send out the complete draft for review by 27/03/2020. Submit dissertation early by 20/04/2020.
 
-% 24/04/2020—06/05/2020
-\subsection*{Easter weeks 0-2}
+% (24/04/2020 – 06/05/2020)
+\textbf{Easter weeks 0–2}
+
  Time reserved for any unexpected issues.
 
 % \medskip 
