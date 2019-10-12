@@ -1,5 +1,4 @@
-Subject: Phase 1 - Stankeviciute: Prediction of Age using Graph Neural networks
-(or Semi-Supervised Graph Convolutional Networks, or a combination/comparison)
+Subject: Phase 1 - Stankeviciute: 
 
 Phase 1 Project Selection Status Report
 
@@ -14,23 +13,19 @@ Director of Studies: Dr G. Titmus, Dr T. M. Jones
 Please complete 1, 2 and 3 below.
 
 1. Please write 100 words on your current project ideas.
-The project is inspired by the ideas from two papers by Parisot
-et al. involving classification of healthy controls and Alzheimer's/
+This project has been inspired by the ideas from two papers by Parisot
+et al. involving semi-supervised classification of Alzheimer's and 
 Autism Spectrum Disorder patients using Graph Convolutional
-Networks in a semi-supervised manner. 
+Networks (GCNs). 
 
-This project will either reproduce and improve the results
-presented in the paper for one of the datasets (ABIDE or ADNI), or apply
-this idea to a different classification/regression problem on a different 
-dataset (e.g. predicting age or another label from UK Biobank's brain 
-imaging and other data).
+In this project my aim will be to apply the same idea to the UK Biobank dataset where I will use structural and functional brain imaging data for an age regression task. 
 
-The project could also compare this approach to other graph neural network
-architectures such as Graph Attention Networks, and evaluate their robustness
-by observing the changes in performance as more training data is removed.
+I will also compare the performance of the GCN to another graph neural network
+architecture such as the Graph Attention Network, and evaluate their robustness
+by observing changes in performance as more training data is removed.
 
 2. Please list names of potential project supervisors.
-Mr Tiago Azevedo, Prof Pietro Liò
+Tiago Azevedo, Alex Campbell, Prof Pietro Liò
 
 3. Is there any chance that your project will involve any
 computing resources other than the Computing Service's MCS and
@@ -42,5 +37,6 @@ extra disc space on the MCS.
 If so indicate below what, and what it is needed for.
 
 I will need my own machine as well as the GPUs provided by the 
-Computational Biology Group to increase the training speed of the 
-neural networks.
+Computational Biology Group to increase the neural network training speed. 
+
+I will be given access to the UK Biobank data by Dr Richard Bethlehem from Department of Psychiatry.
