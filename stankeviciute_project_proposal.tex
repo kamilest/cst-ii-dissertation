@@ -82,16 +82,22 @@ For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Qua
 % Describe the technical work.
 List of explicit tasks and \textbf{deliverables}.
 \begin{itemize}
-  \item \textit{Deliverable}: Data is cleaned and ready for analysis. [what if the data is already pre-processed?] % [Tiago] "data cleaned and is ready for analysis" 
-  \item \textit{Deliverable}: Definition of the similarity metric and threshold to be used in connecting the graph. \textit{especially with the custom dataset}
-  \item \textit{Deliverable}: Datapoints connected into the graph based on the pairwise similarity metric.
-  \item \textit{Deliverable}: Implementation of Kipf's GCN \cite{kipf2017semi} (\texttt{GCNConv} in PyG) that can be trained on the previously constructed graph.
+  \item \textit{Deliverable}: The data is preprocessed into features and is ready for analysis. [What if the data is already pre-processed?] % [Tiago] "data cleaned and is ready for analysis" 
+  \item \textit{Deliverable}: Definition of the similarity metric and threshold to be used in connecting the graph. The graph is connected to be processed by the graph neural Networks. \textit{especially with the custom dataset}
+  \item \textit{Deliverable}: Implementation of Kipf's GCN \cite{kipf2017semi} (\texttt{GCNConv} in PyG) for age regression task.
   % [Tiago] GAT originally doesn't allow for weighted edges. You probably want to say GAT because of interesting results in previous literature. Thus, you can probably divide this point: (1) implementation of another graph NN layer, (2) Include weights (in theory you can even edit the message passing mechanism in GCN to multiply by the weights, just like you are suggesting for GAT) 
-  \item \textit{Deliverable}: An alternative graph neural network for performance comparison.
+  \item \textit{Deliverable}: Implementation of the Graph Attention Network for comparing its performance to the Graph Convolutional Network.
   % [Tiago] What exactly would you be testing points? Eg. what a unit test would consist of?
-  \item \textit{Testing framework.} is this needed?
+  \item \textit{are unit tests needed? especially for correct preprocessing}
   % [Tiago] I just recalled that one thing we discussed could be how it handles missing data (eg. a certain percentage without some data), which could create an interesting view on robustness and semi-supervised learning. Maybe this could go to extension (or "personal" extension in case you have time and you can say you had one more extension than initially planned)
-  \item \textit{Deliverable}: An evaluation framework. \textit{Deliverable}: Comparison of the alternative graph neural network models. \textit{Deliverable}: A robustness measure for the GCN due to missing data. Comparison of robustness. \medskip \\  One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers—accuracy, AUC—for direct comparison with the baseline methods.
+\end{itemize}
+
+\textit{Evaluation framework}
+
+One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers—accuracy, AUC—for direct comparison with the baseline methods.
+
+\begin{itemize}
+  \item  \textit{Deliverable}: Comparison of the alternative graph neural network models using the accuracy, ROC-AUC curves. \textit{Deliverable}: A robustness measure for the GCN due to missing data. Comparison of robustness.
 \end{itemize}
 
 \section*{Success criteria}
@@ -106,8 +112,10 @@ Measured the \textit{robustness to missing or incorrect data}, revealing how imp
 % Potential further envisaged evaluation metrics or extensions.
 \begin{itemize}
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
-  \item Implement weighted Graph Convolutional Network/Graph Attention Network.
+  \item In the main implementation the graph neural network must take in the extracted features from the brain imaging data and is unable to work on common data structures for raw neuroimaging files such as BIDS.\footnote{\url{https://bids.neuroimaging.io}} Time permitting, an extension could be to create an extra package for neuroimaging data preprocessing that can be appended to the beginning of the model pipeline, which would make the execution more efficient, robust and generalisable.  
+  \item Implement weighted edges in the Graph Convolutional Network and Graph Attention Network, as the implementation will have binary edges with weights being either 0 or 1.
   \item Implement a \textit{custom similarity metric}. The metrics used in the work by Parisot et al. \cite{parisot2018disease} were defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more combinations of features could possibly result in a better performance of the classifier.
+
 \end{itemize}
 
 
