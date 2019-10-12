@@ -17,7 +17,7 @@
 \Large
 Computer Science Tripos -- Part II -- Project Proposal\\[4mm]
 \LARGE
-Graph neural networks for semi-supervised age prediction from brain imaging data \\[4mm]
+Semi-supervised graph neural networks for age prediction from brain imaging data \\[4mm]
 
 \large
 Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
@@ -83,16 +83,16 @@ For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Qua
 List of explicit tasks and \textbf{deliverables}.
 \begin{itemize}
   \item \textit{Deliverable}: The data is preprocessed into features and is ready for analysis. [What if the data is already pre-processed?] % [Tiago] "data cleaned and is ready for analysis" 
-  \item \textit{Deliverable}: Definition of the similarity metric and threshold to be used in connecting the graph. The graph is connected to be processed by the graph neural Networks. \textit{especially with the custom dataset}
+  \item \textit{Deliverable}: Definition of the similarity metric and threshold to be used in connecting the graph. The graph is connected to be processed by the graph neural Networks.
   \item \textit{Deliverable}: Implementation of Kipf's GCN \cite{kipf2017semi} (\texttt{GCNConv} in PyG) for age regression task.
   % [Tiago] GAT originally doesn't allow for weighted edges. You probably want to say GAT because of interesting results in previous literature. Thus, you can probably divide this point: (1) implementation of another graph NN layer, (2) Include weights (in theory you can even edit the message passing mechanism in GCN to multiply by the weights, just like you are suggesting for GAT) 
   \item \textit{Deliverable}: Implementation of the Graph Attention Network for comparing its performance to the Graph Convolutional Network.
   % [Tiago] What exactly would you be testing points? Eg. what a unit test would consist of?
-  \item \textit{are unit tests needed? especially for correct preprocessing}
+  \item \textit{Unit tests for preprocessing correctness?}
   % [Tiago] I just recalled that one thing we discussed could be how it handles missing data (eg. a certain percentage without some data), which could create an interesting view on robustness and semi-supervised learning. Maybe this could go to extension (or "personal" extension in case you have time and you can say you had one more extension than initially planned)
 \end{itemize}
 
-\textit{Evaluation framework}
+\textbf{Evaluation framework}
 
 One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers—accuracy, AUC—for direct comparison with the baseline methods.
 
@@ -103,7 +103,12 @@ One interesting evaluation criterion that is not listed in the Parisot papers wh
 \section*{Success criteria}
 % Describe what you expect to be able to demonstrate at the
 % end of the project and how you are going to evaluate your achievement.
-Implemented deliverables.
+\begin{itemize}
+  \item Represent the UK Biobank data as a population graph with nodes representing the individuals and edges representing associations between them based on pairwise similarity.
+  \item Implement the Graph Convolutional Network for age regression on the population graph.
+  \item Implement the Graph Attention Network for the same task.
+  \item Implement the framework for measuring robustness, and compare the two graph neural networks.
+\end{itemize}
 
 \section*{Evaluation of the project}
 Measured the \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
