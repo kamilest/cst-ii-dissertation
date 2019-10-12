@@ -42,19 +42,19 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 \textit{Deep learning/graph neural networks intro}
 
 % [Tiago] Why NNs and not something else? You probably want one sentence of motivation saying they have been very successful in other fields, and then one sentence that as a consequence they might help physicians.
-\textit{...Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments...}
+% \textit{...Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments...}
 
 One way of modelling the population is a graph, with nodes representing individuals (their features and the label), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging). \textit{Graph neural network approaches are popular and have proved successful in a broad range of tasks...}
 
 One reason why such graph representation is considered to be useful in the patient population context is that it makes use of both the individual patient data (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about the patient's label from their neighbourhood.
 
+\textit{Recently, the differences in brain and chronological ageing have been linked to psychiatric diseases,\cite{kaufmann2019} which may be important in understanding the mechanisms of those disorders and in turn helping physicians to find more effective treatments...}
 
 \section*{Project description}
 This project was inspired by a state-of-the-art application of a type of graph neural network called Graph Convolutional Network (GCN), as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used in a semi-supervised manner for two tasks: 1) prediction of Autism Spectrum Disorder from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment that develops into Alzheimer's disease from the ADNI dataset.
 
-The aim of this project will be to adapt this approach to a regression task on the UK Biobank data, predicting the subject's age based on brain imaging, genetic, biomarker and other data, and comparing it to other successful geometric deep learning architectures, such as Graph Attention Networks. \textit{Brain age prediction has recently been published in the literature in relation to psychiatric diseases...}
+The aim of this project will be to adapt this approach to a regression task on the UK Biobank data, predicting the subject's age based on brain imaging [\textit{genetic, biomarker and other}] data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network. The networks will be evaluated – in addition to the usual metrics like accuracy and AUC – on their \textit{robustness} to missing or noisy data.
 
-\textit{The main deliverable will be... a library? An open-source API?}
 
 \section*{Starting point}
 % Describe existing state of the art, previous work in this area,
@@ -63,10 +63,10 @@ The aim of this project will be to adapt this approach to a regression task on t
 
 The source code for the implementation of Kipf and Welling's \cite{kipf2017semi} GCNs and Parisot et al.'s \cite{parisot2018disease} first classification task is publicly available online.\footnote{\url{https://github.com/tkipf/gcn}}\footnote{\url{https://github.com/parisots/population-gcn}}
 
-I will be using PyTorch for this project because of its support for machine learning on structured graph data. In particular, PyTorch Geometric (PyG)\footnote{\url{https://github.com/rusty1s/pytorch_geometric}}—a geometric deep learning extension library—will make the implementation, iteration and extensions to the model more flexible in addition to performance improvements and simplified APIs.
+I will be using PyTorch for this project because of its support for machine learning on structured graph data. In particular, PyTorch Geometric (PyG)\footnote{\url{https://github.com/rusty1s/pytorch_geometric}} – a geometric deep learning extension library – will make the implementation, iteration and extensions to the model more flexible in addition to performance improvements and simplified APIs.
 % making the final library more accessible and extensible, contributing to the open-source community
 
-I have experience with the basics of TensorFlow\footnote{Five-course Deep Learning specialisation by deeplearning.ai on Coursera}\footnote{Google's Machine Learning Crash Course and follow-up courses.} and no experience with PyTorch or graph neural networks. I have attended or will study (possibly in advance) the CST courses related to the subject of this project (such as IA Machine Learning and Real-World Data, IB Artificial Intelligence, II Bioinformatics, II Machine Learning and Bayesian Inference).
+I have experience with the basics of TensorFlow\footnote{Five-course Deep Learning specialisation by deeplearning.ai on Coursera}\footnote{Google's Machine Learning Crash Course and follow-up courses.} and no experience with PyTorch or graph neural networks. I have attended or will study (possibly in advance) the CST courses related to the subject of this project, such as IA Machine Learning and Real-World Data, IB Artificial Intelligence, II Bioinformatics, II Machine Learning and Bayesian Inference.
 
 I will be using the data from the UK Biobank, kindly preprocessed and provided by Dr~Richard Bethlehem of the Department of Psychiatry.
 
@@ -94,10 +94,10 @@ List of explicit tasks and \textbf{deliverables}.
 
 \textbf{Evaluation framework}
 
-One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data}—how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers—accuracy, AUC—for direct comparison with the baseline methods.
+One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data} – how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers – accuracy, AUC—for direct comparison with the baseline methods.
 
 \begin{itemize}
-  \item  \textit{Deliverable}: Comparison of the alternative graph neural network models using the accuracy, ROC-AUC curves. \textit{Deliverable}: A robustness measure for the GCN due to missing data. Comparison of robustness.
+  \item  \textit{Deliverable}: Comparison of the alternative graph neural network models using the accuracy and AUC. \textit{Deliverable}: A robustness measure for the GCN due to missing data. Comparison of robustness.
 \end{itemize}
 
 \section*{Success criteria}
@@ -111,7 +111,7 @@ One interesting evaluation criterion that is not listed in the Parisot papers wh
 \end{itemize}
 
 \section*{Evaluation of the project}
-Measured the \textit{robustness to missing or incorrect data}, revealing how important is the neighbourhood information in accurately predicting the diagnosis compared to the node features only.
+The performance of the graph neural networks will be measured – in addition to accuracy and AUC used in Parisot et al.'s work \cite{parisot2018disease} – through \textit{robustness to missing or noisy data}. Robustness will reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
