@@ -94,10 +94,9 @@ List of explicit tasks and \textbf{deliverables}.
 
 \textbf{Evaluation framework}
 
-One interesting evaluation criterion that is not listed in the Parisot papers which should be implemented in any case (accuracy, AUC), is the measure of \textit{robustness}, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}. It is a good way to see how much performance is dependent on the \textit{connections} rather than the \textit{individual patient data} – how much can we infer from the similar neighbours alone without knowing anything about the patient in question. \textit{Deliverable}: evaluation based on the metrics as described in Parisot papers – accuracy, AUC—for direct comparison with the baseline methods.
-
 \begin{itemize}
-  \item  \textit{Deliverable}: Comparison of the alternative graph neural network models using the accuracy and AUC. \textit{Deliverable}: A robustness measure for the GCN due to missing data. Comparison of robustness.
+  \item  \textit{Deliverable}: Comparison of the alternative graph neural network models using the accuracy and AUC (measures used in the Parisot et al.'s work \cite{parisot2018disease}).
+  \item \textit{Deliverable}: A robustness measure for the GCN due to missing data, and comparison of robustness of the two models.
 \end{itemize}
 
 \section*{Success criteria}
@@ -111,7 +110,7 @@ One interesting evaluation criterion that is not listed in the Parisot papers wh
 \end{itemize}
 
 \section*{Evaluation of the project}
-The performance of the graph neural networks will be measured – in addition to accuracy and AUC used in Parisot et al.'s work \cite{parisot2018disease} – through \textit{robustness to missing or noisy data}. Robustness will reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
+The performance of the graph neural networks will be measured – in addition to accuracy and AUC used in Parisot et al.'s work \cite{parisot2018disease} – through \textit{robustness to missing or noisy data}. Robustness, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}, would reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
