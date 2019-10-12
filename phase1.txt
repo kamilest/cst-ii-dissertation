@@ -1,4 +1,4 @@
-Subject: Phase 1 - Stankeviciute: 
+Subject: Phase 1 - Stankeviciute: Graph Convolutional Network for age prediction using brain imaging data.
 
 Phase 1 Project Selection Status Report
 
