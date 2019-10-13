@@ -1,4 +1,4 @@
-Subject: Phase 1 - Stankeviciute: Semi-supervised graph neural networks for age prediction from brain imaging data
+Subject: Phase 1 - Stankeviciute: Graph neural networks for age prediction from neuroimaging data
 
 Phase 1 Project Selection Status Report
 
