@@ -44,11 +44,11 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 % [Tiago] Why NNs and not something else? You probably want one sentence of motivation saying they have been very successful in other fields, and then one sentence that as a consequence they might help physicians.
 % \textit{...Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments...}
 
-One way of modelling the population is a graph, with nodes representing individuals (their features and the label), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging). \textit{Graph neural network approaches are popular and have proved successful in a broad range of tasks...}
+One way of modelling a population is a graph, with nodes representing individuals (their features and labels), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging). \textit{Graph neural network approaches are popular and have proved successful in a broad range of tasks...}
 
-One reason why such graph representation is considered to be useful in the patient population context is that it makes use of both the individual patient data (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about the patient's label from their neighbourhood.
+One reason why such graph representation is considered to be useful in the  population context is that it makes use of both the features of individuals (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about  label from their neighbourhood.
 
-\textit{Recently, the differences in brain and chronological ageing have been linked to psychiatric diseases,\cite{kaufmann2019} which may be important in understanding the mechanisms of those disorders and in turn helping physicians to find more effective treatments...}
+\textit{Recently, differences in brain and chronological ageing have been linked to psychiatric diseases\cite{kaufmann2019}, which may be important in understanding the mechanisms of those disorders and in turn helping physicians to find more effective treatments...}
 
 \section*{Project description}
 This project was inspired by a state-of-the-art application of a type of graph neural network called Graph Convolutional Network (GCN), as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used in a semi-supervised manner for two tasks: 1) prediction of Autism Spectrum Disorder from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment that develops into Alzheimer's disease from the ADNI dataset.
@@ -82,7 +82,7 @@ For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Qua
 % Describe the technical work.
 List of explicit tasks and \textbf{deliverables}.
 \begin{itemize}
-  \item \textit{Deliverable}: The data is preprocessed into features and is ready for analysis. [What if the data is already pre-processed?] % [Tiago] "data cleaned and is ready for analysis" 
+  \item \textit{Deliverable}: The data is preprocessed into features and is ready for analysis. % [Tiago] "data cleaned and is ready for analysis" 
   \item \textit{Deliverable}: Definition of the similarity metric and threshold to be used in connecting the graph. The graph is connected to be processed by the graph neural Networks.
   \item \textit{Deliverable}: Implementation of Kipf's GCN \cite{kipf2017semi} (\texttt{GCNConv} in PyG) for age regression task.
   % [Tiago] GAT originally doesn't allow for weighted edges. You probably want to say GAT because of interesting results in previous literature. Thus, you can probably divide this point: (1) implementation of another graph NN layer, (2) Include weights (in theory you can even edit the message passing mechanism in GCN to multiply by the weights, just like you are suggesting for GAT) 
@@ -116,7 +116,7 @@ The performance of the graph neural networks will be measured – in addition to
 % Potential further envisaged evaluation metrics or extensions.
 \begin{itemize}
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in \cite{parisot2018disease} as a possible improvement.
-  \item In the main implementation the graph neural network must take in the extracted features from the brain imaging data and is unable to work on common data structures for raw neuroimaging files such as BIDS.\footnote{\url{https://bids.neuroimaging.io}} Time permitting, an extension could be to create an extra package for neuroimaging data preprocessing that can be appended to the beginning of the model pipeline, which would make the execution more efficient, robust and generalisable.  
+  \item The main implementation of the graph neural network relies on manually handcrafted features from preprocessed brain imaging data. Time permitting, an extension could be to create a package that can be used after any standard neuroimaging preprocessing pipeline (with results in BIDS\footnote{\url{https://bids.neuroimaging.io}} format) to extract these features, and possibly improve upon as well as create new ones. This would make execution of the model more efficient, robust and generalisable.
   \item Implement weighted edges in the Graph Convolutional Network and Graph Attention Network, as the implementation will have binary edges with weights being either 0 or 1.
   \item Implement a \textit{custom similarity metric}. The metrics used in the work by Parisot et al. \cite{parisot2018disease} were defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more combinations of features could possibly result in a better performance of the classifier.
 
