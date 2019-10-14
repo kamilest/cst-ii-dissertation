@@ -4,7 +4,7 @@ Phase 1 Project Selection Status Report
 
 Name: Kamile Stankeviciute
 
-College: Gonville and Caius College
+College: Gonville & Caius College
 
 User Identifier: ks830
 
@@ -37,6 +37,6 @@ extra disc space on the MCS.
 If so indicate below what, and what it is needed for.
 
 I will need my own machine as well as the GPUs provided by the 
-Computational Biology Group to increase the neural network training speed. 
+Computational Biology Group to increase the training speed of the neural networks. 
 
-I will be given access to the UK Biobank data by Dr Richard Bethlehem from Department of Psychiatry.
+I will be given access to the UK Biobank data by Dr Richard Bethlehem from the Department of Psychiatry.
