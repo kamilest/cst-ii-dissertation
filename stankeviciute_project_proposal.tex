@@ -55,7 +55,7 @@ This project was inspired by a state-of-the-art application of a type of graph n
 
 
 % [Tiago] it's a regression task, so you'll not have accuracy and AUC. Check r^2, pearson correlation (the typical ones in papers), and the ones suggested by Alex (I forgot exactly what he said)
-The aim of this project will be to adapt this approach to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network.\cite{velickovic2018graph} The networks, in addition to [....], will be evaluated on their \textit{robustness} to missing or noisy data.
+The aim of this project will be to adapt this approach to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network.\cite{velickovic2018graph} The networks, in addition to the typical metrics such as $r^2$, will be evaluated on their \textit{robustness} to missing or noisy data.
 
 
 \section*{Starting point}
@@ -68,7 +68,7 @@ The source code for the implementation of Kipf and Welling's \cite{kipf2017semi}
 I will be using PyTorch for this project because of its support for machine learning on structured graph data. In particular, PyTorch Geometric (PyG)\footnote{\url{https://github.com/rusty1s/pytorch_geometric}} – a geometric deep learning extension library – will make the implementation, iteration and extensions to the model more flexible in addition to performance improvements and simplified APIs.
 % making the final library more accessible and extensible, contributing to the open-source community
 
-I have experience with the basics of TensorFlow\footnote{Five-course Deep Learning specialisation by deeplearning.ai on Coursera}\footnote{Google's Machine Learning Crash Course and follow-up courses.} and no experience with PyTorch or graph neural networks. I have attended or will study (possibly in advance) the CST courses related to the subject of this project, such as IA Machine Learning and Real-World Data, IB Artificial Intelligence, II Bioinformatics, II Machine Learning and Bayesian Inference.
+I have experience with the basics of TensorFlow\footnote{Five-course Deep Learning specialisation by deeplearning.ai on Coursera}\footnote{Google's Machine Learning Crash Course and follow-up courses.} and no experience with PyTorch or graph neural networks. I have attended or will study (possibly in advance) the CST courses related to the subject of this project, such as IA Machine Learning and Real-World Data, IB Artificial Intelligence, and II Bioinformatics, II Machine Learning and Bayesian Inference.
 
 I will be using the data from the UK Biobank, kindly preprocessed and provided by Dr~Richard Bethlehem of the Department of Psychiatry.
 
@@ -82,23 +82,25 @@ For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Qua
 % [Tiago] bullet points should start with the same sentence structure
 
 % Describe the technical work.
-List of explicit tasks and \textbf{deliverables}.
-\begin{itemize}
-  \item \textit{Deliverable}: The data is preprocessed into features and is ready for analysis. % [Tiago] "data cleaned and is ready for analysis" 
-  \item \textit{Deliverable}: Definition of the similarity metric and threshold to be used in connecting the graph. The graph is connected to be processed by the graph neural networks.
-  \item \textit{Deliverable}: Implementation of Kipf's GCN \cite{kipf2017semi} for the age regression task.
+The following are lists of explicit deliverables to be implemented.
+
+\textbf{Graph neural network framework}
+\begin{enumerate}[label=G\arabic*.]
+  \item The data is preprocessed into features and is ready for analysis. % [Tiago] "data cleaned and is ready for analysis" 
+  \item Definition of the similarity metric to be used in connecting the graph. The graph is connected to be processed by the graph neural networks.
+  \item Implementation of Kipf's GCN \cite{kipf2017semi} for the age regression task.
   % [Tiago] GAT originally doesn't allow for weighted edges. You probably want to say GAT because of interesting results in previous literature. Thus, you can probably divide this point: (1) implementation of another graph NN layer, (2) Include weights (in theory you can even edit the message passing mechanism in GCN to multiply by the weights, just like you are suggesting for GAT) 
-  \item \textit{Deliverable}: Implementation of the Graph Attention Network for comparing its performance to the Graph Convolutional Network.
+  \item Implementation of the Graph Attention Network for comparing its performance to the Graph Convolutional Network.
   % [Tiago] What exactly would you be testing points? Eg. what a unit test would consist of?
   % [Tiago] I just recalled that one thing we discussed could be how it handles missing data (eg. a certain percentage without some data), which could create an interesting view on robustness and semi-supervised learning. Maybe this could go to extension (or "personal" extension in case you have time and you can say you had one more extension than initially planned)
-\end{itemize}
+\end{enumerate}
 
 \textbf{Evaluation framework}
 
-\begin{itemize}
-  \item  \textit{Deliverable}: Comparison of the alternative graph neural network models using [....] (in contrast to the accuracy and AUC – measures used in the Parisot et al.'s work \cite{parisot2018disease}).
-  \item \textit{Deliverable}: A robustness measure for the GCN due to missing data, and comparison of robustness of the two models.
-\end{itemize}
+\begin{enumerate}[label=E\arabic*.]
+  \item  Comparison of the alternative graph neural network models using $r^2$ metric.
+  \item A robustness measure for the GCN due to missing data, and comparison of robustness of the two models.
+\end{enumerate}
 
 \section*{Success criteria}
 % Describe what you expect to be able to demonstrate at the
@@ -111,7 +113,7 @@ List of explicit tasks and \textbf{deliverables}.
 \end{itemize}
 
 \section*{Evaluation of the project}
-The performance of the graph neural networks will be measured across several metrics. The first metrics, in contrast the classification task in Parisot et al.'s work \cite{parisot2018disease}, will be [...]. An additional metric I will measure the performance of the networks is \textit{robustness to missing or noisy data}. Robustness, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}, would reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
+The performance of the graph neural networks will be measured across several metrics. The main metric to evaluate a regression task, in contrast the classification in Parisot et al. \cite{parisot2018disease}, is the coefficient of determination $R^2$. An additional metric I will use to evaluate the performance of the networks is \textit{robustness to missing or noisy data}. Robustness, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}, would reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
@@ -169,32 +171,41 @@ The performance of the graph neural networks will be measured across several met
 \begin{itemize}
   \item Continue working on and finish the neural network implementations, compute performance metrics.
   \item Work on evaluation of the network: implement robustness measurement framework.
-  \item Start writing the dissertation.
+  \item Measure the robustness of the neural networks.
+  \item Start writing the dissertation and project progress report.
 \end{itemize}
 
 \textbf{Milestones.} Complete the implementation of the main part of the project.
 
 % (16/01/2020 – 29/01/2020)
 \textbf{Lent weeks 0–2}
-
-\textit{Extensions.} Work on progress report and presentation, implement Cayley polynomials.
+\begin{itemize}
+  \item Finish the progress report, prepare for the presentation.
+  \item Implement Cayley polynomials.
+  \item Start on data preprocessing pipeline.
+\end{itemize}
  
 \textbf{Milestones.} Submit progress report by 31/01/2020.
 
-
 % (30/01/2020 – 19/02/2020)
 \textbf{Lent weeks 3–5}
+\begin{itemize}
+  \item Continue implementing the data preprocessing pipeline.
+\end{itemize}
 
-\textit{Extensions, start evaluation.} Work on implementing the data preprocessing/weighted edges.
 
 % (20/02/2020 – 11/03/2020)
 \textbf{Lent weeks 6–8}
-
-\textit{Extensions, evaluation, write-up.} Write the dissertation.
+\begin{itemize}
+  \item Finish implementing the data preprocessing pipeline.
+  \item Continue working on the dissertation write-up.
+\end{itemize}
 
 \textbf{Easter vacation}
-
-\textit{Write-up.} Work on the dissertation draft.
+\begin{itemize}
+  \item Complete the dissertation draft and send it for review.
+  \item Edit the draft based on the feedback received.
+\end{itemize}
 
 \textbf{Milestones.} Send out the complete draft for review by 27/03/2020. Submit dissertation early by 20/04/2020.
 
