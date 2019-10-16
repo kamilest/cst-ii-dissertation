@@ -117,7 +117,7 @@ The performance of the graph neural networks will be measured across several met
 % Potential further envisaged evaluation metrics or extensions.
 \begin{itemize}
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in Parisot et al. \cite{parisot2018disease} as a possible improvement.
-  \item The main implementation of the graph neural network relies on manually handcrafted features from preprocessed brain imaging data. Time permitting, an extension could be to create a package that can be used after any standard neuroimaging preprocessing pipeline (with results in BIDS\footnote{\url{https://bids.neuroimaging.io}} format) to extract these features, and possibly improve upon as well as create new ones. This would make execution of the model more efficient, robust and generalisable.
+  \item The main implementation of the graph neural network relies on manually handcrafted features from preprocessed brain imaging data. Time permitting, an extension could be to create a package that can be used after any standard neuroimaging preprocessing pipeline (e.g. with results in BIDS\footnote{\url{https://bids.neuroimaging.io}} format) to extract these features, and possibly improve upon as well as create new ones. This would make execution of the model more efficient, robust and generalisable.
   \item Implement weighted edges in the Graph Convolutional Network and Graph Attention Network, as the implementation will have binary edges with weights being either 0 or 1.
   % \item Implement a \textit{custom similarity metric}. The metrics used in the work by Parisot et al. \cite{parisot2018disease} were defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more combinations of features could possibly result in a better performance of the classifier.
 
@@ -135,31 +135,42 @@ The performance of the graph neural networks will be measured across several met
 
 %  (01/10/2019 – 16/10/2019)
 \textbf{Michaelmas weeks 0-1}
-
-\textit{Preparation.} Read Graph Convolutional Network papers, get familiar with PyTorch Geometric, work on project proposal [...]
+\begin{itemize}
+  \item Work on project proposal.
+\end{itemize}
 
 \textbf{Milestones.} Submit Phase 1 report by 14/10/2019. Submit draft proposal by 18/10/2019.
 
 % (17/10/2019 – 06/11/2019)
 \textbf{Michaelmas weeks 2–4}
-
-\textit{Preparation.} Get familiar with the features of UK Biobank data, define a similarity metric.
+\begin{itemize}
+  \item Get access to the UK Biobank data and get familiar with its features.
+  \item Define a possible graph similarity metric.
+\end{itemize}
 
 \textbf{Milestones.} Submit final project proposal by 25/10/2019.
 
 % (07/11/2019 – 20/11/2019)
 \textbf{Michaelmas weeks 5–6}
-
-\textit{Core work.} Work on the implementation of the Graph Convolutional Network on PyTorch for the UK Biobank data.
+\begin{itemize}
+  \item Write code for connecting the nodes based on a similarity metric.
+  \item Connect the nodes (with their features) into a graph.
+  \item Start working on the implementation of the Graph Convolutional Network (e.g. define loss and random label removal for semi-supervised training, start implementing the layers).
+\end{itemize}
 
 % (21/11/2019 – 04/12/2019)
 \textbf{Michaelmas weeks 7–8} 
-
-\textit{Core work.} Work on the implementation of the Graph Attention Network for the same task.
+\begin{itemize}
+  \item Work on the implementation of layers for the Graph Convolutional Network. Compute the general performance metrics.
+  \item Start working on Graph Attention Network implementation for the same task.
+\end{itemize}
 
 \textbf{Michaelmas vacation}
-
-\textit{Core work. Some write-up. Progress report and presentation.}  Write the implementation for evaluation framework, measuring robustness and other metrics of the alternative approaches. Start writing the dissertation.
+\begin{itemize}
+  \item Continue working on and finish the neural network implementations, compute performance metrics.
+  \item Work on evaluation of the network: implement robustness measurement framework.
+  \item Start writing the dissertation.
+\end{itemize}
 
 \textbf{Milestones.} Complete the implementation of the main part of the project.
 
