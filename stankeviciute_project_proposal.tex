@@ -46,17 +46,14 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 
 One way of modelling a population is a graph, with nodes representing individuals (their features and labels), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. Additionally, the graph structure is helpful when incorporating multiple modalities of data (e.g. imaging and non-imaging). \textit{Graph neural network approaches are popular and have proved successful in a broad range of tasks...}
 
-One reason why such graph representation is considered to be useful in the  context of a population is that it makes use of both the features of individuals (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about an individual node's label from its neighbourhood.
+The reason why such graph representation is considered to be useful in the  context of a population is that it makes use of both the features of individuals (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about an individual node's label from its neighbourhood.
 
 \textit{Recently, differences in brain and chronological ageing have been linked to psychiatric diseases\cite{kaufmann2019}, which may be important in understanding the mechanisms of those disorders and in turn helping physicians to find more effective treatments...}
 
 \section*{Project description}
 This project was inspired by a state-of-the-art application of a type of graph neural network called Graph Convolutional Network (GCN), as described in papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used in a semi-supervised manner for two tasks: 1) prediction of Autism Spectrum Disorder from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment that develops into Alzheimer's disease from the ADNI dataset.
 
-
-% [Tiago] it's a regression task, so you'll not have accuracy and AUC. Check r^2, pearson correlation (the typical ones in papers), and the ones suggested by Alex (I forgot exactly what he said)
-The aim of this project will be to adapt this approach to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network.\cite{velickovic2018graph} The networks, in addition to the typical metrics such as $r^2$, will be evaluated on their \textit{robustness} to missing or noisy data.
-
+The aim of this project will be to adapt this approach to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network.\cite{velickovic2018graph} The networks, in addition to the typical metrics such as the coefficient of determination $r^2$, will be evaluated on their \textit{robustness} to missing or noisy data (defined below).
 
 \section*{Starting point}
 % Describe existing state of the art, previous work in this area,
@@ -74,7 +71,7 @@ I will be using the data from the UK Biobank, kindly preprocessed and provided b
 
 \section*{Resource declaration}
 
-For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
+For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and the \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
 
 \section*{Work to be done}
 \label{section:work}
@@ -98,32 +95,33 @@ The following are lists of explicit deliverables to be implemented.
 \textbf{Evaluation framework}
 
 \begin{enumerate}[label=E\arabic*.]
-  \item  Comparison of the alternative graph neural network models using $r^2$ metric.
+  \item  Comparison of the alternative graph neural network models using $r^2$.
   \item A robustness measure for the GCN due to missing data, and comparison of robustness of the two models.
 \end{enumerate}
 
 \section*{Success criteria}
 % Describe what you expect to be able to demonstrate at the
 % end of the project and how you are going to evaluate your achievement.
-\begin{itemize}
-  \item Represent the UK Biobank data as a population graph with nodes representing the individuals and edges representing associations between them based on pairwise similarity.
-  \item Implement the Graph Convolutional Network for age regression on the population graph.
-  \item Implement the Graph Attention Network for the same task.
-  \item Implement the framework for measuring robustness, and compare the two graph neural networks.
-\end{itemize}
+The project will be successful if the following items will have been implemented.
+\begin{enumerate}[label=SC\arabic*.]
+  \item Representation of the UK Biobank data as a population graph with nodes representing the individuals and edges representing associations between them based on pairwise similarity.
+  \item The Graph Convolutional Network for age regression on the population graph.
+  \item The Graph Attention Network for the same task.
+  \item The evaluation framework for measuring robustness, and comparison of the two graph neural networks.
+\end{enumerate}
 
 \section*{Evaluation of the project}
-The performance of the graph neural networks will be measured across several metrics. The main metric to evaluate a regression task, in contrast the classification in Parisot et al. \cite{parisot2018disease}, is the coefficient of determination $R^2$. An additional metric I will use to evaluate the performance of the networks is \textit{robustness to missing or noisy data}. Robustness, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}, would reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
+The performance of the graph neural networks will be measured across several metrics. The main metric to evaluate a regression task, in contrast the classification in Parisot et al. \cite{parisot2018disease}, is the coefficient of determination $r^2$. An additional metric I will use to evaluate the performance of the networks is \textit{robustness to missing or noisy data}. Robustness, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}, would reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
-\begin{itemize}
+\begin{enumerate}[label=PE\arabic*.]
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in Parisot et al. \cite{parisot2018disease} as a possible improvement.
   \item The main implementation of the graph neural network relies on manually handcrafted features from preprocessed brain imaging data. Time permitting, an extension could be to create a package that can be used after any standard neuroimaging preprocessing pipeline (e.g. with results in BIDS\footnote{\url{https://bids.neuroimaging.io}} format) to extract these features, and possibly improve upon as well as create new ones. This would make execution of the model more efficient, robust and generalisable.
   \item Implement weighted edges in the Graph Convolutional Network and Graph Attention Network, as the implementation will have binary edges with weights being either 0 or 1.
   % \item Implement a \textit{custom similarity metric}. The metrics used in the work by Parisot et al. \cite{parisot2018disease} were defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more combinations of features could possibly result in a better performance of the classifier.
 
-\end{itemize}
+\end{enumerate}
 
 
 \section*{Timetable and milestones}
@@ -136,7 +134,7 @@ The performance of the graph neural networks will be measured across several met
 % [Tiago] you can specify which parts of the work you intend to implement in each 2-week time frame. This will help you having a better idea of how you are keeping up/behind.
 
 %  (01/10/2019 – 16/10/2019)
-\textbf{Michaelmas weeks 0-1}
+\textbf{Michaelmas weeks 0–1}
 \begin{itemize}
   \item Work on project proposal.
 \end{itemize}
@@ -170,9 +168,9 @@ The performance of the graph neural networks will be measured across several met
 \textbf{Michaelmas vacation}
 \begin{itemize}
   \item Continue working on and finish the neural network implementations, compute performance metrics.
-  \item Work on evaluation of the network: implement robustness measurement framework.
+  \item Work on graph neural network evaluation: implement the robustness measurement framework.
   \item Measure the robustness of the neural networks.
-  \item Start writing the dissertation and project progress report.
+  \item Start writing the dissertation and the project progress report.
 \end{itemize}
 
 \textbf{Milestones.} Complete the implementation of the main part of the project.
@@ -182,7 +180,7 @@ The performance of the graph neural networks will be measured across several met
 \begin{itemize}
   \item Finish the progress report, prepare for the presentation.
   \item Implement Cayley polynomials.
-  \item Start on data preprocessing pipeline.
+  \item Start working on the data preprocessing pipeline.
 \end{itemize}
  
 \textbf{Milestones.} Submit progress report by 31/01/2020.
