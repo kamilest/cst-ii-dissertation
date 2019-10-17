@@ -42,25 +42,24 @@ Kamilė Stankevičiūtė (\texttt{ks830}), Gonville \& Caius College
 % [Tiago] Why NNs and not something else? You probably want one sentence of motivation saying they have been very successful in other fields, and then one sentence that as a consequence they might help physicians.
 % \textit{...Neural networks provide the opportunity to capture the similarities between patients and trends which might help physicians to understand the mechanisms of the disease and in turn find more effective treatments...}
 
-Graph neural network approaches have recently become popular and  proved successful in a broad range of tasks, such as [...]. 
+A graph neural network (GNN) is a type of a neural network that operates on graph inputs and is used for tasks like node classification, link prediction and clustering (geometric deep learning). GNNs have recently become popular and proved successful in a broad range of real-world applications, such as text and image classification, knowledge graphs, and interaction modelling in physical and biological systems. \cite{zhou2018gnn}
 
-The population can be modelled as a graph, with nodes representing individuals (their features and labels), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. The graph structure is also helpful when incorporating multiple modalities of data, which is often the case for medical records containing, for example, imaging and non-imaging data. 
-
-The reason why such graph representation is considered to be useful in the context of a population is that it makes use of both the features of individuals (node feature vectors) and the trends in the population through pairwise similarities (graph edges), inferring the information about an individual node's label from its neighbourhood.
+One domain where graphs offer a natural representation is social networks and \textit{populations}, with nodes representing individuals (their features and labels), and edges corresponding to associations between individuals according to some heuristic or a formally defined similarity metric. The reason why such graph representation is considered to be useful in the geometric deep learning context is that the network can make use of both the individual features (node feature vectors) and the overall trends in the population through pairwise similarities (graph edges) \cite{parisot2017spectral}, inferring the label of an individual node both from the node itself and from its neighbourhood.
+% The graph structure is also helpful when incorporating multiple modalities of data, which is often the case for medical records containing, for example, imaging and non-imaging data. 
 
 \section*{Project description}
-This project was inspired by a state-of-the-art application of a type of a graph neural network called Graph Convolutional Network (GCN) in the papers by Parisot et al. \cite{parisot2017spectral, parisot2018disease} In these papers, the population GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used in a semi-supervised manner for two tasks: 1) prediction of Autism Spectrum Disorder (ASD) from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment (MCI) that develops into Alzheimer's disease (AD) from the ADNI dataset.
+This project was inspired by Parisot et al.'s \cite{parisot2017spectral, parisot2018disease} state-of-the-art application of a type of a GNN called Graph Convolutional Network (GCN) to the population graphs of healthy controls and patients with neurological or neurodegenerative disorders. In these papers, the GCN (adapted from Kipf and Welling \cite{kipf2017semi}) was used in a semi-supervised manner for two classification tasks: 1) prediction of Autism Spectrum Disorder (ASD) from the ABIDE dataset and 2) prediction of a progressive form of Mild Cognitive Impairment (MCI) that develops into Alzheimer's disease (AD) from the ADNI dataset.
 
-Moreover, a recent paper by Kaufmann et al. \cite{kaufmann2019} has linked the incidence of the common brain disorders, including ASD, MCI, and AD as well as others, to the deviation between chronological and biological brain ageing. These results suggest that being able to estimate the subject's age from the neuroimaging data may also be important in understanding the mechanisms of those disorders and helping physicians to find more effective treatments.
+Moreover, a recent paper by Kaufmann et al. \cite{kaufmann2019} has linked the incidence of common brain disorders, including ASD, MCI, and AD as well as others, to the deviation between chronological and biological brain ageing. These results suggest that being able to estimate the subject's age from the neuroimaging data may be important in understanding the mechanisms of those disorders and helping physicians to find more effective treatments.
 
-The aim of this project will therefore be to adapt the population graph approach of Parisot et al. \cite{parisot2018disease} to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network. \cite{velickovic2018graph} The networks, in addition to the typical metrics such as the coefficient of determination $r^2$, will be evaluated on their \textit{robustness} to missing or noisy data (defined below).
+The aim of this project will therefore be to adapt the population graph approach of Parisot et al. \cite{parisot2017spectral, parisot2018disease} to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network. \cite{velickovic2018graph} The networks, in addition to the typical metrics such as the coefficient of determination $r^2$, will be evaluated on their \textit{robustness} to missing or noisy data (defined below).
 
 \section*{Starting point}
 % Describe existing state of the art, previous work in this area,
 %   libraries and databases to be used. Describe the state of any
 %   existing codebase that is to be built on.
 
-The source code for the implementation of Kipf and Welling's \cite{kipf2017semi} GCNs and Parisot et al.'s \cite{parisot2018disease} first classification task is publicly available online.\footnote{\url{https://github.com/tkipf/gcn}}\footnote{\url{https://github.com/parisots/population-gcn}}
+The source code for the implementation of Kipf and Welling's \cite{kipf2017semi} GCNs and Parisot et al.'s \cite{parisot2017spectral, parisot2018disease} first classification task is publicly available online.\footnote{\url{https://github.com/tkipf/gcn}}\footnote{\url{https://github.com/parisots/population-gcn}}
 
 I will be using PyTorch for this project because of its support for machine learning on structured graph data. In particular, PyTorch Geometric (PyG)\footnote{\url{https://github.com/rusty1s/pytorch_geometric}} – a geometric deep learning extension library – will make the implementation, iteration and extensions to the model more flexible in addition to performance improvements and simplified APIs.
 % making the final library more accessible and extensible, contributing to the open-source community
@@ -71,7 +70,7 @@ I have experience with the basics of TensorFlow\footnote{Five-course Deep Learni
 
 I will be using the data from the UK Biobank, kindly preprocessed and provided by Dr~Richard Bethlehem of the Department of Psychiatry.
 
-The UK Biobank is a large dataset containing comprehensive phenotypic, genetic, MRI and other data from the total of over 500,000 participants.\footnote{\url{https://www.ukbiobank.ac.uk/participants/}} In this project, I will be using the subset of this dataset with only those subjects who had the neuroimaging data collected and preprocessed (approximately 20,000 participants). This data contains both structural (T1, T2 FLAIR) and functional (resting state fMRI) data that has been preprocessed by the standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and additionally denoised and parcellated (in several parcellations) at the Department of Psychiatry. 
+The UK Biobank is a large dataset containing comprehensive phenotypic, genetic, MRI and other data from the total of over 500,000 participants.\footnote{\url{https://www.ukbiobank.ac.uk/participants/}} In this project, I will be using the subset of this dataset with only those subjects who had the neuroimaging data collected and preprocessed (approximately 20,000 participants). This data contains both structural (T1, T2 FLAIR) and functional (resting state fMRI), preprocessed by the standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and additionally denoised and parcellated (in several parcellations) by Dr Bethlehem. 
 % I am likely to be using the correlation matrices and raw parcellated time series for functional and features like coritical thickness for structural data.
 
 \section*{Resource declaration}
@@ -100,7 +99,7 @@ The following are lists of explicit deliverables to be implemented.
 \textbf{Evaluation framework}
 
 \begin{enumerate}[label=E\arabic*.]
-  \item  Comparison of the alternative graph neural network models using $r^2$.
+  \item  Comparison of the alternative graph neural network models using the coefficient of determination $r^2$.
   \item A robustness measure for the GCN due to missing data, and comparison of robustness of the two models.
 \end{enumerate}
 
@@ -123,7 +122,7 @@ The performance of the graph neural networks will be measured across several met
 \begin{enumerate}[label=PE\arabic*.]
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in Parisot et al. \cite{parisot2018disease} as a possible improvement.
   \item The main implementation of the graph neural network relies on manually handcrafted features from preprocessed brain imaging data. Time permitting, an extension could be to create a package that can be used after any standard neuroimaging preprocessing pipeline (e.g. with results in BIDS\footnote{\url{https://bids.neuroimaging.io}} format) to extract these features, and possibly improve upon as well as create new ones. This would make execution of the model more efficient, robust and generalisable.
-  \item Implement weighted edges in the Graph Convolutional Network and Graph Attention Network, as the implementation will have binary edges with weights being either 0 or 1.
+  \item Implement weighted edges in the Graph Convolutional Network and Graph Attention Network, as the main implementations will have binary edges with weights being either 0 or 1.
   % \item Implement a \textit{custom similarity metric}. The metrics used in the work by Parisot et al. \cite{parisot2018disease} were defined arbitrarily by the authors based on very few features. Learning a different similarity metric based on more combinations of features could possibly result in a better performance of the classifier.
 
 \end{enumerate}
@@ -194,6 +193,7 @@ The performance of the graph neural networks will be measured across several met
 \textbf{Lent weeks 3–5}
 \begin{itemize}
   \item Continue implementing the data preprocessing pipeline.
+  \item Start working on the implementation of weighted edges.
 \end{itemize}
 
 
@@ -201,6 +201,7 @@ The performance of the graph neural networks will be measured across several met
 \textbf{Lent weeks 6–8}
 \begin{itemize}
   \item Finish implementing the data preprocessing pipeline.
+  \item Finish implementing the weighted edges.
   \item Continue working on the dissertation write-up.
 \end{itemize}
 
