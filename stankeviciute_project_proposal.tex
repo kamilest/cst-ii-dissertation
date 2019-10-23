@@ -52,7 +52,7 @@ This project was inspired by Parisot et al.'s \cite{parisot2017spectral, parisot
 
 Moreover, a recent paper by Kaufmann et al. \cite{kaufmann2019} has linked the incidence of common brain disorders, including ASD, MCI, and AD as well as others, to the deviation between chronological and biological brain ageing. These results suggest that being able to estimate the subject's age from the neuroimaging data may be important in understanding the mechanisms of those disorders and helping physicians to find more effective treatments.
 
-The aim of this project will therefore be to adapt the population graph approach of Parisot et al. \cite{parisot2017spectral, parisot2018disease} to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network. \cite{velickovic2018graph} The networks, in addition to the typical metrics such as the coefficient of determination $r^2$, will be evaluated on their \textit{robustness} to missing or noisy data (defined below).
+The aim of this project will therefore be to adapt the population graph approach of Parisot et al. \cite{parisot2017spectral, parisot2018disease} to a regression task on the UK Biobank dataset, predicting the subject's age based on neuroimaging data, and comparing it to another successful geometric deep learning architecture such as the Graph Attention Network. \cite{velickovic2018graph} The performance of the networks will be evaluated on the standard metrics such as coefficient of determination~$r^2$.
 
 \section*{Starting point}
 % Describe existing state of the art, previous work in this area,
@@ -72,11 +72,7 @@ I will be using the data from the UK Biobank, kindly preprocessed and provided b
 
 The UK Biobank is a large dataset containing comprehensive phenotypic, genetic, MRI and other data from the total of over 500,000 participants.\footnote{\url{https://www.ukbiobank.ac.uk/participants/}} In this project, I will be using the subset of this dataset with only those subjects who had the neuroimaging data collected and preprocessed (approximately 20,000 participants). This includes both structural (T1, T2 FLAIR) and functional (resting state fMRI) data, preprocessed with the standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and additionally denoised and parcellated (in several common parcellations) by Dr Bethlehem. 
 % I am likely to be using the correlation matrices and raw parcellated time series for functional and features like coritical thickness for structural data.
-
-\section*{Resource declaration}
-
-For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and the \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
-
+\newpage
 \section*{Work to be done}
 \label{section:work}
 
@@ -100,7 +96,6 @@ The following are lists of explicit deliverables to be implemented.
 
 \begin{enumerate}[label=E\arabic*.]
   \item  Comparison of the alternative graph neural network models using the coefficient of determination $r^2$.
-  \item A robustness measure for the GCN due to missing data, and comparison of robustness of the two models.
 \end{enumerate}
 
 \section*{Success criteria}
@@ -111,15 +106,16 @@ The project will be successful if the following items will have been implemented
   \item Representation of the UK Biobank data as a population graph with nodes representing the individuals and edges representing associations between them based on pairwise similarity.
   \item The Graph Convolutional Network for age regression on the population graph.
   \item The Graph Attention Network for the same task.
-  \item The evaluation framework for measuring robustness, and comparison of the two graph neural networks.
+  \item The evaluation framework for comparing the performance of the two graph neural networks.
 \end{enumerate}
 
 \section*{Evaluation of the project}
-The performance of the graph neural networks will be measured across several metrics. The main metric to evaluate a regression task, in contrast the classification in Parisot et al. \cite{parisot2018disease}, is the coefficient of determination $r^2$. An additional metric I will use to evaluate the performance of the networks is \textit{robustness to missing or noisy data}. Robustness, which could be defined as the \textit{rate at which the accuracy drops as more information is removed from the nodes}, would reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
+The performance of the graph neural networks will be measured across several metrics. The main metric to evaluate a regression task, in contrast the classification in Parisot et al. \cite{parisot2018disease}, is the coefficient of determination~$r^2$. 
 
 \section*{Possible extensions}
 % Potential further envisaged evaluation metrics or extensions.
 \begin{enumerate}[label=PE\arabic*.]
+  \item An additional metric that could be used to evaluate the performance of the networks is \textit{robustness} to missing or noisy data. Robustness, which could be defined as \textit{the rate at which the accuracy drops as more information is removed from the nodes}, would reveal how important is the neighbourhood (edge) information for accurate predictions compared to the node features only.
   \item Implement spectral filter computation with \textit{Cayley polynomials} instead of using Chebyshev polynomials. Cayley polynomials have been introduced in a paper by Levie et al. \cite{levie2017cayleynets} and were mentioned in Parisot et al. \cite{parisot2018disease} as a possible improvement.
   \item The main implementation of the graph neural network relies on manually handcrafted features from preprocessed brain imaging data. Time permitting, an extension could be to create a package that can be used after any standard neuroimaging preprocessing pipeline (e.g. with results in BIDS\footnote{\url{https://bids.neuroimaging.io}} format) to extract these features, and possibly improve upon as well as create new ones. This would make execution of the model more efficient, robust and generalisable.
   \item Implement weighted edges in the Graph Convolutional Network and Graph Attention Network, as the main implementations will have binary edges with weights being either 0 or 1.
@@ -217,6 +213,10 @@ The performance of the graph neural networks will be measured across several met
 \textbf{Easter weeks 0–2}
 
  Time reserved for any unexpected issues.
+
+ \section*{Resource declaration}
+
+ For this project I will be using my personal MacBook Pro (2019, with 1.4 GHz Quad-Core Intel Core i5 processor and 8GB of RAM). Training the model will require the use of GPUs provided by the Computational Biology Group (as confirmed by Prof Pietro Liò). To prevent any loss of data, both the source code and the \LaTeX\ source will be stored on my machine, private GitHub repositories, and Google Drive, as well as regularly backed up on an external HDD.
 
 % \medskip 
 % \printbibliography
