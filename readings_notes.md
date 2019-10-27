@@ -97,4 +97,38 @@ Franceschi, Dieuleveut, and Jaggi
 * *triplet loss*:
   * time-based negative sampling
   * advantage of encoder resilience to unequal time lengths
-* tested on multiple datasets for ensured universality 
+* tested on multiple datasets for ensured universality: *generality*, *transferability, outperforming concurrent methods, matching state-of-the-art*
+
+
+Related work
+* unsupervised learning for time series
+* triplet losses (for representation learning, but never in a fully unsupervised setting)
+* convolutional networks for time series (including dilated convolutions)
+
+Unsupervised training
+* encoder-only architecture
+* triplet loss *for time series* (inspired by representation learning framework word2vec)
+* time-based sampling strategies to overcome the challenge of learning on unlabeled data
+* similar time series should obtain similar representations
+* negative sampling: inspired by word2vec
+  * take a time series pieces of which should be similar to each other and have similar representations (as they have the same context) but comparing to another random time series should be generally not similar (because they probably refer to the different context)
+  * taking subseries of a given time series, representation of subseries should be similar to the representations of different subseries of the same time series (*positive* example)
+  * the subseries of a given time series should have a different representation from the one of a randomly chosen subseries from any time series (*negative* example)
+  * so triplet means: *reference*, *positive example*, *negative example*
+
+$$
+-\log\left( \sigma \left( f(x^{\mathrm{ref}}, \theta)^{\mathrm{T}}\ f(x^{\mathrm{pos}}, \theta)\right)\right) - \sum\limits_{k=1}^{K}\log\left( \sigma \left( -f(x^{\mathrm{ref}}, \theta)^{\mathrm{T}}\ f(x^{\mathrm{neg}}_k, \theta)\right)\right)
+$$
+
+Encoder architecture motivated by 
+* extraction of relevant information
+* time/memory efficient
+* variable-length inputs
+  
+Convolutional networks
+* seem to be solution for the three requirements above
+* good for parallelisation on GPUs (unlike recurrent)
+* *exponentially dilated* convolutions work better in capturing *long-range dependencies* 
+* *causal* convolutions
+  * map a sequence to a sequence of the same length such that $i$th element of the output sequence is computed using only values up to until the $i$th element of the input sequence for all $i$.
+  * alleviate disadvantage of not using recurrent networks
