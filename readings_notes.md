@@ -82,3 +82,19 @@ What?
 * *Heterogeneous Information Network (HIN)*: multiple types of nodes and edges
 * *meta-path*: composite relation between two subjects (e.g. co-actor represented by film-actor-film)
   * resembles database design
+
+
+## Unsupervised Scalable Representation Learning for Multivariate Time Series 
+
+Franceschi, Dieuleveut, and Jaggi
+-------
+
+* few articles explicitly deal with general-purpose representation learning for time series without assuming what the data type actually represents
+* *unsupervised* representation for rarely or sparsely labelled time series
+* *compatible representations* for *unequal time lengths* (general-purpose, multivariate)
+* *scalability and efficiency*
+* scalable encoder—deep CNN with idlated convolutions
+* *triplet loss*:
+  * time-based negative sampling
+  * advantage of encoder resilience to unequal time lengths
+* tested on multiple datasets for ensured universality 
