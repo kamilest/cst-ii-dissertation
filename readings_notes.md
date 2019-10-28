@@ -137,4 +137,73 @@ Testing
 * comparison of classification performance to other state-of-the-art supervised and unsupervised networks in addition to assessing transferability of the representation.
 * for each dataset with a *train/test split* (no hyperparameter optimisation), unsupervisedly train an encoder using train set; train a SVM with a radial basis function kernel on top of learned features using the train labels of the dataset
 * simple SVM checks if the encodings are separable; when encoder is trained SVM allows efficient training in terms of time and space
-* 
+  
+
+## Brain aging comprises multiple modes of structural and functional change with distinct genetic and biophysical associations
+
+Smith, Elliott, Alfaro-Almagro et al.
+
+Suggested reading by Richard
+------------
+### Abstract **quotes**
+* Brain imaging for studying how brains are aging compared against population norms
+* brain health aspects: some factors can accelerate brain tissue aging
+* functional and structural brain change
+* association with genetics, lifestyle, cognition, physical measures and disease
+* many modes had genetic associations
+
+### Introduction
+* brain age: apparent age of individuals' brains
+* difference between brain age and chronological age (brain age gap/delta)
+* e.g. atrophy in MRI data would suggest brain is older than the normal age-matched brain
+* aging and disease: AD has patterns of accelerated healthy aging
+* structural preprocessing: *wrapping* to a standard space, *gray matter* segmentation, *voxelwise segmentation*
+* *supervised* learning algorithms (regression, SVM, deep learning)
+* more modalities other than structural (geom layout of the brain): structural *connectivity*, white matter mictrostructure, *functional* connectivity, iron deposition, cognitive task activation
+* > richer range of structural and functional measures of change in the brain
+* influenced by multiple biological processes (exercise, diet, smoking, other health factors)—whose influence could also be different depending on age
+* > cost of losing important information regarding distinctions between multiple biological factors
+* 62 distinct modes of population variation
+* 21407 participants over the age of 45
+* 4 sites identical imaging hardware, scanner software and protocols
+* genetics, lifestyle, cognitive and physical measures, healthcare info
+* 3913 IDP (imaging-derived phenotypes)—summary measures describing different aspect of brain structure/function
+  * functional/structural connectivity
+  * tissue microstructure
+  * geometry of cortical/subcortical structures
+* identify multiple modes representing different combinations of IDPs—use them separately: large number of distinct brain age predictions
+* ICA—decompose IDP data into 62 modes of variation
+* subject-weight vector (???)
+* association tests against non-imaging variables and genetics
+* some modes show genetic association with brain aging, others could represent other factors that influence brain age
+
+### Results
+Code: https://www.fmrib.ox.ac.uk/ukbiobank/BrainAgingModes
+
+* discarded outliers/missing data
+* retained 18707 subjects
+* 62 ICA modes
+* modes were inverted sometimes so that correlation with age is positive
+* reordered for decreased variance
+* similar behaviour for females/males
+* mean absolute delta of 2.9 years
+* > unique variance is also referred to as the "partialled" mode, which is calculated by takinga mode's subject weight vector and regressing out the subject vectors of all other modes
+  * ???
+  * examine associations with non-imaging variables as the unique subject variance by a given mode is isolated
+  * contribution to age modelling varies highly from mode to mode
+* Bonferroni correction for deriving correlation with age ($p < 0.05/62$)
+* mode clustering
+* brain aging modes mapped back to structure and function (what do those ICA modes represent???)
+* 8787 nIDPs; 16 groups of variable types (maternal smoking, birth weight; exercise, diet, alcohol+tobacco; body size, fat, bone density; cognitive tests; health outcome—diagnosis)
+* Table 2 displays the meanings of clusters having an impact on ageing. Not very explanatory imo because the factors included in one cluster are not even that related (e.g. thalamus volume and body size); especially when some clusters interpret the *same* variable as having either positive or negative correlation
+  * I guess you have to take the *whole cluster* into account as having an effect on accelerated brain aging? e.g. BMI does not mean anything by itself unless you *also* smoke (one effect) or have a small T1w grey-white contrast?
+  
+### Discussion
+* > Kaufmann et al. 2019 used a single imaging modality (T1-weighted structural images) from 45,000 subjects pooled from 40 studies, to investigate the relationship between brain aging and several diseases. Brain-age prediction was trained from whole-brain analysis of the structural data, and also seven atlas-defined regional subsets were used to retrain the predictions. The different regional brain-age delta estimates showed varying associations with disease. However, as with our all-in-one prediction and also Ning et al., 2018, direct GWAS of the delta estimates showed virtually no significant association, even with these high subject numbers.
+* > value in considering multiple, multimodal brain aging modes separately
+  * e.g. all-in-one estimate had no genetic influence but individual modes had significant association with genetic variables
+  * non-imaging and non-genetic: bone density, body size and fat, metabolic/cardiovascular function, blood pressure, haemoglobin, age at menopause; life factors: alcohol, (maternal) smoking, exercise, sleep duration; cognitive test scores (processing speed, IQ); mental health; disease (e.g. diabetes)
+* not all diseases display patterns identical to accelerated normal brain aging; could detect disease sub-groups; detect disease effects vs non-disease aging effects
+* number of modes have unique variance negatively correlated 
+* brain age gap has potential weakness of assuming that the offset would be constant for a given subject as the subject gets older
+* but could instead be e.g. "a given subject's brain is aging faster than the population average in terms of fixed distinct aging rate, implying that the delta would be increasing over time"
