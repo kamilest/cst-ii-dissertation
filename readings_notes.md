@@ -132,3 +132,9 @@ Convolutional networks
 * *causal* convolutions
   * map a sequence to a sequence of the same length such that $i$th element of the output sequence is computed using only values up to until the $i$th element of the input sequence for all $i$.
   * alleviate disadvantage of not using recurrent networks
+
+Testing
+* comparison of classification performance to other state-of-the-art supervised and unsupervised networks in addition to assessing transferability of the representation.
+* for each dataset with a *train/test split* (no hyperparameter optimisation), unsupervisedly train an encoder using train set; train a SVM with a radial basis function kernel on top of learned features using the train labels of the dataset
+* simple SVM checks if the encodings are separable; when encoder is trained SVM allows efficient training in terms of time and space
+* 
