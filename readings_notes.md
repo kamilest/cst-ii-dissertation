@@ -207,3 +207,17 @@ Code: https://www.fmrib.ox.ac.uk/ukbiobank/BrainAgingModes
 * number of modes have unique variance negatively correlated 
 * brain age gap has potential weakness of assuming that the offset would be constant for a given subject as the subject gets older
 * but could instead be e.g. "a given subject's brain is aging faster than the population average in terms of fixed distinct aging rate, implying that the delta would be increasing over time"
+
+### Methods
+* T1, T2-FLAIR (Fluid-Attenuated Inversion Recovery) structural images
+* rs-fMRI (swMRI, dMRI, tfMRI)
+* removing artefacts
+* remove outliers (greater than 6 times the median absolute deviation), quantile normalisation
+* discard subjects with 50+ IDPs missing (incompleteness, quality,...)
+* small amounts of remaining missing data were replaced with close-to-zero values (random signal of standard deviation 0.01)
+* confounds removed as in Elliott et al. 2018, incl. head size, sex, head motion, scanner table position
+* normally networks are trained on healthy and applied to healthy+diseased but UKB has no specific disease focus and esp. mental health is rare, so no exlusion of individual subjects
+* ICA using FastICA
+  * decomposition into multiple statistically independent factors wrt one of the data matrix dimension
+  * multiple independent modes of population covariance
+* 
