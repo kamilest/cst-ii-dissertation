@@ -432,3 +432,7 @@ Temporary Items
 
 # End of https://www.gitignore.io/api/tex,latex,macos
 notes.txt
+notes/dataset.md
+notes/discussions.md
+notes/readings_notes.md
+notes/meeting_20191012.md
