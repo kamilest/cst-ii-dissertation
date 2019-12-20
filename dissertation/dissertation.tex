@@ -137,7 +137,7 @@ Implementing a flexible preprocessing pipeline which could be customised in the 
 Description of software engineering techniques: planning out and executing the project based on requirements analysis, planning things on time and smoothly meeting the success criteria.
 
 \section{Programming languages and systems learnt}
-PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices
+PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices, IDEs, backup strategies
 
 \section{Starting point}
 
@@ -147,6 +147,8 @@ PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, messa
 % Descriptions of programs may include fragments of high-level code but large chunks of code are usually best left to appendices or omitted altogether. Analogous advice applies to circuit diagrams.
 % Draw attention to the parts of the work which are not your own. The Implementation Chapter should include a section labelled ”Repository Overview”. The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository. It should describe whether the code was written from scratch or if it built on an existing project or tutorial. Making effective use of powerful tools and pre-existing code is often laudable, and will count to your credit if properly reported.
 % It should not be necessary to give a day-by-day account of the progress of the work but major milestones may sometimes be highlighted with advantage.
+
+Could be split into \textit{preprocessing, parameter tuning, evaluation framework, software engineering techniques, repository overview}
 
 \subsection{Precomputation and preprocessing of connectivity matrices}
 
@@ -180,10 +182,12 @@ Describe the architecture in \texttt{BrainGCN}
 Discuss Pearson's $r$, coefficient of determination $r^2$ and other common performance metrics.
 
 \section{Hyperparameters}
+Effects of hyperparameter tuning
 
 \section{Unit testing}
 
 \section{Other quantitative and qualitative results}
+Statistical significance of the results compared to the baseline (e.g. Pearson's $r$ method in Python seems to return some $p$-value of it..?)
 
 \section{Robustness of the graph neural networks to noisy and missing data}
 
@@ -194,6 +198,9 @@ Add noise to the graphs and measure the rate of drop in predictive power.
 Compare to the Kaufmann et al.'s \textit{xgboost} approach \ref{kaufmann2019} ($r \sim 0.93$); and the other package that was cited in the same paper.
 
 Possibly compare to other non-graph (relatively baseline) (neural network) architectures, e.g. ElasticNet, MLP,...
+
+\section{Interpretation of the model behaviour}
+One of the advantages of the graphs that they \textit{should} be interpretable I guess.
 
 \chapter{Conclusion}
 
