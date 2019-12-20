@@ -96,7 +96,14 @@ None.
 \chapter{Introduction}
 % The Introduction should explain the principal motivation for the project. Show how the work fits into the broad area of surrounding Computer Science and give a brief survey of previous related work. It should generally be unnecessary to quote at length from technical papers or textbooks. If a simple bibliographic reference is insufficient, consign any lengthy quotation to an appendix.
 
+% Motivation
+Why measuring brain age gaps is interesting and important.
 
+% Related work
+Why population graphs are a nice approach (use of multimodal data; individual patient data \textit{and} diagnoses of other patients; potential robustness to missing or noisy data of a patient as other patient can "make up" for it).
+
+% Novelty and challenges
+Why my work is novel (applying a new population graph framework to a different – and more challenging – problem).
 
 \chapter{Preparation}
 % Principally, this chapter should describe the work which was undertaken before code was written, hardware built or theories worked on. It should show how the project proposal was further refined and clarified, so that the Implementation stage could go smoothly rather than by trial and error.
@@ -105,6 +112,35 @@ None.
 % The chapter will cite any new programming languages and systems which had to be learnt and will mention complicated theories or algorithms which required understanding.
 % It is essential to declare the Starting Point (see Section 7). This states any existing codebase or materials that your project builds on. The text here can commonly be identical to the text in your proposal, but it may enlarge on it or report variations. For instance, the true starting point may have turned out to be different from that declared in the proposal and such discrepancies must be explained.
 
+\section{Neural networks}
+Overfitting. Regularisation.
+
+\section{Graph spectral filters/graph convolution theory}
+
+\section{Graph attention and graph convolution}
+
+\section{Data preprocessing}
+
+\subsection{Structural data}
+
+\subsection{Functional data}
+\textit{Turns out functional data is not as effective as structural brain imaging data.}
+
+\subsection{Phenotype data}
+
+\section{Population graphs}
+
+\section{Requirements analysis and professional practice}
+
+Implementing a flexible preprocessing pipeline which could be customised in the future for a variety of machine learning tasks evne outside graph neural networks (a package).
+
+Description of software engineering techniques: planning out and executing the project based on requirements analysis, planning things on time and smoothly meeting the success criteria.
+
+\section{Programming languages and systems learnt}
+PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices
+
+\section{Starting point}
+
 
 \chapter{Implementation}
 % This chapter should describe what was actually produced: the programs which were written, the hardware which was built or the theory which was developed. Any design strategies that looked ahead to the testing stage might profitably be referred to (the professional approach again).
@@ -112,15 +148,62 @@ None.
 % Draw attention to the parts of the work which are not your own. The Implementation Chapter should include a section labelled ”Repository Overview”. The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository. It should describe whether the code was written from scratch or if it built on an existing project or tutorial. Making effective use of powerful tools and pre-existing code is often laudable, and will count to your credit if properly reported.
 % It should not be necessary to give a day-by-day account of the progress of the work but major milestones may sometimes be highlighted with advantage.
 
+\subsection{Precomputation and preprocessing of connectivity matrices}
+
+\subsection{Structural and functional data extraction}
+
+\subsection{Graph construction pipeline}
+
+\subsection{Train, test, validation split}
+
+\section{Non-graph baselines}
+I have played around with \textit{xgoost}, ElasticNet and simple multilayer perceptrons to get a good idea of the minimum baselines my new architectures need to reach to be considered more effective.
+
+\section{Graph convolutional network}
+Describe the architecture in \texttt{BrainGCN}
+
+\section{Graph attention network}
+
+\section{Robustness evaluation framework}
+
+\section{Repository overview}
+
 \chapter{Evaluation}
 % This is where Assessors will be looking for signs of success and for evidence of thorough and systematic evaluation as discussed in Section 8.3. Sample output, tables of timings and photographs of workstation screens, oscilloscope traces or circuit boards may be included. A graph that does not indicate confidence intervals will generally leave a professional scientist with a negative impression.
 % As with code, voluminous examples of sample output are usually best left to appendices or omitted altogether.
 % There are some obvious questions which this chapter will address. How many of the original goals were achieved? Were they proved to have been achieved? Did the program, hardware, or theory really work?
 % Assessors are well aware that large programs will very likely include some residual bugs. It should always be possible to demonstrate that a program works in simple cases and it is instructive to demonstrate how close it is to working in a really ambitious case.
 
+\section{Overview of the predictive power for the two graph neural network approaches}
+% Or comparative predictive power
+
+Discuss Pearson's $r$, coefficient of determination $r^2$ and other common performance metrics.
+
+\section{Hyperparameters}
+
+\section{Unit testing}
+
+\section{Other quantitative and qualitative results}
+
+\section{Robustness of the graph neural networks to noisy and missing data}
+
+Add noise to the graphs and measure the rate of drop in predictive power.
+
+\section{Comparison against existing benchmarks}
+
+Compare to the Kaufmann et al.'s \textit{xgboost} approach \ref{kaufmann2019} ($r \sim 0.93$); and the other package that was cited in the same paper.
+
+Possibly compare to other non-graph (relatively baseline) (neural network) architectures, e.g. ElasticNet, MLP,...
+
 \chapter{Conclusion}
 
 % This chapter is likely to be very short and it may well refer back to the Introduction. It might properly explain how you would have planned the project if starting again with the benefit of hindsight.
+
+\section{Successes and failures}
+
+\section{The project in hindsight (lessons learnt)}
+
+\section{Possible continuations of the project}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -131,6 +214,9 @@ None.
 
 \appendix
 % Assessors like to see some sample code or example circuit diagrams, and appendices are the sensible places to include such items. Accordingly, software and hardware projects should incorporate appropriate appendices. Note that the 12,000 word limit does not include material in the appendices, but only in extremely unusual circumstances may appendices exceed 10–15 pages – if you feel that such unusual circumstances might apply to you you should ask your Director of Studies and Supervisor to apply to the Chairman of Examiners. It is quite in order to have no appendices. Appendices should appear between the bibliography and the project proposal.
+\chapter{Neural networks?}
+
+\chapter{Neuroimaging data}
 
 \chapter{Project Proposal}
 
