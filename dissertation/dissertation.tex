@@ -1,11 +1,11 @@
 % Template for a Computer Science Tripos Part II project dissertation
-\documentclass[12pt,a4paper,twoside,openright, hidelinks]{report}
-\usepackage[pdfborder={0 0 0}]{hyperref}    % turns references into hyperlinks
+\documentclass[12pt,a4paper,twoside, openright, hidelinks]{report}
+\usepackage[pdfborder={0 0 0}]{hyperref}
 \urlstyle{same}
-\usepackage[margin=25mm]{geometry}  % adjusts page layout
-\usepackage{graphicx}  % allows inclusion of PDF, PNG and JPG images
+\usepackage[margin=25mm]{geometry} 
+\usepackage{graphicx} % allows inclusion of PDF, PNG and JPG images
 \usepackage{verbatim}
-\usepackage{docmute}   % only needed to allow inclusion of proposal.tex
+\usepackage{docmute} % only needed to allow inclusion of proposal.tex
 
 \usepackage{bookmark}
 \usepackage{amsmath}
@@ -24,24 +24,20 @@
                                         % more readable
 
 \begin{document}
-
 \bibliographystyle{plain}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title
-
-
 \pagestyle{empty}
 
-\rightline{\LARGE \textbf{Martin Richards}}
+\rightline{\large{Kamilė Stankevičiūtė}}
 
 \vspace*{60mm}
 \begin{center}
-\Huge
-\textbf{How to write a dissertation in \LaTeX} \\[5mm]
+\LARGE
+\textbf{Graph neural networks for age prediction from neuroimaging data} \\[5mm]
+\large
 Computer Science Tripos -- Part II \\[5mm]
-St John's College \\[5mm]
+Gonville \& Caius College \\[5mm]
 \today  % today's date
 \end{center}
 
@@ -52,22 +48,19 @@ St John's College \\[5mm]
 
 \chapter*{Proforma}
 
-{\large
 \begin{tabular}{ll}
-Name:               & \bf Martin Richards                       \\
-College:            & \bf St John's College                     \\
-Project Title:      & \bf How to write a dissertation in \LaTeX \\
-Examination:        & \bf Computer Science Tripos -- Part II, July 2001  \\
-Word Count:         & \bf 1587\footnotemark[1]
-                      (well less than the 12000 limit)  \\
-Project Originator: & Dr M.~Richards                    \\
-Supervisor:         & Dr Markus Kuhn                    \\ 
+Name:               & Kamilė Stankevičiūtė                     \\
+College:            & Gonville \& Caius College                     \\
+Project title:      & Graph neural networks for age prediction from neuroimaging data \\
+Examination:        & Computer Science Tripos -- Part II 2020 \\
+Word count:         & ?\footnotemark[1] \\
+Lines of code:      & ?  \\
+Project originator: & Mr Tiago Azevedo                        \\
+Supervisors:        & Mr Tiago Azevedo, Mr Alexander Campbell \\ 
 \end{tabular}
-}
-\footnotetext[1]{This word count was computed
-by \texttt{detex diss.tex | tr -cd '0-9A-Za-z $\tt\backslash$n' | wc -w}
-}
+\footnotetext[1]{Counted using the \LaTeX\ Utilities extension in Visual Studio Code.}
 \stepcounter{footnote}
+
 
 
 \section*{Original Aims of the Project}
@@ -91,24 +84,18 @@ All that has been completed appears in this dissertation.
 
 \section*{Special Difficulties}
 
-Learning how to incorporate encapulated postscript into a \LaTeX\
-document on both Ubuntu Linux and OS X.
+None.
  
 \newpage
 \section*{Declaration}
 
-I, [Name] of [College], being a candidate for Part II of the Computer
-Science Tripos [or the Diploma in Computer Science], hereby declare
-that this dissertation and the work described in it are my own work,
-unaided except as may be specified below, and that the dissertation
-does not contain material that has already been used to any substantial
-extent for a comparable purpose.
+I, Kamilė Stankevičiūtė of Gonville \& Caius College, being a candidate for Part II of the Computer Science Tripos, hereby declare that this dissertation and the work described in it are my own work, unaided except as may be specified below, and that the dissertation does not contain material that has already been used to any substantial extent for a comparable purpose.
 
 \bigskip
-\leftline{Signed [signature]}
+\leftline{Signed \textit{Kamilė Stankevičiūtė}}
 
 \medskip
-\leftline{Date [date]}
+\leftline{Date \today}
 
 \tableofcontents
 
