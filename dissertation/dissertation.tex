@@ -156,13 +156,25 @@ The multilayer perceptron maths, if appropriate.
 
 \section{Graph attention networks}
 
-\section{Requirements analysis and professional practice}
-
-Implementing a flexible preprocessing pipeline which could be customised in the future for a variety of machine learning tasks evne outside graph neural networks (a package).
-
-Description of software engineering techniques: planning out and executing the project based on requirements analysis, planning things on time and smoothly meeting the success criteria.
+\section{Requirements analysis}
 
 Tasks to be implemented (according to proposal: work to be done, success criteria, possible extensions), their relative importance (priority) and difficulty. Provide the order in which the tasks should be carried out to show good planning skills and account for the changes in proposal where the preprocessing pipeline turned out to be more important than the neural network implementation.
+
+\section{Software engineering practice}
+Implementing a flexible preprocessing pipeline which could be customised in the future for a variety of machine learning tasks even outside graph neural networks (a package).
+
+Modular structure encapsulating specific task and having well defined documentations of the others.
+
+Description of software engineering techniques: planning out and executing the project based on requirements analysis, setting tasks, and smoothly meeting the success criteria.
+
+Code reuse (of open source well tested libraries), follow documentation and follow the PEP-8 style guide (or whatever PyCharm encourages).
+
+Incremental development.
+
+Modular structure: e.g. data processing, graph construction, graph neural network modules, robustness evaluation framework. Figure out where validation and cross validation sections should be (while training, separately etc.)
+
+Diagram of the pipelines and module interaction (like in google design docs)
+
 
 \section{Choice of tools}
 PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices, IDEs, backup strategies
