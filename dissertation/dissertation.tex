@@ -29,8 +29,9 @@
 \bibliographystyle{plain}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \pagestyle{empty}
+\thispagestyle{empty}
+\pagenumbering{roman}
 
 \rightline{\large{Kamilė Stankevičiūtė}}
 
@@ -96,6 +97,7 @@ None.
 \pagestyle{headings}
 
 \chapter{Introduction}
+\pagenumbering{arabic}
 % The Introduction should explain the principal motivation for the project. Show how the work fits into the broad area of surrounding Computer Science and give a brief survey of previous related work. It should generally be unnecessary to quote at length from technical papers or textbooks. If a simple bibliographic reference is insufficient, consign any lengthy quotation to an appendix.
 
 % Motivation
@@ -113,7 +115,7 @@ Why my work is novel (applying a new population graph framework to a different �
 Semisupervised population graphs in Parisot et al. for classifying healthy patients and patients having Mild Cognitive Impairment/Alzheimer's or autism spectrum disorder. These achieve state-of-the-art accuracies around 70\% even for a binary classification task which indicates that brain conditions are generally a complex task. Due to the different nature of the task and different evaluation metrics, this performance cannot be directly compared to the predictive power of the brain age regression task.
 
 \subsection{Brain age prediction from neuroimaging data}
-Recent paper by Kaufmann et al. uses extreme gradient boosting (XGBoost) methods to predict the brain age from structural brain imaging data, but without considering the patient population as a whole through the use of a graph. Analyses a significantly larger dataset (around 45,000 brains compared to 17,000). The five-fold cross-validation results in performance of $r \sim 0.93$ for male brains and $r \sim 0.94$ for female brains.
+Recent paper by Kaufmann et al. \cite{kaufmann2019} uses extreme gradient boosting (XGBoost) methods to predict the brain age from structural brain imaging data, but without considering the patient population as a whole through the use of a graph. Analyses a significantly larger dataset (around 45,000 brains compared to 17,000). The five-fold cross-validation results in performance of $r \sim 0.93$ for male brains and $r \sim 0.94$ for female brains.
 
 \chapter{Preparation}
 % Principally, this chapter should describe the work which was undertaken before code was written, hardware built or theories worked on. It should show how the project proposal was further refined and clarified, so that the Implementation stage could go smoothly rather than by trial and error.
@@ -221,7 +223,7 @@ Add noise to the graphs and measure the rate of drop in predictive power.
 
 \section{Comparison against existing benchmarks}
 
-Compare to the Kaufmann et al.'s \textit{xgboost} approach \ref{kaufmann2019} ($r \sim 0.93$); and the other package that was cited in the same paper.
+Compare to the Kaufmann et al.'s \textit{xgboost} approach \cite{kaufmann2019} ($r \sim 0.93$); and the other package that was cited in the same paper.
 
 Possibly compare to other non-graph (relatively baseline) (neural network) architectures, e.g. ElasticNet, MLP,...
 
