@@ -1,0 +1,21 @@
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+% The Introduction should explain the principal motivation for the project. Show how the work fits into the broad area of surrounding Computer Science and give a brief survey of previous related work. It should generally be unnecessary to quote at length from technical papers or textbooks. If a simple bibliographic reference is insufficient, consign any lengthy quotation to an appendix.
+
+% Motivation
+Why measuring brain age gaps is interesting and important.
+
+% Related work
+Why population graphs are a nice approach (use of multimodal data; individual patient data \textit{and} diagnoses of other patients; potential robustness to missing or noisy data of a patient as other patient can "make up" for it).
+
+% Novelty and challenges
+Why my work is novel (applying a new population graph framework to a different – and more challenging – problem).
+
+\section{Related work}
+
+\subsection{Population graphs}
+Semisupervised population graphs in Parisot et al. for classifying healthy patients and patients having Mild Cognitive Impairment/Alzheimer's or autism spectrum disorder. These achieve state-of-the-art accuracies around 70\% even for a binary classification task which indicates that brain conditions are generally a complex task. Due to the different nature of the task and different evaluation metrics, this performance cannot be directly compared to the predictive power of the brain age regression task.
+
+\subsection{Brain age prediction from neuroimaging data}
+Recent paper by Kaufmann et al. \cite{kaufmann2019} uses extreme gradient boosting (XGBoost) methods to predict the brain age from structural brain imaging data, but without considering the patient population as a whole through the use of a graph. Analyses a significantly larger dataset (around 45,000 brains compared to 17,000). The five-fold cross-validation results in performance of $r \sim 0.93$ for male brains and $r \sim 0.94$ for female brains.

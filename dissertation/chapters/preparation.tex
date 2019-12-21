@@ -1,0 +1,63 @@
+\chapter{Preparation}
+% Principally, this chapter should describe the work which was undertaken before code was written, hardware built or theories worked on. It should show how the project proposal was further refined and clarified, so that the Implementation stage could go smoothly rather than by trial and error.
+% Throughout this chapter and indeed the whole dissertation, it is essential to demonstrate that a proper professional approach was employed.
+% The nature of this chapter will vary greatly from one dissertation to another but, underlining the professional approach, this chapter will very likely include a section headed “Requirements Analysis” and incorporate other references to software engineering techniques.
+% The chapter will cite any new programming languages and systems which had to be learnt and will mention complicated theories or algorithms which required understanding.
+% It is essential to declare the Starting Point (see Section 7). This states any existing codebase or materials that your project builds on. The text here can commonly be identical to the text in your proposal, but it may enlarge on it or report variations. For instance, the true starting point may have turned out to be different from that declared in the proposal and such discrepancies must be explained.
+
+\section{Data preprocessing}
+UK Biobank data preprocessed by Dr Richard Bethlehem.
+
+Describe functional, structural and phenotype features. Brain parcellation atlases. Correlation matrices. Patient exclusion and preprocessing.
+
+Garbage in, garbage out. Data preprocessing unsurprisingly turned out to be the most difficult and the most important data processing task.
+
+\subsection{Structural data}
+Describe various techniques, e.g. normalisation,...
+
+\subsection{Functional data}
+\textit{Turns out functional data is not as effective as structural brain imaging data.}
+
+Description of correlation matrix computation.
+
+\subsection{Phenotype data}
+
+\section{Population graphs}
+Mathematical formulation of the graphs.
+
+\subsection{Similarity metrics}
+
+\subsection{Computational model}
+Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
+
+\section{Multilayer perceptrons}
+The multilayer perceptron maths, if appropriate.
+
+\section{Graph convolutional networks}
+
+\section{Graph attention networks}
+
+\section{Requirements analysis}
+
+Tasks to be implemented (according to proposal: work to be done, success criteria, possible extensions), their relative importance (priority) and difficulty. Provide the order in which the tasks should be carried out to show good planning skills and account for the changes in proposal where the preprocessing pipeline turned out to be more important than the neural network implementation.
+
+\section{Software engineering practice}
+Implementing a flexible preprocessing pipeline which could be customised in the future for a variety of machine learning tasks even outside graph neural networks (a package).
+
+Modular structure encapsulating specific task and having well defined documentations of the others.
+
+Description of software engineering techniques: planning out and executing the project based on requirements analysis, setting tasks, and smoothly meeting the success criteria.
+
+Code reuse (of open source well tested libraries), follow documentation and follow the PEP-8 style guide (or whatever PyCharm encourages).
+
+Incremental development.
+
+Modular structure: e.g. data processing, graph construction, graph neural network modules, robustness evaluation framework. Figure out where validation and cross validation sections should be (while training, separately etc.)
+
+Diagram of the pipelines and module interaction (like in google design docs)
+
+
+\section{Choice of tools}
+PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices, IDEs, backup strategies
+
+\section{Starting point}
