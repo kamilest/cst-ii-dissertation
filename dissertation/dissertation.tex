@@ -107,6 +107,14 @@ Why population graphs are a nice approach (use of multimodal data; individual pa
 % Novelty and challenges
 Why my work is novel (applying a new population graph framework to a different – and more challenging – problem).
 
+\section{Related work}
+
+\subsection{Population graphs}
+Semisupervised population graphs in Parisot et al. for classifying healthy patients and patients having Mild Cognitive Impairment/Alzheimer's or autism spectrum disorder. These achieve state-of-the-art accuracies around 70\% even for a binary classification task which indicates that brain conditions are generally a complex task. Due to the different nature of the task and different evaluation metrics, this performance cannot be directly compared to the predictive power of the brain age regression task.
+
+\subsection{Brain age prediction from neuroimaging data}
+Recent paper by Kaufmann et al. uses extreme gradient boosting (XGBoost) methods to predict the brain age from structural brain imaging data, but without considering the patient population as a whole through the use of a graph. Analyses a significantly larger dataset (around 45,000 brains compared to 17,000). The five-fold cross-validation results in performance of $r \sim 0.93$ for male brains and $r \sim 0.94$ for female brains.
+
 \chapter{Preparation}
 % Principally, this chapter should describe the work which was undertaken before code was written, hardware built or theories worked on. It should show how the project proposal was further refined and clarified, so that the Implementation stage could go smoothly rather than by trial and error.
 % Throughout this chapter and indeed the whole dissertation, it is essential to demonstrate that a proper professional approach was employed.
@@ -114,23 +122,37 @@ Why my work is novel (applying a new population graph framework to a different �
 % The chapter will cite any new programming languages and systems which had to be learnt and will mention complicated theories or algorithms which required understanding.
 % It is essential to declare the Starting Point (see Section 7). This states any existing codebase or materials that your project builds on. The text here can commonly be identical to the text in your proposal, but it may enlarge on it or report variations. For instance, the true starting point may have turned out to be different from that declared in the proposal and such discrepancies must be explained.
 
-\section{Neural networks}
-Overfitting. Regularisation.
-
-\section{Graph spectral filters/graph convolution theory}
-
-\section{Graph attention and graph convolution}
-
 \section{Data preprocessing}
+UK Biobank data preprocessed by Dr Richard Bethlehem.
+
+Describe functional, structural and phenotype features. Brain parcellation atlases. Correlation matrices. Patient exclusion and preprocessing.
+
+Garbage in, garbage out. Data preprocessing unsurprisingly turned out to be the most difficult and the most important data processing task.
 
 \subsection{Structural data}
+Describe various techniques, e.g. normalisation,...
 
 \subsection{Functional data}
 \textit{Turns out functional data is not as effective as structural brain imaging data.}
 
+Description of correlation matrix computation.
+
 \subsection{Phenotype data}
 
 \section{Population graphs}
+Mathematical formulation of the graphs.
+
+\subsection{Similarity metrics}
+
+\subsection{Computational model}
+Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
+
+\section{Multilayer perceptrons}
+The multilayer perceptron maths, if appropriate.
+
+\section{Graph convolutional networks}
+
+\section{Graph attention networks}
 
 \section{Requirements analysis and professional practice}
 
@@ -138,7 +160,9 @@ Implementing a flexible preprocessing pipeline which could be customised in the 
 
 Description of software engineering techniques: planning out and executing the project based on requirements analysis, planning things on time and smoothly meeting the success criteria.
 
-\section{Programming languages and systems learnt}
+Tasks to be implemented (according to proposal: work to be done, success criteria, possible extensions), their relative importance (priority) and difficulty. Provide the order in which the tasks should be carried out to show good planning skills and account for the changes in proposal where the preprocessing pipeline turned out to be more important than the neural network implementation.
+
+\section{Choice of tools}
 PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices, IDEs, backup strategies
 
 \section{Starting point}
@@ -211,6 +235,7 @@ One of the advantages of the graphs that they \textit{should} be interpretable I
 \section{Successes and failures}
 
 \section{The project in hindsight (lessons learnt)}
+Lessons learnt: graph \textit{representation} is more important than the framework used. Good representations of the dataset can help guide the learning algorithm in the right way as it gets the intuitions faster just because of the way the data was represented in the first place. It's not good if it captures bias, but in this case representation made the difference between the model not learning anything and the model getting great results.
 
 \section{Possible continuations of the project}
 
@@ -228,7 +253,7 @@ One of the advantages of the graphs that they \textit{should} be interpretable I
 \chapter{Neuroimaging data}
 
 \chapter{Project Proposal}
-\input{proposal}
+% \input{proposal}
 % \bibliography{references-proposal}
 
 \end{document}
