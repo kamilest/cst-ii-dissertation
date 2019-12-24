@@ -7,6 +7,9 @@
 \section{The project in hindsight (lessons learnt)}
 Lessons learnt: graph \textit{representation} is more important than the framework used. Good representations of the dataset can help guide the learning algorithm in the right way as it gets the intuitions faster just because of the way the data was represented in the first place. It's not good if it captures bias, but in this case representation made the difference between the model not learning anything and the model getting great results.
 
+Was a mistake analysing functional data first without analysing the other methods in detail. Functional imaging data by itself gave very high dimensionality which either could not be learnt by the network because of the low number of examples or other factors. Most of the literature uses just the structural data for age prediction, and indeed this turned out to be more effective. Also makes sense intuitively as structural features would be related to the signs of brain atrophy while it is not clear the pattern of how resting state brain activity would change with ageing brain.
+
+
 \section{Possible continuations of the project}
 \begin{itemize}
     \item Include DNA methylation data as it is widely used in other studies and is claimed to improve the predictive power of the model \cite{cole2018brain}.
