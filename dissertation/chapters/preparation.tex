@@ -5,22 +5,44 @@
 % The chapter will cite any new programming languages and systems which had to be learnt and will mention complicated theories or algorithms which required understanding.
 % It is essential to declare the Starting Point (see Section 7). This states any existing codebase or materials that your project builds on. The text here can commonly be identical to the text in your proposal, but it may enlarge on it or report variations. For instance, the true starting point may have turned out to be different from that declared in the proposal and such discrepancies must be explained.
 
+\section{Brain age estimation}
+\subsection{Rationale behind the brain age}
+\textit{what is brain age how does it differ from the chronological age why chronological age can be used to predict the brain age}
+
 \section{Data preprocessing}
-UK Biobank data preprocessed by Dr Richard Bethlehem.
+% UK Biobank data preprocessed by Dr Richard Bethlehem.
 
-Describe functional, structural and phenotype features. Brain parcellation atlases. Correlation matrices. Patient exclusion and preprocessing.
+% Describe functional, structural and phenotype features. Brain parcellation atlases. Correlation matrices. Patient exclusion and preprocessing.
 
-Garbage in, garbage out. Data preprocessing unsurprisingly turned out to be the most difficult and the most important data processing task.
+% Garbage in, garbage out. Data preprocessing unsurprisingly turned out to be the most difficult and the most important data processing task.
+
+The United Kingdom Biobank (UK Biobank) \cite{sudlow2015uk}. This is a continuous, large, population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data that is used by the researchers to analyse the risk factors and development of various health conditions. 
+
+Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records that have been denoised, motion-corrected and otherwise processed for further analysis, a total of 17,550 participants. The data has been initially preprocessed with the standard UK Biobank pipelines,\footnote{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf} and further denoised, parcellated and kindly provided by Dr Richard Bethlehem of the Department of Psychiatry.\footnote{Pipelines for preprocessing the UKB dataset at the Department of Psychiatry https://github.com/ucam-department-of-psychiatry/UKB} The details on this processing are described below.
+
 
 \subsection{Structural data}
-Describe various techniques, e.g. normalisation,...
+Structural brain imaging data encapsulates brain features related to its structure, such as cortical thickness, white 
+
+Combined T1-weighted and T2-weighted FLAIR images which emphasise different aspects of the MRI scan and therefore might help to extract different structural features. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features using the HCP Freesurfer pipeline.\footnote{https://www.ncbi.nlm.nih.gov/pubmed/23668970} 
+
+\subsubsection{Euler indices}
+Euler indices are a quality control measure and corresponds to the number of times Freesurfer neuroimaging analysis software failed to connect two slices of the brain image. The higher the Euler index, the worse quality of the scan. These indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Otherwise it can be used as a covariate in a machine learning model (as brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
+
+Rafael Romero-Garica (rr480), Lisa Ronan (lr344) and Richard A.I. Bethlehem (rb643)
 
 \subsection{Functional data}
 \textit{Turns out functional data is not as effective as structural brain imaging data.}
 
 Description of correlation matrix computation.
 
+\subsection{Parcellation}
+A \textit{parcellation} or \textit{atlas} refers to the way the brain is split into meaningful regions for further analysis. Whether two voxels of a brain belong to the same parcel may depend on their proximity, empirical evidence of that the voxels are responsible for the same function and so forth, and can be used to compare the locations in two different brains. When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
+
+Both functional and structural datasets use one of the most common parcellations by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+
 \subsection{Phenotype data}
+For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
 
 \section{Population graphs}
 Mathematical formulation of the graphs.
@@ -61,3 +83,9 @@ Diagram of the pipelines and module interaction (like in google design docs)
 PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices, IDEs, backup strategies
 
 \section{Starting point}
+\begin{itemize}
+    \item dataset, preprocessed by Dr Richard Bethlehem
+    \item PyTorch, PyTorch geometric implementing GCN and GAT APIs and the graph API
+    \item no previous experience with graph neural networks or the mathematics behind it
+    \item no previous experience with PyTorch; limited experience with machine learning frameworks (basics of TensorFlow), no experience with neuroimaging data
+\end{itemize}
