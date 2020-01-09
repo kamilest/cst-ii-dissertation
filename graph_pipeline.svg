@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="graph_pipeline.svg"
+   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 210 297"
+   height="297mm"
+   width="210mm">
+  <defs
+     id="defs2">
+    <rect
+       id="rect991"
+       height="45.350127"
+       width="45.350127"
+       y="87.774439"
+       x="44.252947" />
+    <rect
+       id="rect985"
+       height="10.606078"
+       width="10.971805"
+       y="55.956205"
+       x="19.017795" />
+    <rect
+       id="rect979"
+       height="16.823434"
+       width="35.475503"
+       y="126.90721"
+       x="67.293737" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-grids="true"
+     inkscape:window-maximized="0"
+     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:window-height="900"
+     inkscape:window-width="1440"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="mm"
+     inkscape:cy="312.2718"
+     inkscape:cx="134.68694"
+     inkscape:zoom="1.2606729"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <text
+       id="text12"
+       y="109.13484"
+       x="14.061604"
+       style="font-size:3.52776999999999985px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583;stroke:none;stroke-opacity:1;"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583;stroke:none;stroke-opacity:1;"
+         y="109.13484"
+         x="14.061604"
+         id="tspan10"
+         sodipodi:role="line">data collection</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       x="49.879375"
+       y="95.75705"
+       id="text12-1"><tspan
+         sodipodi:role="line"
+         id="tspan10-5"
+         x="49.879375"
+         y="95.75705"
+         style="stroke-width:0.264583">functional MRI</tspan></text>
+    <text
+       id="text40"
+       y="105.98672"
+       x="49.879375"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="105.98672"
+         x="49.879375"
+         id="tspan38"
+         sodipodi:role="line">structural MRI</tspan></text>
+    <text
+       id="text44"
+       y="115.43107"
+       x="49.879375"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="115.43107"
+         x="49.879375"
+         id="tspan42"
+         sodipodi:role="line">quality control</tspan></text>
+    <text
+       id="text48"
+       y="125.08532"
+       x="49.879375"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;fill:none;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="fill:none;stroke-width:0.264583"
+         y="125.08532"
+         x="49.879375"
+         id="tspan46"
+         sodipodi:role="line">phenotype</tspan></text>
+    <text
+       id="text52"
+       y="151.94928"
+       x="14.691229"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="151.94928"
+         x="14.691229"
+         id="tspan50"
+         sodipodi:role="line">similarity function</tspan></text>
+    <text
+       id="text56"
+       y="152.5789"
+       x="53.518051"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="152.5789"
+         x="53.518051"
+         id="tspan54"
+         sodipodi:role="line">edge index</tspan></text>
+    <text
+       id="text60"
+       y="137.88768"
+       x="122.35693"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="137.88768"
+         x="122.35693"
+         id="tspan58"
+         sodipodi:role="line">age labels</tspan></text>
+    <text
+       id="text64"
+       y="35.049072"
+       x="13.222104"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="35.049072"
+         x="13.222104"
+         id="tspan62"
+         sodipodi:role="line">training specification</tspan></text>
+    <text
+       id="text68"
+       y="22.456591"
+       x="68.629021"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="22.456591"
+         x="68.629021"
+         id="tspan66"
+         sodipodi:role="line">simple train</tspan></text>
+    <text
+       id="text72"
+       y="31.481201"
+       x="69.468521"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="31.481201"
+         x="69.468521"
+         id="tspan70"
+         sodipodi:role="line">evaluate</tspan></text>
+    <text
+       id="text76"
+       y="32.320702"
+       x="114.38171"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="32.320702"
+         x="114.38171"
+         id="tspan74"
+         sodipodi:role="line">cross-validation</tspan></text>
+    <text
+       id="text975"
+       y="125.44431"
+       x="49.879375"
+       style="font-size:3.52777px;line-height:1.25;font-family:sans-serif;stroke-width:0.264583"
+       xml:space="preserve"><tspan
+         style="stroke-width:0.264583"
+         y="125.44431"
+         x="49.879375"
+         id="tspan973"
+         sodipodi:role="line">phenotype</tspan></text>
+    <text
+       style="line-height:1.25;font-family:sans-serif;font-size:3.52777778000000009px;shape-inside:url(#rect979);white-space:pre;"
+       id="text977"
+       xml:space="preserve" />
+    <text
+       style="line-height:1.25;font-family:sans-serif;font-size:3.52777778000000009px;shape-inside:url(#rect991);white-space:pre;"
+       id="text989"
+       xml:space="preserve" />
+  </g>
+</svg>
