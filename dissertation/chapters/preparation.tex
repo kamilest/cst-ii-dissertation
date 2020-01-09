@@ -5,6 +5,8 @@
 % The chapter will cite any new programming languages and systems which had to be learnt and will mention complicated theories or algorithms which required understanding.
 % It is essential to declare the Starting Point (see Section 7). This states any existing codebase or materials that your project builds on. The text here can commonly be identical to the text in your proposal, but it may enlarge on it or report variations. For instance, the true starting point may have turned out to be different from that declared in the proposal and such discrepancies must be explained.
 
+This section describes the main concepts related to the development of the population graph networks, the neuroimaging data they build on, and the neural network architectures that will be used to learn the patterns in those graphs.
+
 \section{Brain age estimation}
 \subsection{Rationale behind the brain age}
 \textit{what is brain age how does it differ from the chronological age why chronological age can be used to predict the brain age}
@@ -45,7 +47,7 @@ Both functional and structural datasets use one of the most common parcellations
 For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
 
 \section{Population graphs}
-Mathematical formulation of the graphs.
+
 
 \subsection{Similarity metrics}
 
@@ -84,7 +86,7 @@ PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, messa
 
 \section{Starting point}
 \begin{itemize}
-    \item dataset, preprocessed by Dr Richard Bethlehem
+    \item dataset, preprocessed by Dr Richard A.I. Bethlehem
     \item PyTorch, PyTorch geometric implementing GCN and GAT APIs and the graph API
     \item no previous experience with graph neural networks or the mathematics behind it
     \item no previous experience with PyTorch; limited experience with machine learning frameworks (basics of TensorFlow), no experience with neuroimaging data
