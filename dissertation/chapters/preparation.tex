@@ -47,8 +47,17 @@ We are interested in estimating which parts of the brain are connected to each o
 
 where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation.
 
-It is common to derive the \textit{functional connectivity matrix} that stores the pairwise correlations between the different voxels as the overall representation of functional brain connectivity.
+It is common to derive the \textit{functional connectivity matrix} that stores the pairwise correlations between the different voxels as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
 
+\begin{equation}
+    \mathrm{fcm} = \begin{bmatrix}
+        r(T_1, T_1) & \cdots & r(T_1, T_N) \\
+        \vdots & \ddots & \vdots \\
+        r(T_N, T_1) & \cdots & r(T_N, T_N)
+    \end{bmatrix},
+\end{equation}
+
+of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually taken in the machine learning implementations.
 
 \subsection{Phenotype data}
 For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
