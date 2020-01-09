@@ -4,6 +4,7 @@
 
 stankeviciute_project_proposal.pdf
 project-proposal-notes.pdf
+dissertation/*.pdf
 
 
 .vscode 
@@ -437,4 +438,4 @@ notes/readings_notes.md
 notes/meeting_20191012.md
 
 *.html
-dissertation/dissertation.pdf
+
