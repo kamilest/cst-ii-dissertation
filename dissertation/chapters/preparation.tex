@@ -65,11 +65,14 @@ For the population graph construction, the neuroimaging features are associated 
 \textit{include a table of the actual phenotypes used when the results are ready}
 
 \section{Population graphs}
+We connect the multi-modal MRI imaging (structural and/or functional), quality control and phenotype data of the set of patients $S$ into a sparse \textit{population graph} $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$, where $\mathcal{V}$ is the set of graph vertices (with one vertex uniquely representing one patient), and $\mathcal{E}$ is the set of edges (representing the \textit{similarity} of patients).
 
+Each vertex $v \in \mathcal{V}$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in \mathcal{E}$ connects patients $v$ and $w$ based on phenotypic similarity that is defined by some \textit{similarity metric} as described below.
 
 \subsection{Similarity metrics}
 
-\subsection{Computational model}
+
+\subsection{Population graph training}
 Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
 
 \section{Multilayer perceptrons}
