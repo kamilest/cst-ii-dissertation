@@ -10,8 +10,35 @@ This section presents the mathematical definition of the population graphs, the 
 % In addition it presents the requirements to the implementation of this project and the software engineering principles that have been used to ensure 
 
 \section{Brain age estimation}
-\subsection{Rationale behind the brain age}
+To estimate the brain age gap the difference between the chronological and the brain age must be known. The common technique is to develop a machine learning method to estimate the chronological age from the brain imaging features. The estimated age is then considered to be the brain age although it has been trained to estimate the chronological age and the actual value of the brain age is never known. The reason is why it works... \cite{niu2019improved}
 
+We represent the brain age $y_b$ as the sum of the known chronological age $y_c$ and the unknown brain age gap $\varepsilon_g$:
+
+\begin{equation}
+    y_b = y_c + \varepsilon_g.
+\end{equation}
+
+On the other hand, the machine learning model estimates the brain age $y_b$ from some function of the brain imaging features $X$ and a prediction error $\varepsilon_e$:
+
+\begin{equation}
+    y_b = f(X) + \varepsilon_e.    
+\end{equation}
+
+Expressing $y_c$ as $y_b - \varepsilon_g$ and substituting the previous result, we get the estimate of chronological age as
+
+\begin{equation}
+    y_c = f(X) + \varepsilon_g - \varepsilon_e,
+\end{equation}
+
+Since the machine learning models estimate chronological age as a function of brain imaging features (with some estimation error $\varepsilon_e'$)
+
+\begin{equation}
+    y_c = f(X) + \varepsilon_e',
+\end{equation}
+
+the error of the proposed machine learning model $\varepsilon_e'$ will contain in itself both the brain age gap $\varepsilon_g$ (which we are interested in) and the brain age prediction error $\varepsilon_e$.
+
+It is out of scope of this dissertation to prove that the brain age gap component $\varepsilon_g$ is larger than the error term; however, the keen reader is referred to Niu et al. \cite{niu2019improved} where this is verified through correlation of the brain age gaps to the cognitive behaviour scores.
 
 \section{Neuroimaging dataset}
 
@@ -74,9 +101,6 @@ Each vertex $v \in \mathcal{V}$ is the vector containing the individual subject'
 
 \subsection{Population graph training}
 Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
-
-\section{Multilayer perceptrons}
-The multilayer perceptron maths, if appropriate.
 
 \section{Graph convolutional networks}
 
