@@ -64,7 +64,7 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 \subsection{Functional data}
 The resting state functional MRI (rs-fMRI) is the representation of the brain activity over time. In MRI scanner this is measured by the changes in blood oxygenation as neural activity regulates the oxygen demand, resulting in blood oxygenation level dependent (BOLD) time-series measured at each voxel of the brain.
 
-\textit{figure of BOLD timeseries}
+TODO \textit{figure of BOLD timeseries}
 
 We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that parts of the brain that have related function would also have similar activity patterns. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
@@ -93,7 +93,7 @@ of which (due to symmetry and the non-informative diagonal) only the flattened l
 \subsection{Phenotype data}
 For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
 
-\textit{include a table of the actual phenotypes used when the results are ready}
+TODO \textit{a table of the actual phenotypes used when the results are ready}
 
 \section{Population graphs}
 % TODO connection between the subject set S and vertex set V through S_v or something
@@ -120,7 +120,13 @@ To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise
 \end{equation}
 
 \subsection{Training task}
-Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
+% Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
+
+A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (\textit{epoch}), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
+
+TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen}
+
+
 
 \section{Graph convolutional networks}
 
