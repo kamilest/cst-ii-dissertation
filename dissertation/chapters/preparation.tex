@@ -59,14 +59,14 @@ Structural brain imaging data encapsulates brain features related to its structu
 Combined T1-weighted and T2-weighted FLAIR images which emphasise different aspects of the MRI scan and therefore might help to extract different structural features. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
 
 \subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control measure and corresponds to the number of times the Freesurfer brain reconstruction software failed to connect two slices of an MRI image. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Otherwise they can be used as a covariate in a machine learning model (as brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
+Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric and corresponds to the number of times the Freesurfer brain reconstruction software failed to connect two slices of an MRI image. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Otherwise they can be used as a covariate in a machine learning model (as brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
 
 \subsection{Functional data}
 The resting state functional MRI (rs-fMRI) is the representation of the brain activity over time. In MRI scanner this is measured by the changes in blood oxygenation as neural activity regulates the oxygen demand, resulting in blood oxygenation level dependent (BOLD) time-series measured at each voxel of the brain.
 
 \textit{figure of BOLD timeseries}
 
-We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that parts of the brain that have related function would also have similar activity patterns. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} $r$ is computed as
+We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that parts of the brain that have related function would also have similar activity patterns. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
 \begin{equation}
     r(T_1, T_2) = \frac{\mathrm{cov}(T_1, T_2)}{\sigma_{T_1} \sigma_{T_2}}
@@ -74,7 +74,11 @@ We are interested in estimating which parts of the brain are connected to each o
 
 where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation.
 
-It is common to derive the \textit{functional connectivity matrix} that stores the pairwise correlations between the different voxels as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
+% TODO (Pearson's, lasso, partial correlation, covariance)
+% Tiago's observation that partial correlation may give better results when including functional MRI time-series in the machine learning model.
+% From wiki on partial correlation: In probability theory and statistics, partial correlation measures the degree of association between two random variables, with the effect of a set of controlling random variables removed. If we are interested in finding whether or to what extent there is a numerical relationship between two variables of interest, using their correlation coefficient will give misleading results if there is another, confounding, variable that is numerically related to both variables of interest. This misleading information can be avoided by controlling for the confounding variable, which is done by computing the partial correlation coefficient. This is precisely the motivation for including other right-side variables in a multiple regression; but while multiple regression gives unbiased results for the effect size, it does not give a numerical value of a measure of the strength of the relationship between the two variables of interest.
+
+This (or other correlation types) to derive the \textit{functional connectivity matrix} that stores the pairwise correlations between the different voxels as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
 
 \begin{equation}
     \mathrm{fcm}(T_1, \dots, T_N) = \begin{bmatrix}
@@ -84,7 +88,7 @@ It is common to derive the \textit{functional connectivity matrix} that stores t
     \end{bmatrix},
 \end{equation}
 
-\textit{of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used for the machine learning implementations.}
+of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used for the machine learning implementations.
 
 \subsection{Phenotype data}
 For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
@@ -92,14 +96,30 @@ For the population graph construction, the neuroimaging features are associated 
 \textit{include a table of the actual phenotypes used when the results are ready}
 
 \section{Population graphs}
+% TODO connection between the subject set S and vertex set V through S_v or something
+
 We connect the multi-modal MRI imaging (structural and/or functional), quality control and phenotype data of the set of patients $S$ into a sparse \textit{population graph} $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$, where $\mathcal{V}$ is the set of graph vertices (with one vertex uniquely representing one patient), and $\mathcal{E}$ is the set of edges (representing the \textit{similarity} of patients).
 
 Each vertex $v \in \mathcal{V}$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in \mathcal{E}$ connects patients $v$ and $w$ based on phenotypic similarity that is defined by some \textit{similarity metric} as described below.
 
 \subsection{Similarity metrics}
+The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create connections between the nodes containing brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, subject's sex has an impact on the brain volume) as well as to cluster patients into the most informative neighbourhoods where the predicted variable (brain age) explains the most variance in node features.
 
+Similarity metrics are defined using some \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar the subjects):
 
-\subsection{Population graph training}
+\begin{equation}
+    \mathrm{sim}(S_v, S_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(v) = M_i(w)].
+\end{equation}
+
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used in computing subject similarity (such as sex, mental health, fluid intelligence score etc.) and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $S_v$ and $S_w$.
+
+To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise the size of the neighbourhood to only the highly similar subjects, a \textit{similarity threshold} $\theta$ is defined such that
+
+\begin{equation}
+    (S_v, S_w) \in \mathcal{E} \Leftrightarrow \mathrm{sim}(S_v, S_w) \geq \theta.
+\end{equation}
+
+\subsection{Training task}
 Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
 
 \section{Graph convolutional networks}
