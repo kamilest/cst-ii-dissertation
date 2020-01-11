@@ -58,7 +58,7 @@ Structural brain imaging data encapsulates brain features related to its structu
 
 Combined T1-weighted and T2-weighted FLAIR images which emphasise different aspects of the MRI scan and therefore might help to extract different structural features. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
 
-\subsubsection{Euler indices}
+\subsection{Euler indices}
 Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control measure and corresponds to the number of times the Freesurfer brain reconstruction software failed to connect two slices of an MRI image. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Otherwise they can be used as a covariate in a machine learning model (as brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
 
 \subsection{Functional data}
