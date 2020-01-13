@@ -113,6 +113,8 @@ Similarity metrics are defined using some \textit{similarity function} $\mathrm{
 
 Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used in computing subject similarity (such as sex, mental health, fluid intelligence score etc.) and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $S_v$ and $S_w$.
 
+TODO \textit{Qualitative (categorial) metrics can be defined as Kronecker delta $\delta$ and quantitative (numerical) metrics have an indicator whether the distance between values $M_i(v)$ and $M_i(w)$ is within some $\epsilon$.}
+
 To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise the size of the neighbourhood to only the highly similar subjects, a \textit{similarity threshold} $\theta$ is defined such that
 
 \begin{equation}
@@ -121,14 +123,18 @@ To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise
 
 \subsection{Training task}
 % Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
+\cite{kipf2017semi}: The task is to predict the label of the nodes, where the labels are visible only for the training and validation but not the test nodes. Semi-supervised learning allows the label information and parameter weights to spread to node neighbourhoods to the similar nodes as defined by the similarity metric, 
+
 
 A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (\textit{epoch}), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
+
+Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}
 
 TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen}
 
 
-
 \section{Graph convolutional networks}
+
 
 \section{Graph attention networks}
 
@@ -153,7 +159,7 @@ Diagram of the pipelines and module interaction (like in google design docs)
 
 
 \section{Choice of tools}
-PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, timeseries preprocessing into correlation matrices, IDEs, backup strategies
+PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, time-series preprocessing into correlation matrices, IDEs, backup strategies
 
 \section{Starting point}
 \begin{itemize}
