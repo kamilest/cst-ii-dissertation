@@ -96,7 +96,7 @@ For the population graph construction, the neuroimaging features are associated 
 TODO \textit{a table of the actual phenotypes used when the results are ready}
 
 \section{Population graphs}
-% TODO connection between the subject set S and vertex set V through S_v or something
+% TODO connection between the subject set S and vertex set V through S_v or something, i.e. connect subject and vertex sets in a clearer way.
 
 We connect the multi-modal MRI imaging (structural and/or functional), quality control and phenotype data of the set of patients $S$ into a sparse \textit{population graph} $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$, where $\mathcal{V}$ is the set of graph vertices (with one vertex uniquely representing one patient), and $\mathcal{E}$ is the set of edges (representing the \textit{similarity} of patients).
 
@@ -118,7 +118,7 @@ TODO \textit{Qualitative (categorial) metrics can be defined as Kronecker delta 
 To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise the size of the neighbourhood to only the highly similar subjects, a \textit{similarity threshold} $\theta$ is defined such that
 
 \begin{equation}
-    (S_v, S_w) \in \mathcal{E} \Leftrightarrow \mathrm{sim}(S_v, S_w) \geq \theta.
+    (S_v, S_w) \in \mathcal{E} \iff \mathrm{sim}(S_v, S_w) \geq \theta.
 \end{equation}
 
 \subsection{Training task}
@@ -128,14 +128,18 @@ To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise
 
 A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (\textit{epoch}), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
 
-Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}
+Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
 
 TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen}
 
 
 \section{Graph convolutional networks}
 
+TODO Graph definition through degree and adjacency matrices, the weights of the edges being binary (either no edge or a weight-1 edge). Graph Laplacian. Diagonalisation of Laplacian matrix because it's positive semi-definite. Spatial vs spectral graph domains. Graph Fourier transform. Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation. Note that the basis depends completely on the graph structure and slight permutation can change the eigenbasis. Graph convolution with a filter $g$ as multiplication of signal and filter in the Fourier domain. Parametric and non-parametric convolution filters using this $g_\theta$; what does $\theta$ mean in relation to the Fourier coefficients; what exactly Fourier coefficients refer to. Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies. Approximation of the Laplacian diagonalisation with Chebyshev polynomials (ChebNet) with the convolution defined for $k$-th order polynomials corresponding to $k$ hops across neighbourhood. \cite{defferrard2016convolutional} Kipf and Welling simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. \cite{kipf2017semi} Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying} (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow); can also mention \cite{wu2019comprehensive}; convolution on regular vs irregular grids (i.e. intro to simple convolution before carrying on?); \cite{defferrard2016convolutional}: "convolution is linear operator that diagonalises in the fourier domain represented by the eigenvectors of the Laplacian operator"
 
+\subsection{Graph Fourier transform}
+
+\subsection{Renormalistation trick}
 \section{Graph attention networks}
 
 \section{Requirements analysis}
