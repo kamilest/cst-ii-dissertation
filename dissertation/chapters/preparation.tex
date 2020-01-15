@@ -125,7 +125,6 @@ To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise
 % Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
 \cite{kipf2017semi}: The task is to predict the label of the nodes, where the labels are visible only for the training and validation but not the test nodes. Semi-supervised learning allows the label information and parameter weights to spread to node neighbourhoods to the similar nodes as defined by the similarity metric, 
 
-
 A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (\textit{epoch}), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
 
 Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
@@ -137,10 +136,52 @@ TODO \textit{an illustration of the graph with marked training and validation no
 
 TODO Graph definition through degree and adjacency matrices, the weights of the edges being binary (either no edge or a weight-1 edge). Graph Laplacian. Diagonalisation of Laplacian matrix because it's positive semi-definite. Spatial vs spectral graph domains. Graph Fourier transform. Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation. Note that the basis depends completely on the graph structure and slight permutation can change the eigenbasis. Graph convolution with a filter $g$ as multiplication of signal and filter in the Fourier domain. Parametric and non-parametric convolution filters using this $g_\theta$; what does $\theta$ mean in relation to the Fourier coefficients; what exactly Fourier coefficients refer to. Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies. Approximation of the Laplacian diagonalisation with Chebyshev polynomials (ChebNet) with the convolution defined for $k$-th order polynomials corresponding to $k$ hops across neighbourhood. \cite{defferrard2016convolutional} Kipf and Welling simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. \cite{kipf2017semi} Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying} (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow); can also mention \cite{wu2019comprehensive}; convolution on regular vs irregular grids (i.e. intro to simple convolution before carrying on?); \cite{defferrard2016convolutional}: "convolution is linear operator that diagonalises in the fourier domain represented by the eigenvectors of the Laplacian operator"
 
+
+\cite{velickovic2018graph}: graph definition in the Fourier domain based on the eigendecomposition of the graph Laplacian, filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet); further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
+
 \subsection{Graph Fourier transform}
 
-\subsection{Renormalistation trick}
+
 \section{Graph attention networks}
+\cite{velickovic2018graph} More based on the non-spectral (i.e. spatial) approaches where an operator is defined to work on the neighbourhoods of different sizes, maintaining the weight sharing property (usually done by defining a separate operator on the neighbourhoods of those sizes).
+
+
+\textit{Self-attention} is also added in to the concept where different parts of the node's neighbourhood are considered with different importance weights, getting a representation of the rest of the neighbourhood. 
+
+
+\subsection{Graph attentional layer}
+For the layer of an $N$-node graph with $F$ input and $F'$ output features, 
+
+input node features $\mathbf{h} = \{\vec{h}_1, \dots, \vec{h}_N\}, \vec{h_i} \in \mathbb{R}^F$
+
+output node features $\mathbf{h}' = \{\vec{h}_1', \dots, \vec{h}_N'\}, \vec{h}_i' \in \mathbb{R}^{F'}$
+
+linear transformation with weight matrix $\mathbf{W} \in \mathbb{R}^{F' \times F}$
+
+self attention $a: \mathbb{R}^{F'} \times \mathbb{R}^{F'} \rightarrow \mathbb{R}$
+
+attention coefficients \textit{can already include neighbourhoods} $e_{ij} = \mathbf{a}(\mathbf{W}\vec{h}_i, \mathbf{W}\vec{h}_j)$
+
+
+
+weight vector $\mathbf{a} \in \mathbb{R}^{2F'}$
+
+\begin{align}
+    \alpha_{ij} &= \mathrm{softmax}_j(\mathbf{a}^T[\mathbf{W}\vec{h}_i \parallel \mathbf{W}\vec{h}_j]) \\
+    &=  \frac{\mathrm{exp}\left(\sigma_1(\mathbf{a}^T[\mathbf{W}\vec{h}_i \parallel \mathbf{W}\vec{h}_j])\right)}{\sum\limits_{k \in \mathcal{N}_i}\mathrm{exp}\left(\sigma_1(\mathbf{a}^T[\mathbf{W}\vec{h}_i \parallel \mathbf{W}\vec{h}_k])\right)}
+\end{align}
+
+where $\alpha_{ij}$ is the attention coefficient for an edge $i\leadsto j$ (corresponding to the importance of features in node $j$ to the features in node $i$), normalised across $i$'s neighbourhood $\mathcal{N}_i$ (defined as e.g. all nodes one hop away); $\sigma_1$ is a non-linearity.
+
+The coefficients $\alpha_{ij}$ and the weight matrix are used to compute the output features:
+
+\begin{equation}
+    \mathbf{h}_i = \sigma(\sum\limits_{k \in \mathcal{N}_i} \alpha_{ij}\mathbf{W}\mathbf{h}_j)
+\end{equation}
+
+\subsection{Multiple attention}
+
+
 
 \section{Requirements analysis}
 
