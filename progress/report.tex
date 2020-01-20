@@ -1,0 +1,77 @@
+\documentclass[10pt]{article}
+%% Language and font encodings
+\usepackage[british]{babel}
+
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=3cm,left=2cm,right=2cm]{geometry}
+
+\setlength{\columnsep}{12pt}
+
+\usepackage{amsmath,amssymb}  % Better maths support & more symbols
+\usepackage{bm}  % Define \bm{} to use bold math fonts
+\usepackage{mathtools}
+
+\usepackage[shortlabels]{enumitem}
+\usepackage[normalem]{ulem}
+
+\usepackage[utf8]{inputenc} % Any characters can be typed directly from the keyboard, eg ÃÂ©ÃÂ§ÃÂ±
+\DeclareUnicodeCharacter{2212}{-}
+
+\usepackage{parskip}
+\usepackage{graphicx}
+
+\usepackage{subcaption}
+
+\usepackage{tabularx}
+
+\usepackage{hyperref}
+\urlstyle{same}
+
+% \renewcommand{\cfttoctitlefont}{\fontsize{12}{15}\selectfont\bfseries}
+% \renewcommand\cftsecfont{\small}
+% \renewcommand\cftsecafterpnum{\vskip 0pt}
+% \renewcommand\cftsecpagefont{\small}
+
+\usepackage{pdfsync}  % enable tex source and pdf output synchronicity
+
+
+\begin{document}
+\begin{center}
+\Large
+Computer Science Tripos -- Part II -- Progress Report\\[4mm]
+\large
+Kamilė Stankevičiūtė (\texttt{ks830}) \\ Gonville \& Caius College
+
+\today % October 2019
+\end{center}
+
+\vspace{5mm}
+
+\textbf{Project Title:} Graph neural networks for age prediction from neuroimaging data
+
+\textbf{Project Supervisors:} Tiago Azevedo, Alexander Campbell, Prof Pietro Liò
+
+\textbf{Directors of Studies:} Dr Timothy~M.~Jones, Dr Graham~Titmus
+
+\textbf{Project Overseers:} Prof Jon~Crowcroft, Dr Thomas~Sauerwald
+
+\section*{Summary of work completed}
+% An indication of what work has been completed and how this relates to the timetable and work plan in the original proposal. 
+
+I have completed the G1) framework for data collection, cleaning and processing, G2) customisable population graph construction pipeline and a pipeline for custom similarity function generation, G3/G4) base customisable implementations of graph convolutional network and graph attention network as well as some non-graph baselines with E1) relevant logging and cross-validation frameworks to track the performance of each model. 
+
+These directly correspond to the items listed in the \textbf{Work to be done} section of my project proposal.
+
+\section*{Progress in relation to the original schedule}
+% The progress report should answer the following questions:
+% Is the project on schedule and if not, how many weeks behind (or ahead)?
+The project is on schedule although the time spent on implementing each of the requirements has changed significantly. The data processing and graph construction pipeline was more complex than expected, especially since I focues on making it 
+
+% What unexpected difficulties have arisen?
+% Briefly, what has been accomplished?
+% It should be possible to understand the progress report independently of the original proposal, thus ‘I have completed implementing the wombat module’ rather than ‘I have completed points 1 and 3 in the proposal but not point 2’.
+% In straightforward cases (entirely on schedule), one side of A4 could suffice. If the project is in difficulties, a new workplan should be included.
+
+\end{document}
