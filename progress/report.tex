@@ -1,4 +1,4 @@
-\documentclass[10pt]{article}
+\documentclass[12pt]{article}
 %% Language and font encodings
 \usepackage[british]{babel}
 
@@ -51,7 +51,7 @@ Kamilė Stankevičiūtė (\texttt{ks830}) \\ Gonville \& Caius College
 
 \textbf{Project Title:} Graph neural networks for age prediction from neuroimaging data
 
-\textbf{Project Supervisors:} Tiago Azevedo, Alexander Campbell, Prof Pietro Liò
+\textbf{Project Supervisors:} Tiago Azevedo, Alexander Campbell
 
 \textbf{Directors of Studies:} Dr Timothy~M.~Jones, Dr Graham~Titmus
 
@@ -66,9 +66,7 @@ These directly correspond to the items listed in the \textbf{Work to be done} se
 \section*{Progress in relation to the original schedule}
 % The progress report should answer the following questions:
 % Is the project on schedule and if not, how many weeks behind (or ahead)?
-The project is on schedule although the order of tasks and time spent on implementing each of the deliverables has changed significantly. The data processing and graph construction pipeline took a lot more time than expected, while graph neural networks themselves took less time. This was because of the difficulties in processing multiple modalities of the data (which had to be done separately for each type of data), cross-checking and correctly stratifying subjects to be selected into the training/validation/test subsets while making the pipeline as customisable as possible to support more preprocessing and training variations in the future. This is crucial for the correctness of the model and its correct evaluation, and required me to do most of the work originally planned for the duration of Lent term early and even before training. As a consequence, I have postponed the less critical work (such as the robustness evaluation framework, originally planned over the Michaelmas vacation). The performance of the graph neural networks also depend a lot on my definition of the similarity metric hyperparameter (which used to connect the nodes into a graph). For this reason I spent extra time developing the fast similarity metric generation pipeline so I can quickly iterate on the various metrics I wish to try—the original plan of implementing a similarity metric as an initial two-week task, although implemented, needs a lot more tinkering to give better results.
-
-
+The project is on schedule although the order of tasks and time spent on implementing each of the deliverables has changed significantly. The data processing and graph construction pipeline took a lot more time than expected, while graph neural networks themselves took less time. This was because of the difficulties in processing the multiple modalities of the data (which had to be done separately for each type of it), cross-checking and correctly stratifying subjects to be selected into the training/validation/test subsets while making the pipeline as customisable as possible to support more preprocessing and training variations in the future. This is crucial to the correctness of the model and the evaluation set-up, and required me to do most of the work originally planned for the duration of Lent term early and even before other core components of my project. As a consequence, I have postponed the less critical work (such as the extension of robustness evaluation framework, originally planned over the Michaelmas vacation). The performance of the graph neural networks also depend a lot on my definition of the similarity metric hyperparameter (which is used to connect the nodes into a graph). For this reason I spent extra time developing the fast similarity metric generation pipeline so I can iterate on the various metrics I wish to try—the original plan of implementing a similarity metric as an initial two-week task, although implemented, needs a lot more tinkering for better predictions.
 
 
 \end{document}
