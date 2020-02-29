@@ -7,11 +7,12 @@
 
 %  ~2,500 words
 
-This section presents the mathematical definition of the population graphs, the neuroimaging data those graphs will incorporate, and the neural network architectures that will be used to train the population graphs.
+This section presents in more depth the brain age estimation method (Section \ref{brain-age-estimation}), the multiple data modalities that will be used for the brain age estimation task (Section \ref{dataset}), the population graphs (Section \ref{population-graphs}), and the neural network architectures that will be used to train the population graphs (Sections \ref{training-gcn} and \ref{training-gat}).
 
 % In addition it presents the requirements to the implementation of this project and the software engineering principles that have been used to ensure 
 
 \section{Brain age estimation}
+\label{brain-age-estimation}
 TODO this sounds extremely confusing (the concept itself is confusing)
 
 To estimate the brain age gap the difference between the chronological and the brain age must be known. The common technique is to develop a machine learning method to estimate the chronological age from the brain imaging features. The estimated age is then considered to be the brain age although it has been trained to estimate the chronological age and the actual value of the brain age is never known. The reason is why it works... \cite{niu2019improved}
@@ -45,6 +46,7 @@ the error of the proposed machine learning model $\varepsilon_e'$ will contain i
 It is out of scope of this dissertation to prove that the brain age gap component $\varepsilon_g$ is larger than the error term; however, the keen reader is referred to Niu et al. \cite{niu2019improved} where this is verified through correlation of the brain age gaps to the cognitive behaviour scores.
 
 \section{Neuroimaging dataset}
+\label{dataset}
 
 \subsection{United Kingdom Biobank}
 
@@ -100,6 +102,7 @@ For the population graph construction, the neuroimaging features are associated 
 TODO \textit{a table of the actual phenotypes used when the results are ready}
 
 \section{Population graphs}
+\label{population-graphs}
 % TODO connection between the subject set S and vertex set V through S_v or something, i.e. connect subject and vertex sets in a clearer way.
 
 We connect the multi-modal MRI imaging (structural and/or functional), quality control and phenotype data of the set of patients $S$ into a sparse \textit{population graph} $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$, where $\mathcal{V}$ is the set of graph vertices (with one vertex uniquely representing one patient), and $\mathcal{E}$ is the set of edges (representing the \textit{similarity} of patients).
@@ -137,7 +140,7 @@ TODO \textit{an illustration of the graph with marked training and validation no
 
 
 \section{Graph convolutional networks}
-
+\label{training-gcn}
 TODO Graph definition through degree and adjacency matrices, the weights of the edges being binary (either no edge or a weight-1 edge). Graph Laplacian. Diagonalisation of Laplacian matrix because it's positive semi-definite. Spatial vs spectral graph domains. Graph Fourier transform. Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation. Note that the basis depends completely on the graph structure and slight permutation can change the eigenbasis. Graph convolution with a filter $g$ as multiplication of signal and filter in the Fourier domain. Parametric and non-parametric convolution filters using this $g_\theta$; what does $\theta$ mean in relation to the Fourier coefficients; what exactly Fourier coefficients refer to. Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies. Approximation of the Laplacian diagonalisation with Chebyshev polynomials (ChebNet) with the convolution defined for $k$-th order polynomials corresponding to $k$ hops across neighbourhood. \cite{defferrard2016convolutional} Kipf and Welling simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. \cite{kipf2017semi} Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying} (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow); can also mention \cite{wu2019comprehensive}; convolution on regular vs irregular grids (i.e. intro to simple convolution before carrying on?); \cite{defferrard2016convolutional}: "convolution is linear operator that diagonalises in the fourier domain represented by the eigenvectors of the Laplacian operator"
 
 
@@ -149,6 +152,7 @@ TODO Graph definition through degree and adjacency matrices, the weights of the 
 
 
 \section{Graph attention networks}
+\label{training-gat}
 \cite{velickovic2018graph} More based on the non-spectral (i.e. spatial) approaches where an operator is defined to work on the neighbourhoods of different sizes, maintaining the weight sharing property (usually done by defining a separate operator on the neighbourhoods of those sizes).
 
 
