@@ -5,11 +5,15 @@
 % The chapter will cite any new programming languages and systems which had to be learnt and will mention complicated theories or algorithms which required understanding.
 % It is essential to declare the Starting Point (see Section 7). This states any existing codebase or materials that your project builds on. The text here can commonly be identical to the text in your proposal, but it may enlarge on it or report variations. For instance, the true starting point may have turned out to be different from that declared in the proposal and such discrepancies must be explained.
 
+%  ~2,500 words
+
 This section presents the mathematical definition of the population graphs, the neuroimaging data those graphs will incorporate, and the neural network architectures that will be used to train the population graphs.
 
 % In addition it presents the requirements to the implementation of this project and the software engineering principles that have been used to ensure 
 
 \section{Brain age estimation}
+TODO this sounds extremely confusing (the concept itself is confusing)
+
 To estimate the brain age gap the difference between the chronological and the brain age must be known. The common technique is to develop a machine learning method to estimate the chronological age from the brain imaging features. The estimated age is then considered to be the brain age although it has been trained to estimate the chronological age and the actual value of the brain age is never known. The reason is why it works... \cite{niu2019improved}
 
 We represent the brain age $y_b$ as the sum of the known chronological age $y_c$ and the unknown brain age gap $\varepsilon_g$:
@@ -62,7 +66,7 @@ Combined T1-weighted and T2-weighted FLAIR images which emphasise different aspe
 Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric and corresponds to the number of times the Freesurfer brain reconstruction software failed to connect two slices of an MRI image. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Otherwise they can be used as a covariate in a machine learning model (as brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
 
 \subsection{Functional data}
-The resting state functional MRI (rs-fMRI) is the representation of the brain activity over time. In MRI scanner this is measured by the changes in blood oxygenation as neural activity regulates the oxygen demand, resulting in blood oxygenation level dependent (BOLD) time-series measured at each voxel of the brain.
+The resting state functional MRI (rs-fMRI) is the representation of the brain activity over time. In MRI scanner this is measured by the changes in blood oxygenation as neural activity regulates the oxygen demand, resulting in \textit{blood oxygenation level dependent} (BOLD) time-series measured at each voxel of the brain.
 
 TODO \textit{figure of BOLD timeseries}
 
