@@ -50,10 +50,11 @@ It is out of scope of this dissertation to prove that the brain age gap componen
 
 The United Kingdom Biobank (UK Biobank) \cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
 Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records, a total of 17,550 participants.
-The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}, and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
+The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
-A \textit{parcellation} or \textit{atlas} refers to the way the brain is split into meaningful regions for further analysis as a way to compress the intractable per-voxel measurements into per-parcel summaries. Whether two voxels of a brain belong to the same parcel may depend on their proximity, empirical evidence of the voxels being responsible for the same function and so forth. 
+A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of the them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
+
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
 Both functional and structural datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
@@ -69,9 +70,9 @@ These features have been derived from two types of an MRI image called T1-weight
 Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D model of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
 
 \subsection{Functional data}
-The resting state functional MRI (rs-fMRI) is the representation of the brain activity over time. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. The time-series are reported at parcel level as an average of all the voxel time series belonging to the parcel.
+The resting state functional MRI (rs-fMRI) represents brain activity over time. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel.
 
-TODO \textit{figure of BOLD timeseries}
+% well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
 We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that parts of the brain that have related function would also have similar activity patterns. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
@@ -81,7 +82,8 @@ We are interested in estimating which parts of the brain are connected to each o
 
 where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation.
 
-% TODO (Pearson's, lasso, partial correlation, covariance)
+% Could include (Pearson's, lasso, partial correlation, covariance) -- but these are not used?
+
 % Tiago's observation that partial correlation may give better results when including functional MRI time-series in the machine learning model.
 % From wiki on partial correlation: In probability theory and statistics, partial correlation measures the degree of association between two random variables, with the effect of a set of controlling random variables removed. If we are interested in finding whether or to what extent there is a numerical relationship between two variables of interest, using their correlation coefficient will give misleading results if there is another, confounding, variable that is numerically related to both variables of interest. This misleading information can be avoided by controlling for the confounding variable, which is done by computing the partial correlation coefficient. This is precisely the motivation for including other right-side variables in a multiple regression; but while multiple regression gives unbiased results for the effect size, it does not give a numerical value of a measure of the strength of the relationship between the two variables of interest.
 
