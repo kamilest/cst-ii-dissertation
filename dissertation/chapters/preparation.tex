@@ -5,11 +5,14 @@
 % The chapter will cite any new programming languages and systems which had to be learnt and will mention complicated theories or algorithms which required understanding.
 % It is essential to declare the Starting Point (see Section 7). This states any existing codebase or materials that your project builds on. The text here can commonly be identical to the text in your proposal, but it may enlarge on it or report variations. For instance, the true starting point may have turned out to be different from that declared in the proposal and such discrepancies must be explained.
 
-This section presents the mathematical definition of the population graphs, the neuroimaging data those graphs will incorporate, and the neural network architectures that will be used to train the population graphs.
+%  ~2,500 words
 
-% In addition it presents the requirements to the implementation of this project and the software engineering principles that have been used to ensure 
+This section presents in more depth the brain age estimation method (Section \ref{brain-age-estimation}) and the multiple data modalities that will be used for the brain age estimation task (Section \ref{dataset}). It also discusses population graphs (Section \ref{population-graphs}) and the neural network architectures that will be used to train them (Sections \ref{training-gcn} and \ref{training-gat}).
 
 \section{Brain age estimation}
+\label{brain-age-estimation}
+TODO this sounds extremely confusing (the concept itself is confusing)
+
 To estimate the brain age gap the difference between the chronological and the brain age must be known. The common technique is to develop a machine learning method to estimate the chronological age from the brain imaging features. The estimated age is then considered to be the brain age although it has been trained to estimate the chronological age and the actual value of the brain age is never known. The reason is why it works... \cite{niu2019improved}
 
 We represent the brain age $y_b$ as the sum of the known chronological age $y_c$ and the unknown brain age gap $\varepsilon_g$:
@@ -41,30 +44,35 @@ the error of the proposed machine learning model $\varepsilon_e'$ will contain i
 It is out of scope of this dissertation to prove that the brain age gap component $\varepsilon_g$ is larger than the error term; however, the keen reader is referred to Niu et al. \cite{niu2019improved} where this is verified through correlation of the brain age gaps to the cognitive behaviour scores.
 
 \section{Neuroimaging dataset}
+\label{dataset}
 
 \subsection{United Kingdom Biobank}
 
-The United Kingdom Biobank (UK Biobank) \cite{sudlow2015uk} is a continuous, large, population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data that is used by the researchers to analyse the risk factors and development of various health conditions. 
-
-Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records that have been denoised, motion-corrected and otherwise processed for further analysis, a total of 17,550 participants. The data has been initially preprocessed with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further denoised, parcellated and kindly provided by Dr Richard Bethlehem of the Department of Psychiatry. The Department of Psychiatry pipelines have been co-authored with Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details on the neuroimaging dataset are described below.
+The United Kingdom Biobank (UK Biobank) \cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
+Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records, a total of 17,550 participants.
+The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
-A \textit{parcellation} or \textit{atlas} refers to the way the brain is split into meaningful regions for further analysis. Whether two voxels of a brain belong to the same parcel may depend on their proximity, empirical evidence of that the voxels are responsible for the same function and so forth, and can be used to compare the locations in two different brains. When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
+A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of the them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
 
-Both functional and structural datasets use one of the most common parcellations by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+% When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
+
+Both functional and structural datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 \subsection{Structural data}
-Structural brain imaging data encapsulates brain features related to its structure, such as cortical thickness, white 
+Structural brain imaging data refers to cortical thickness, surface area and gray matter volume, reported at parcel granularity.
 
-Combined T1-weighted and T2-weighted FLAIR images which emphasise different aspects of the MRI scan and therefore might help to extract different structural features. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
+These features have been derived from two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The image processing has been done using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
+
+% The images emphasise different aspects of the MRI scan a. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features 
 
 \subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric and corresponds to the number of times the Freesurfer brain reconstruction software failed to connect two slices of an MRI image. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Otherwise they can be used as a covariate in a machine learning model (as brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
+Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D model of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
 
 \subsection{Functional data}
-The resting state functional MRI (rs-fMRI) is the representation of the brain activity over time. In MRI scanner this is measured by the changes in blood oxygenation as neural activity regulates the oxygen demand, resulting in blood oxygenation level dependent (BOLD) time-series measured at each voxel of the brain.
+The resting state functional MRI (rs-fMRI) represents brain activity over time. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel.
 
-TODO \textit{figure of BOLD timeseries}
+% well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
 We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that parts of the brain that have related function would also have similar activity patterns. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
@@ -74,7 +82,8 @@ We are interested in estimating which parts of the brain are connected to each o
 
 where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation.
 
-% TODO (Pearson's, lasso, partial correlation, covariance)
+% Could include (Pearson's, lasso, partial correlation, covariance) -- but these are not used?
+
 % Tiago's observation that partial correlation may give better results when including functional MRI time-series in the machine learning model.
 % From wiki on partial correlation: In probability theory and statistics, partial correlation measures the degree of association between two random variables, with the effect of a set of controlling random variables removed. If we are interested in finding whether or to what extent there is a numerical relationship between two variables of interest, using their correlation coefficient will give misleading results if there is another, confounding, variable that is numerically related to both variables of interest. This misleading information can be avoided by controlling for the confounding variable, which is done by computing the partial correlation coefficient. This is precisely the motivation for including other right-side variables in a multiple regression; but while multiple regression gives unbiased results for the effect size, it does not give a numerical value of a measure of the strength of the relationship between the two variables of interest.
 
@@ -96,6 +105,7 @@ For the population graph construction, the neuroimaging features are associated 
 TODO \textit{a table of the actual phenotypes used when the results are ready}
 
 \section{Population graphs}
+\label{population-graphs}
 % TODO connection between the subject set S and vertex set V through S_v or something, i.e. connect subject and vertex sets in a clearer way.
 
 We connect the multi-modal MRI imaging (structural and/or functional), quality control and phenotype data of the set of patients $S$ into a sparse \textit{population graph} $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$, where $\mathcal{V}$ is the set of graph vertices (with one vertex uniquely representing one patient), and $\mathcal{E}$ is the set of edges (representing the \textit{similarity} of patients).
@@ -133,7 +143,7 @@ TODO \textit{an illustration of the graph with marked training and validation no
 
 
 \section{Graph convolutional networks}
-
+\label{training-gcn}
 TODO Graph definition through degree and adjacency matrices, the weights of the edges being binary (either no edge or a weight-1 edge). Graph Laplacian. Diagonalisation of Laplacian matrix because it's positive semi-definite. Spatial vs spectral graph domains. Graph Fourier transform. Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation. Note that the basis depends completely on the graph structure and slight permutation can change the eigenbasis. Graph convolution with a filter $g$ as multiplication of signal and filter in the Fourier domain. Parametric and non-parametric convolution filters using this $g_\theta$; what does $\theta$ mean in relation to the Fourier coefficients; what exactly Fourier coefficients refer to. Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies. Approximation of the Laplacian diagonalisation with Chebyshev polynomials (ChebNet) with the convolution defined for $k$-th order polynomials corresponding to $k$ hops across neighbourhood. \cite{defferrard2016convolutional} Kipf and Welling simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. \cite{kipf2017semi} Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying} (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow); can also mention \cite{wu2019comprehensive}; convolution on regular vs irregular grids (i.e. intro to simple convolution before carrying on?); \cite{defferrard2016convolutional}: "convolution is linear operator that diagonalises in the fourier domain represented by the eigenvectors of the Laplacian operator"
 
 
@@ -145,6 +155,7 @@ TODO Graph definition through degree and adjacency matrices, the weights of the 
 
 
 \section{Graph attention networks}
+\label{training-gat}
 \cite{velickovic2018graph} More based on the non-spectral (i.e. spatial) approaches where an operator is defined to work on the neighbourhoods of different sizes, maintaining the weight sharing property (usually done by defining a separate operator on the neighbourhoods of those sizes).
 
 
