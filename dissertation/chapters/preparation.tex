@@ -112,32 +112,34 @@ TODO Appendix.
 \section{Population graphs}
 \label{population-graphs}
 
-The multi-modal MRI imaging (structural, functional, quality control) and phenotype data of the set of patients $S$ can be connected into a sparse \textit{population graph} $G = (V, E)$, where $V$ is the set of graph vertices (with one vertex uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of patients $S$ can be connected into a sparse \textit{population graph} $G = (V, E)$, where $V$ is the set of graph vertices (with one vertex uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
 Each vertex $v \in V$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
 
 \subsection{Similarity metrics}
-The topology of the graph is determined by a similarity metric that uses the phenotypic (non-imaging) information of the subjects to create connections between the nodes containing brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
+The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes with brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
 
 Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
 
 \begin{equation}
-    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(v) = M_i(w)].
+    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. (In practice, if the metric is floating point, ``matching'' could be defined in terms of phenotypic metrics being within some $\epsilon > 0$.) 
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. (In practice, if the metric is floating point, ``matching'' could be defined in terms of phenotypic metrics being within some non-negative constant $\epsilon$.) 
 
 To avoid memory issues when $|E| \sim O(|V|^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\theta$ is used such that
 
 \begin{equation}
-    (s_v, s_w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \theta.
+    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \theta.
 \end{equation}
 
 \subsection{Training task}
 % Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
+
+
 \cite{kipf2017semi}: The task is to predict the label of the nodes, where the labels are visible only for the training and validation but not the test nodes. Semi-supervised learning allows the label information and parameter weights to spread to node neighbourhoods to the similar nodes as defined by the similarity metric, 
 
-A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (\textit{epoch}), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
+A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (epoch), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
 
 Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
 
