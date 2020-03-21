@@ -105,35 +105,32 @@ of which (due to symmetry and the non-informative diagonal) only the flattened l
 
 In this dissertation, the phenotype data is defined as all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education and so forth.
 
-The purpose of phenotype data is to define the inter-subject similarity score (described below), which will determine the edges in the population graph. The full list of features that were used to define similarity metrics is provided in the Appendix.
+The purpose of phenotype data is to define the inter-subject similarity score, which will determine the edges in the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
 
 TODO Appendix.
 
 \section{Population graphs}
 \label{population-graphs}
-% TODO connection between the subject set S and vertex set V through S_v or something, i.e. connect subject and vertex sets in a clearer way.
 
-We connect the multi-modal MRI imaging (structural and/or functional), quality control and phenotype data of the set of patients $S$ into a sparse \textit{population graph} $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$, where $\mathcal{V}$ is the set of graph vertices (with one vertex uniquely representing one patient), and $\mathcal{E}$ is the set of edges (representing the \textit{similarity} of patients).
+The multi-modal MRI imaging (structural, functional, quality control) and phenotype data of the set of patients $S$ can be connected into a sparse \textit{population graph} $G = (V, E)$, where $V$ is the set of graph vertices (with one vertex uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
-Each vertex $v \in \mathcal{V}$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in \mathcal{E}$ connects patients $v$ and $w$ based on phenotypic similarity that is defined by some \textit{similarity metric} as described below.
+Each vertex $v \in V$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
 
 \subsection{Similarity metrics}
-The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create connections between the nodes containing brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, subject's sex has an impact on the brain volume) as well as to cluster patients into the most informative neighbourhoods where the predicted variable (brain age) explains the most variance in node features.
+The topology of the graph is determined by a similarity metric that uses the phenotypic (non-imaging) information of the subjects to create connections between the nodes containing brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
 
-Similarity metrics are defined using some \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar the subjects):
+Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
 
 \begin{equation}
-    \mathrm{sim}(S_v, S_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(v) = M_i(w)].
+    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(v) = M_i(w)].
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used in computing subject similarity (such as sex, mental health, fluid intelligence score etc.) and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $S_v$ and $S_w$.
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. (In practice, if the metric is floating point, ``matching'' could be defined in terms of phenotypic metrics being within some $\epsilon > 0$.) 
 
-TODO \textit{Qualitative (categorial) metrics can be defined as Kronecker delta $\delta$ and quantitative (numerical) metrics have an indicator whether the distance between values $M_i(v)$ and $M_i(w)$ is within some $\epsilon$.}
-
-To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise the size of the neighbourhood to only the highly similar subjects, a \textit{similarity threshold} $\theta$ is defined such that
+To avoid memory issues when $|E| \sim O(|V|^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\theta$ is used such that
 
 \begin{equation}
-    (S_v, S_w) \in \mathcal{E} \iff \mathrm{sim}(S_v, S_w) \geq \theta.
+    (s_v, s_w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \theta.
 \end{equation}
 
 \subsection{Training task}
