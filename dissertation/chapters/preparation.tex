@@ -55,7 +55,7 @@ Of particular relevance to this dissertation are the UK Biobank participants wit
 The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
-A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of the them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
+A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
@@ -102,11 +102,12 @@ The correlations are used to derive the \textit{functional connectivity matrix} 
 of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used as input for the machine learning models.
 
 \subsection{Phenotype data}
-For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. 
 
-% Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
+In this dissertation, the phenotype data is defined as all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education and so forth.
 
-TODO \textit{a table of the actual phenotypes used when the results are ready}
+The purpose of phenotype data is to define the inter-subject similarity score (described below), which will determine the edges in the population graph. The full list of features that were used to define similarity metrics is provided in the Appendix.
+
+TODO Appendix.
 
 \section{Population graphs}
 \label{population-graphs}
