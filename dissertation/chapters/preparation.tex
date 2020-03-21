@@ -43,7 +43,7 @@ From Equations \ref{brainage:eq1} and \ref{brainage:eq2}, the estimate of chrono
 
 Since the true brain age is unknown, any (semi-)supervised machine learning models can only work on chronological age labels as expressed in Equation \ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation \ref{brainage:assume} allows us to still learn the brain age function $f$ by only training on healthy subjects, as $\varepsilon \approx \varepsilon_e$. As the same model is applied to subjects with varying brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
-An alternative method which does not require the assumption, but is out of scope of this dissertation, is proposed in Niu et al. \cite{niu2019improved}. Here the model in Equation \ref{brainage:eq3} is trained both on healthy and non-healthy patients. However, it requires verifying that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which in this paper was done by correlating the size of the error to the subjects' performance in cognitive behaviour tests.
+An alternative method, which does not require training only on healthy patients and assuming Equation \ref{brainage:eq3}, is proposed in Niu et al. \cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
 \section{Neuroimaging dataset}
 \label{dataset}
@@ -59,7 +59,7 @@ A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
-Both functional and structural datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+Both structural and functional datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 \subsection{Structural data}
 Structural brain imaging data refers to cortical thickness, surface area and gray matter volume, reported at parcel granularity.
@@ -76,7 +76,7 @@ The resting state functional MRI (rs-fMRI) represents brain activity over time. 
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
-We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that parts of the brain that have related function would also have similar activity patterns. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
+We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that \textit{parts of the brain that have related functions would also have similar activity patterns}. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
 \begin{equation}
     r(T_1, T_2) = \frac{\mathrm{cov}(T_1, T_2)}{\sigma_{T_1} \sigma_{T_2}}
@@ -89,7 +89,7 @@ where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for st
 % Tiago's observation that partial correlation may give better results when including functional MRI time-series in the machine learning model.
 % From wiki on partial correlation: In probability theory and statistics, partial correlation measures the degree of association between two random variables, with the effect of a set of controlling random variables removed. If we are interested in finding whether or to what extent there is a numerical relationship between two variables of interest, using their correlation coefficient will give misleading results if there is another, confounding, variable that is numerically related to both variables of interest. This misleading information can be avoided by controlling for the confounding variable, which is done by computing the partial correlation coefficient. This is precisely the motivation for including other right-side variables in a multiple regression; but while multiple regression gives unbiased results for the effect size, it does not give a numerical value of a measure of the strength of the relationship between the two variables of interest.
 
-This (or other correlation types) to derive the \textit{functional connectivity matrix} that stores the pairwise correlations between the different voxels as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
+The correlations are used to derive the \textit{functional connectivity matrix} storing pairwise correlations between the different voxels (or parcels) as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
 
 \begin{equation}
     \mathrm{fcm}(T_1, \dots, T_N) = \begin{bmatrix}
@@ -99,7 +99,7 @@ This (or other correlation types) to derive the \textit{functional connectivity 
     \end{bmatrix},
 \end{equation}
 
-of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used for the machine learning implementations.
+of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used as input for the machine learning models.
 
 \subsection{Phenotype data}
 For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. 
