@@ -125,7 +125,7 @@ Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim
     \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. (In practice, if the metric is floating point, ``matching'' could be defined in terms of phenotypic metrics being within some non-negative constant $\epsilon$.) 
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. (In practice, if the metric is floating point, ``matching'' could be defined in terms of phenotypic metrics being within some constant $\epsilon$.) 
 
 To avoid memory issues when $|E| \sim O(|V|^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\theta$ is used such that
 
@@ -136,14 +136,12 @@ To avoid memory issues when $|E| \sim O(|V|^2)$ and minimise the size of the nei
 \subsection{Training task}
 % Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
 
+% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
 
-\cite{kipf2017semi}: The task is to predict the label of the nodes, where the labels are visible only for the training and validation but not the test nodes. Semi-supervised learning allows the label information and parameter weights to spread to node neighbourhoods to the similar nodes as defined by the similarity metric, 
+For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance for a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
 
-A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (epoch), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
 
-Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
-
-TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen}
+% TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
 
 
 \section{Graph convolutional networks}
