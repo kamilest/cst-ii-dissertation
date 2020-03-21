@@ -11,37 +11,39 @@ This section presents in more depth the brain age estimation method (Section \re
 
 \section{Brain age estimation}
 \label{brain-age-estimation}
-TODO this sounds extremely confusing (the concept itself is confusing)
 
-To estimate the brain age gap the difference between the chronological and the brain age must be known. The common technique is to develop a machine learning method to estimate the chronological age from the brain imaging features. The estimated age is then considered to be the brain age although it has been trained to estimate the chronological age and the actual value of the brain age is never known. The reason is why it works... \cite{niu2019improved}
-
-We represent the brain age $y_b$ as the sum of the known chronological age $y_c$ and the unknown brain age gap $\varepsilon_g$:
+Similar to the model proposed in Niu et al. \cite{niu2019improved}, we express the \textit{brain age} ($y_b$) as the sum of the known \textit{chronological age} ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$):
 
 \begin{equation}
+    \label{brainage:eq1}
     y_b = y_c + \varepsilon_g.
 \end{equation}
 
-On the other hand, the machine learning model estimates the brain age $y_b$ from some function of the brain imaging features $X$ and a prediction error $\varepsilon_e$:
+The brain age gap estimation methodologies (such as \textit{BrainAGE} \cite{franke2019ten}) assume that for healthy subjects in the general population the brain age corresponds to chronological age:
 
 \begin{equation}
-    y_b = f(X) + \varepsilon_e.    
+    \label{brainage:assume}
+    y_b \approx y_c,\quad \varepsilon_g \text{ small}.
 \end{equation}
 
-Expressing $y_c$ as $y_b - \varepsilon_g$ and substituting the previous result, we get the estimate of chronological age as
+Our goal is to estimate the brain age $y_b$ by fitting some function $f$ of the brain imaging features $X$. It will give a prediction error $\varepsilon_e$:
 
 \begin{equation}
-    y_c = f(X) + \varepsilon_g - \varepsilon_e,
+    \label{brainage:eq2}
+    y_b = f(X) + \varepsilon_e.
 \end{equation}
 
-Since the machine learning models estimate chronological age as a function of brain imaging features (with some estimation error $\varepsilon_e'$)
+From Equations \ref{brainage:eq1} and \ref{brainage:eq2}, the estimate of chronological age is, on the other hand,
 
-\begin{equation}
-    y_c = f(X) + \varepsilon_e',
-\end{equation}
+\begin{align}
+    y_c &= f(X) + \varepsilon_e - \varepsilon_g \\
+        \label{brainage:eq3}
+        &= f(X) + \varepsilon.
+\end{align}
 
-the error of the proposed machine learning model $\varepsilon_e'$ will contain in itself both the brain age gap $\varepsilon_g$ (which we are interested in) and the brain age prediction error $\varepsilon_e$.
+Since the true brain age is unknown, any (semi-)supervised machine learning models can only work on chronological age labels as expressed in Equation \ref{brainage:eq3}, where the prediction error $\varepsilon'$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation \ref{brainage:assume} allows us to still learn the brain age function $f$ by only training on healthy subjects, as $\varepsilon' \approx \varepsilon_e$. As the same model is applied to subjects with varying brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
-It is out of scope of this dissertation to prove that the brain age gap component $\varepsilon_g$ is larger than the error term; however, the keen reader is referred to Niu et al. \cite{niu2019improved} where this is verified through correlation of the brain age gaps to the cognitive behaviour scores.
+An alternative method which does not require the assumption, but is out of scope of this dissertation, is proposed in Niu et al. \cite{niu2019improved}. Here the model in Equation \ref{brainage:eq3} is trained both on healthy and non-healthy patients. However, it requires verifying that $\varepsilon'$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which in this paper was done by correlating the size of the error to the subjects' performance in cognitive behaviour tests.
 
 \section{Neuroimaging dataset}
 \label{dataset}
@@ -100,7 +102,9 @@ This (or other correlation types) to derive the \textit{functional connectivity 
 of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used for the machine learning implementations.
 
 \subsection{Phenotype data}
-For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
+For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. 
+
+% Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
 
 TODO \textit{a table of the actual phenotypes used when the results are ready}
 
