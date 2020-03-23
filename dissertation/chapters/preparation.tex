@@ -11,37 +11,39 @@ This section presents in more depth the brain age estimation method (Section \re
 
 \section{Brain age estimation}
 \label{brain-age-estimation}
-TODO this sounds extremely confusing (the concept itself is confusing)
 
-To estimate the brain age gap the difference between the chronological and the brain age must be known. The common technique is to develop a machine learning method to estimate the chronological age from the brain imaging features. The estimated age is then considered to be the brain age although it has been trained to estimate the chronological age and the actual value of the brain age is never known. The reason is why it works... \cite{niu2019improved}
-
-We represent the brain age $y_b$ as the sum of the known chronological age $y_c$ and the unknown brain age gap $\varepsilon_g$:
+Similar to the model proposed in Niu et al. \cite{niu2019improved}, we express the \textit{brain age} ($y_b$) as the sum of the known \textit{chronological age} ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$):
 
 \begin{equation}
+    \label{brainage:eq1}
     y_b = y_c + \varepsilon_g.
 \end{equation}
 
-On the other hand, the machine learning model estimates the brain age $y_b$ from some function of the brain imaging features $X$ and a prediction error $\varepsilon_e$:
+The brain age gap estimation methodologies (such as \textit{BrainAGE} \cite{franke2019ten}) assume that for healthy subjects in the general population the brain age corresponds to chronological age:
 
 \begin{equation}
-    y_b = f(X) + \varepsilon_e.    
+    \label{brainage:assume}
+    y_b \approx y_c,\quad \varepsilon_g \text{ small}.
 \end{equation}
 
-Expressing $y_c$ as $y_b - \varepsilon_g$ and substituting the previous result, we get the estimate of chronological age as
+Our goal is to estimate the brain age $y_b$ by fitting some function $f$ of the brain imaging features $X$. It will give a prediction error $\varepsilon_e$:
 
 \begin{equation}
-    y_c = f(X) + \varepsilon_g - \varepsilon_e,
+    \label{brainage:eq2}
+    y_b = f(X) + \varepsilon_e.
 \end{equation}
 
-Since the machine learning models estimate chronological age as a function of brain imaging features (with some estimation error $\varepsilon_e'$)
+From Equations \ref{brainage:eq1} and \ref{brainage:eq2}, the estimate of chronological age is, on the other hand,
 
-\begin{equation}
-    y_c = f(X) + \varepsilon_e',
-\end{equation}
+\begin{align}
+    y_c &= f(X) + \varepsilon_e - \varepsilon_g \\
+        \label{brainage:eq3}
+        &= f(X) + \varepsilon.
+\end{align}
 
-the error of the proposed machine learning model $\varepsilon_e'$ will contain in itself both the brain age gap $\varepsilon_g$ (which we are interested in) and the brain age prediction error $\varepsilon_e$.
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation \ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation \ref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
-It is out of scope of this dissertation to prove that the brain age gap component $\varepsilon_g$ is larger than the error term; however, the keen reader is referred to Niu et al. \cite{niu2019improved} where this is verified through correlation of the brain age gaps to the cognitive behaviour scores.
+An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al. \cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
 \section{Neuroimaging dataset}
 \label{dataset}
@@ -53,11 +55,11 @@ Of particular relevance to this dissertation are the UK Biobank participants wit
 The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
-A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of the them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
+A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
-Both functional and structural datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+Both structural and functional datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 \subsection{Structural data}
 Structural brain imaging data refers to cortical thickness, surface area and gray matter volume, reported at parcel granularity.
@@ -74,7 +76,7 @@ The resting state functional MRI (rs-fMRI) represents brain activity over time. 
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
-We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that parts of the brain that have related function would also have similar activity patterns. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
+We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that \textit{parts of the brain that have related functions would also have similar activity patterns}. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
 \begin{equation}
     r(T_1, T_2) = \frac{\mathrm{cov}(T_1, T_2)}{\sigma_{T_1} \sigma_{T_2}}
@@ -87,7 +89,7 @@ where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for st
 % Tiago's observation that partial correlation may give better results when including functional MRI time-series in the machine learning model.
 % From wiki on partial correlation: In probability theory and statistics, partial correlation measures the degree of association between two random variables, with the effect of a set of controlling random variables removed. If we are interested in finding whether or to what extent there is a numerical relationship between two variables of interest, using their correlation coefficient will give misleading results if there is another, confounding, variable that is numerically related to both variables of interest. This misleading information can be avoided by controlling for the confounding variable, which is done by computing the partial correlation coefficient. This is precisely the motivation for including other right-side variables in a multiple regression; but while multiple regression gives unbiased results for the effect size, it does not give a numerical value of a measure of the strength of the relationship between the two variables of interest.
 
-This (or other correlation types) to derive the \textit{functional connectivity matrix} that stores the pairwise correlations between the different voxels as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
+The correlations are used to derive the \textit{functional connectivity matrix} storing pairwise correlations between the different voxels (or parcels) as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
 
 \begin{equation}
     \mathrm{fcm}(T_1, \dots, T_N) = \begin{bmatrix}
@@ -97,62 +99,109 @@ This (or other correlation types) to derive the \textit{functional connectivity 
     \end{bmatrix},
 \end{equation}
 
-of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used for the machine learning implementations.
+of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used as input for the machine learning models.
 
 \subsection{Phenotype data}
-For the population graph construction, the neuroimaging features are associated with the individual subjects (nodes). The similarity metric is defined by phenotype data, which is all important but not directly neuroimaging-related data. Some examples of phenotype data that is related to the brain include the patient's sex, mental health, other potential health issues, full-time education, bipolar disorder status etc. Indeed the metric that is being predicted is correlated with the brain tissue age indicative of various neurological and neurodegenerative diseases.
 
-TODO \textit{a table of the actual phenotypes used when the results are ready}
+In this dissertation, the phenotype data is defined as all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education and so forth.
+
+The purpose of phenotype data is to define the inter-subject similarity score, which will determine the edges in the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
+
+TODO Appendix.
 
 \section{Population graphs}
 \label{population-graphs}
-% TODO connection between the subject set S and vertex set V through S_v or something, i.e. connect subject and vertex sets in a clearer way.
 
-We connect the multi-modal MRI imaging (structural and/or functional), quality control and phenotype data of the set of patients $S$ into a sparse \textit{population graph} $\mathcal{G} = \{\mathcal{V}, \mathcal{E}\}$, where $\mathcal{V}$ is the set of graph vertices (with one vertex uniquely representing one patient), and $\mathcal{E}$ is the set of edges (representing the \textit{similarity} of patients).
+The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of patients $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
-Each vertex $v \in \mathcal{V}$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in \mathcal{E}$ connects patients $v$ and $w$ based on phenotypic similarity that is defined by some \textit{similarity metric} as described below.
+Each node $v \in V$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
 
 \subsection{Similarity metrics}
-The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create connections between the nodes containing brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, subject's sex has an impact on the brain volume) as well as to cluster patients into the most informative neighbourhoods where the predicted variable (brain age) explains the most variance in node features.
+The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes with brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
 
-Similarity metrics are defined using some \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar the subjects):
+Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
 
 \begin{equation}
-    \mathrm{sim}(S_v, S_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(v) = M_i(w)].
+    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used in computing subject similarity (such as sex, mental health, fluid intelligence score etc.) and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $S_v$ and $S_w$.
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. (In practice, if the metric is floating point, ``matching'' could be defined in terms of phenotypic metrics being within some constant $\epsilon$.) 
 
-TODO \textit{Qualitative (categorial) metrics can be defined as Kronecker delta $\delta$ and quantitative (numerical) metrics have an indicator whether the distance between values $M_i(v)$ and $M_i(w)$ is within some $\epsilon$.}
-
-To avoid memory issues when $|\mathcal{E}| \sim O(|\mathcal{V}|^2)$ and minimise the size of the neighbourhood to only the highly similar subjects, a \textit{similarity threshold} $\theta$ is defined such that
+To avoid memory issues when $|E| \sim O(|V|^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\theta$ is used such that
 
 \begin{equation}
-    (S_v, S_w) \in \mathcal{E} \iff \mathrm{sim}(S_v, S_w) \geq \theta.
+    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \theta.
 \end{equation}
 
 \subsection{Training task}
 % Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
-\cite{kipf2017semi}: The task is to predict the label of the nodes, where the labels are visible only for the training and validation but not the test nodes. Semi-supervised learning allows the label information and parameter weights to spread to node neighbourhoods to the similar nodes as defined by the similarity metric, 
 
-A population graph is trained in a \textit{semi-supervised} manner. This means that the entire dataset (all nodes and all labels) is included in the graph. At each training step (\textit{epoch}), the parameters for all nodes are updated but only based on the feedback from training and validation nodes. The final predictive power of the model is evaluated based on its performance on previously hidden test node labels.
+% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
 
-Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
+For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance for a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
 
-TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen}
+
+% TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
 
 
 \section{Graph convolutional networks}
 \label{training-gcn}
-TODO Graph definition through degree and adjacency matrices, the weights of the edges being binary (either no edge or a weight-1 edge). Graph Laplacian. Diagonalisation of Laplacian matrix because it's positive semi-definite. Spatial vs spectral graph domains. Graph Fourier transform. Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation. Note that the basis depends completely on the graph structure and slight permutation can change the eigenbasis. Graph convolution with a filter $g$ as multiplication of signal and filter in the Fourier domain. Parametric and non-parametric convolution filters using this $g_\theta$; what does $\theta$ mean in relation to the Fourier coefficients; what exactly Fourier coefficients refer to. Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies. Approximation of the Laplacian diagonalisation with Chebyshev polynomials (ChebNet) with the convolution defined for $k$-th order polynomials corresponding to $k$ hops across neighbourhood. \cite{defferrard2016convolutional} Kipf and Welling simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. \cite{kipf2017semi} Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying} (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow); can also mention \cite{wu2019comprehensive}; convolution on regular vs irregular grids (i.e. intro to simple convolution before carrying on?); \cite{defferrard2016convolutional}: "convolution is linear operator that diagonalises in the fourier domain represented by the eigenvectors of the Laplacian operator"
+% What is actually essential about the graph convolutional networks?
+
+To make the computation independent of (irregular) graph topology, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
+
+\subsection{Graph spectral decomposition}
+
+In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normalised Laplacian} matrix~\cite{defferrard2016convolutional}: 
+
+\begin{equation}
+    \mathbf{L} = \mathbf{I} - \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2},
+\end{equation}
+
+where $\mathbf{I}$ is the identity matrix, $\mathbf{D} \in \mathbb{N}^{|V| \times |V|}$ is the diagonal degree matrix of the graph nodes, and $\mathbf{A} \in \{0, 1\}^{|V| \times |V|}$ is the adjacency matrix such that $a_{ij} = \mathbf{1}[(i, j) \in E]$. The Laplacian uniquely represents the graph as it is based on the graph's topology.
+
+The positive semidefinite Laplacian matrix has the decomposition
+
+\begin{equation}
+    \mathbf{L} = \mathbf{U\Lambda U}^\mathrm{T},
+\end{equation}
+
+where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{n}$ (e.g. features of some node), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse~\cite{wu2019simplifying}.
+
+% Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies.
+% Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation.
+
+% \cite{velickovic2018graph}: graph definition in the Fourier domain based on the eigendecomposition of the graph Laplacian
+
+\subsection{Spectral graph convolution}
 
 
+TODO Graph convolution with a filter $g$ as multiplication of signal and filter in the Fourier domain. Parametric and non-parametric convolution filters using this $g_\theta$; what does $\theta$ mean in relation to the Fourier coefficients; what exactly Fourier coefficients refer to.
+
+\cite{defferrard2016convolutional}: ``convolution is linear operator that diagonalises in the fourier domain represented by the eigenvectors of the Laplacian operator''
+
+convolution on regular vs irregular grids
+
+\subsection{Graph convolution approximation}
+To avoid the computationally expensive eigendecomposition of the graph Laplacian and the $O(n^2)$ matrix-vector multiplication while switching between spatial and Fourier domains, the Laplacian diagonalisation $??$ can be approximated by Chebyshev polynomials:
+
+% ChebNet: filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet) (velickovic)
+
+\begin{equation}
+    Chebyshev polynomials
+\end{equation}
+
+where the convolution defined for the $k$-th order polynomials corresponds to the neighbourhood within $k$ hops (or $k$ hops away??) from the node of interest \cite{defferrard2016convolutional}.
+
+Kipf and Welling \cite{kipf2017semi} simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. 
+% Velickovic: further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
+
+Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying}
+% (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow)
+% can also mention \cite{wu2019comprehensive};
 
 
-\cite{velickovic2018graph}: graph definition in the Fourier domain based on the eigendecomposition of the graph Laplacian, filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet); further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
-
-\subsection{Graph Fourier transform}
-
+% extension: an alternative to Chebyshev polynomials (extension)
 
 \section{Graph attention networks}
 \label{training-gat}
