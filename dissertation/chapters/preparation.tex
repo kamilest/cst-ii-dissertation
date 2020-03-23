@@ -160,7 +160,7 @@ In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normali
 
 where $\mathbf{I}$ is the identity matrix, $\mathbf{D} \in \mathbb{N}^{|V| \times |V|}$ is the diagonal degree matrix of the graph nodes, and $\mathbf{A} \in \{0, 1\}^{|V| \times |V|}$ is the adjacency matrix such that $a_{ij} = \mathbf{1}[(i, j) \in E]$. The Laplacian uniquely represents the graph as it is based on the graph's topology.
 
-The positive semidefinite Laplacian matrix has the decomposition
+The positive semidefinite Laplacian matrix is decomposed as
 
 \begin{equation}
     \mathbf{L} = \mathbf{U\Lambda U}^\mathrm{T},
@@ -175,14 +175,15 @@ where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is 
 
 \subsection{Spectral graph convolution}
 
+For a filter $\mathbf{g} \in \mathbb{R}^m$ with $\mathbf{\hat{G}} = \mathrm{diag}(\mathbf{U}^\mathrm{T}\mathbf{g})$ a diagonal matrix containing the filter's spectral coefficients, the graph convolution of a signal $\mathbf{x}$ is defined as
 
-TODO Graph convolution with a filter $g$ as multiplication of signal and filter in the Fourier domain. Parametric and non-parametric convolution filters using this $g_\theta$; what does $\theta$ mean in relation to the Fourier coefficients; what exactly Fourier coefficients refer to.
+\begin{equation}
+    \mathbf{x} *_G \mathbf{g} = \mathbf{U}((\mathbf{U}^\mathrm{T}\mathbf{x}) \odot (\mathbf{U}^\mathrm{T}\mathbf{g})) = \mathbf{U}\mathbf{\hat{G}}\mathbf{U}^\mathrm{T}\mathbf{x}
+\end{equation}
 
-\cite{defferrard2016convolutional}: ``convolution is linear operator that diagonalises in the fourier domain represented by the eigenvectors of the Laplacian operator''
+where $\odot$ is the element-wise (Hadamard) product~\cite{wu2019simplifying}.
 
-convolution on regular vs irregular grids
-
-\subsection{Graph convolution approximation}
+\subsection{Approximating graph convolution}
 To avoid the computationally expensive eigendecomposition of the graph Laplacian and the $O(n^2)$ matrix-vector multiplication while switching between spatial and Fourier domains, the Laplacian diagonalisation $??$ can be approximated by Chebyshev polynomials:
 
 % ChebNet: filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet) (velickovic)
