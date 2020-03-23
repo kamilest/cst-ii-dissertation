@@ -41,7 +41,7 @@ From Equations \ref{brainage:eq1} and \ref{brainage:eq2}, the estimate of chrono
         &= f(X) + \varepsilon.
 \end{align}
 
-Since the true brain age is unknown, any (semi-)supervised machine learning models can only work on chronological age labels as expressed in Equation \ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation \ref{brainage:assume} allows us to still learn the brain age function $f$ by only training on healthy subjects, as $\varepsilon \approx \varepsilon_e$. As the same model is applied to subjects with varying brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation \ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation \ref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with varying brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
 An alternative method, which does not require training only on healthy patients and assuming Equation \ref{brainage:eq3}, is proposed in Niu et al. \cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
@@ -148,11 +148,11 @@ For node label prediction tasks such as brain age prediction, population graphs 
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-To make the computation independent of (irregular) graph topology, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The convolution operation in the Euclidean domain corresponds to multiplication in the Fourier domain.
+To make the computation independent of (irregular) graph topology, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
 
 \subsection{Graph spectral decomposition}
 
-In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normalised Laplacian} matrix \cite{defferrard2016convolutional}: 
+In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normalised Laplacian} matrix~\cite{defferrard2016convolutional}: 
 
 \begin{equation}
     \mathbf{L} = \mathbf{I} - \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2},
@@ -160,13 +160,13 @@ In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normali
 
 where $\mathbf{I}$ is the identity matrix, $\mathbf{D} \in \mathbb{N}^{|V| \times |V|}$ is the diagonal degree matrix of the graph nodes, and $\mathbf{A} \in \{0, 1\}^{|V| \times |V|}$ is the adjacency matrix such that $a_{ij} = \mathbf{1}[(i, j) \in E]$. The Laplacian uniquely represents the graph as it is based on the graph's topology.
 
-The positive semidefinite Laplacian matrix has the eigendecomposition
+The positive semidefinite Laplacian matrix has the decomposition
 
 \begin{equation}
     \mathbf{L} = \mathbf{U\Lambda U}^\mathrm{T},
 \end{equation}
 
-where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{n}$ (e.g. features of some node), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse \cite{wu2019simplifying}.
+where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{n}$ (e.g. features of some node), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse~\cite{wu2019simplifying}.
 
 % Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies.
 % Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation.
