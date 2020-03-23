@@ -148,27 +148,26 @@ For node label prediction tasks such as brain age prediction, population graphs 
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-To make the computation independent of (irregular) graph topology, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The convolution operation in the Euclidean domain corresponds to a multiplication in the Fourier domain.
+To make the computation independent of (irregular) graph topology, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The convolution operation in the Euclidean domain corresponds to multiplication in the Fourier domain.
 
 \subsection{Graph spectral decomposition}
 
-In spectral analysis, a graph $G = (V, E)$ is represented using its \textit{normalised Laplacian} matrix \cite{defferrard2016convolutional}: 
+In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normalised Laplacian} matrix \cite{defferrard2016convolutional}: 
 
 \begin{equation}
     \mathbf{L} = \mathbf{I} - \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2},
 \end{equation}
 
-where $\mathbf{I}$ is the identity matrix, $\mathbf{D} \in \mathbb{N}^{|V| \times |V|}$ is the diagonal degree matrix of the graph nodes, and $\mathbf{A} \in \{0, 1\}^{|V| \times |V|}$ is the adjacency matrix such that $a_{ij} = \mathbf{1}[(i, j) \in E]$. Note that the Laplacian uniquely represent the graphs as it is based on the graph's topology.
+where $\mathbf{I}$ is the identity matrix, $\mathbf{D} \in \mathbb{N}^{|V| \times |V|}$ is the diagonal degree matrix of the graph nodes, and $\mathbf{A} \in \{0, 1\}^{|V| \times |V|}$ is the adjacency matrix such that $a_{ij} = \mathbf{1}[(i, j) \in E]$. The Laplacian uniquely represents the graph as it is based on the graph's topology.
 
-The Laplacian can be diagonalised as
+The positive semidefinite Laplacian matrix has the eigendecomposition
 
 \begin{equation}
     \mathbf{L} = \mathbf{U\Lambda U}^\mathrm{T},
 \end{equation}
 
-where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}^\mathrm{T}$ and $\mathbf{U}$ are the graph's Fourier transform and its inverse. 
+where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{n}$ (e.g. features of some node), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse \cite{wu2019simplifying}.
 
-% Diagonalisation of Laplacian matrix because it's positive semi-definite.
 % Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies.
 % Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation.
 
