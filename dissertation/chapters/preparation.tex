@@ -175,34 +175,60 @@ where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is 
 
 \subsection{Spectral graph convolution}
 
-For a filter $\mathbf{g} \in \mathbb{R}^m$ with $\mathbf{\hat{G}} = \mathrm{diag}(\mathbf{U}^\mathrm{T}\mathbf{g})$ a diagonal matrix containing the filter's spectral coefficients, the graph convolution of a signal $\mathbf{x}$ is defined as
+For a filter $\mathbf{g} \in \mathbb{R}^m$ with a diagonal matrix $\mathbf{\hat{G}} = \mathrm{diag}(\mathbf{U}^\mathrm{T}\mathbf{g})$ containing the filter's spectral coefficients, the graph convolution of a signal $\mathbf{x}$ is defined as
 
 \begin{equation}
+    \label{eq:convolution}
     \mathbf{x} *_G \mathbf{g} = \mathbf{U}((\mathbf{U}^\mathrm{T}\mathbf{x}) \odot (\mathbf{U}^\mathrm{T}\mathbf{g})) = \mathbf{U}\mathbf{\hat{G}}\mathbf{U}^\mathrm{T}\mathbf{x}
 \end{equation}
 
 where $\odot$ is the element-wise (Hadamard) product~\cite{wu2019simplifying}.
 
-\subsection{Approximating graph convolution}
-To avoid the computationally expensive eigendecomposition of the graph Laplacian and the $O(n^2)$ matrix-vector multiplication while switching between spatial and Fourier domains, the Laplacian diagonalisation $??$ can be approximated by Chebyshev polynomials:
+\subsection{Optimising graph convolutions}
+This section reviews the steps towards optimised graph convolutional networks (GCNs) as proposed by Kipf and Welling~\cite{kipf2017semi}.
+
+\subsubsection{ChebNets}
+To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in (\ref{eq:convolution}), Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
+
+\begin{gather}
+    T_i(\mathbf{x}) = 2\mathbf{x}T_{i-1}(\mathbf{x}) - T_{i-2}(\mathbf{x}) \\
+    T_1 = \mathbf{x} \\
+    T_0 = 1
+\end{gather}
+
+to approximate the filter $\mathbf{\hat{G}}$ as 
+
+\begin{equation}
+    \mathbf{\hat{G}} \approx \sum_{i = 0}^{k} \theta_i T_i(\mathbf{\tilde{\Lambda}})
+\end{equation}
+
+where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, $k$ is the truncation coefficient that determines the , and $\theta_i$ are coefficients such that $\mathbf{\hat{G}} = \sum_i \theta_i \mathbf{\Lambda}^i$~\cite{wu2019simplifying}. Next, it can be proved~\cite{wu2019comprehensive} that
+
+\begin{equation}
+    T_i(\mathbf{\tilde{L}}) = \mathbf{U}T_i(\mathbf{\tilde{\Lambda}})\mathbf{U}^{\mathrm{T}}
+\end{equation}
+
+with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The result is the approximated spectral graph convolution:
+
+\begin{equation}
+    \mathbf{x} *_G \mathbf{g} \approx \sum_{i=0}^{k}\theta_i T_i(\mathbf{\tilde{L}})\mathbf{x}.
+\end{equation}
 
 % ChebNet: filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet) (velickovic)
 
-\begin{equation}
-    Chebyshev polynomials
-\end{equation}
-
-where the convolution defined for the $k$-th order polynomials corresponds to the neighbourhood within $k$ hops (or $k$ hops away??) from the node of interest \cite{defferrard2016convolutional}.
+\subsubsection{}
 
 Kipf and Welling \cite{kipf2017semi} simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. 
 % Velickovic: further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
 
-Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying}
+
 % (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow)
 % can also mention \cite{wu2019comprehensive};
 
+% extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult
 
-% extension: an alternative to Chebyshev polynomials (extension)
+\subsection{Layers of the graph convolutional network}
+Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying}
 
 \section{Graph attention networks}
 \label{training-gat}
