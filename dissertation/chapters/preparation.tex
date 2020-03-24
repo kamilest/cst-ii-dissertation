@@ -7,19 +7,19 @@
 
 %  ~2,500 words
 
-This section presents in more depth the brain age estimation method (Section \ref{brain-age-estimation}) and the multiple data modalities that will be used for the brain age estimation task (Section \ref{dataset}). It also discusses population graphs (Section \ref{population-graphs}) and the neural network architectures that will be used to train them (Sections \ref{training-gcn} and \ref{training-gat}).
+This section presents in more depth the brain age estimation method (Section~\ref{brain-age-estimation}) and the multiple data modalities that will be used for the brain age estimation task (Section~\ref{dataset}). It also discusses population graphs (Section~\ref{population-graphs}) and the neural network architectures that will be used to train them (Sections~\ref{training-gcn} and~\ref{training-gat}).
 
 \section{Brain age estimation}
 \label{brain-age-estimation}
 
-Similar to the model proposed in Niu et al. \cite{niu2019improved}, we express the \textit{brain age} ($y_b$) as the sum of the known \textit{chronological age} ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$):
+Similar to the model proposed in Niu et al.~\cite{niu2019improved}, we express the \textit{brain age} ($y_b$) as the sum of the known \textit{chronological age} ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$):
 
 \begin{equation}
     \label{brainage:eq1}
     y_b = y_c + \varepsilon_g.
 \end{equation}
 
-The brain age gap estimation methodologies (such as \textit{BrainAGE} \cite{franke2019ten}) assume that for healthy subjects in the general population the brain age corresponds to chronological age:
+The brain age gap estimation methodologies (such as \textit{BrainAGE}~\cite{franke2019ten}) assume that for healthy subjects in the general population the brain age corresponds to chronological age:
 
 \begin{equation}
     \label{brainage:assume}
@@ -33,7 +33,7 @@ Our goal is to estimate the brain age $y_b$ by fitting some function $f$ of the 
     y_b = f(X) + \varepsilon_e.
 \end{equation}
 
-From Equations \ref{brainage:eq1} and \ref{brainage:eq2}, the estimate of chronological age is, on the other hand,
+From Equations~\ref{brainage:eq1} and~\ref{brainage:eq2}, the estimate of chronological age is, on the other hand,
 
 \begin{align}
     y_c &= f(X) + \varepsilon_e - \varepsilon_g \\
@@ -41,16 +41,16 @@ From Equations \ref{brainage:eq1} and \ref{brainage:eq2}, the estimate of chrono
         &= f(X) + \varepsilon.
 \end{align}
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation \ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation \ref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation~\ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation~\ref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
-An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al. \cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
+An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
 \section{Neuroimaging dataset}
 \label{dataset}
 
 \subsection{United Kingdom Biobank}
 
-The United Kingdom Biobank (UK Biobank) \cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
+The United Kingdom Biobank (UK Biobank)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
 Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records, a total of 17,550 participants.
 The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
@@ -59,7 +59,7 @@ A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
-Both structural and functional datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al. \cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+Both structural and functional datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 \subsection{Structural data}
 Structural brain imaging data refers to cortical thickness, surface area and gray matter volume, reported at parcel granularity.
@@ -69,7 +69,7 @@ These features have been derived from two types of an MRI image called T1-weight
 % The images emphasise different aspects of the MRI scan a. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features 
 
 \subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D model of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis \cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
+Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D model of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
 
 \subsection{Functional data}
 The resting state functional MRI (rs-fMRI) represents brain activity over time. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel.
@@ -136,7 +136,7 @@ To avoid memory issues when $|E| \sim O(|V|^2)$ and minimise the size of the nei
 \subsection{Training task}
 % Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
 
-% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian \cite{kipf2017semi}, predicting the labels for the remaining nodes
+% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian~\cite{kipf2017semi}, predicting the labels for the remaining nodes
 
 For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance for a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
 
@@ -171,7 +171,7 @@ where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is 
 % Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies.
 % Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation.
 
-% \cite{velickovic2018graph}: graph definition in the Fourier domain based on the eigendecomposition of the graph Laplacian
+%~\cite{velickovic2018graph}: graph definition in the Fourier domain based on the eigendecomposition of the graph Laplacian
 
 \subsection{Spectral graph convolution}
 
@@ -218,17 +218,17 @@ with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The
 
 \subsubsection{}
 
-Kipf and Welling \cite{kipf2017semi} simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. 
+Kipf and Welling~\cite{kipf2017semi} simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. 
 % Velickovic: further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
 
 
 % (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow)
-% can also mention \cite{wu2019comprehensive};
+% can also mention~\cite{wu2019comprehensive};
 
 % extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult
 
 \subsection{Layers of the graph convolutional network}
-Averaging representations of neighbour features and smoothing labels as a consequence. \cite{wu2019simplifying}
+Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
 
 \section{Graph attention networks}
 \label{training-gat}
