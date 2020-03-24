@@ -202,7 +202,9 @@ to approximate the filter $\mathbf{\hat{G}}$ as
     \mathbf{\hat{G}} \approx \sum_{i = 0}^{k} \theta_i T_i(\mathbf{\tilde{\Lambda}})
 \end{equation}
 
-where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, $k$ is the truncation coefficient that determines the , and $\theta_i$ are coefficients such that $\mathbf{\hat{G}} = \sum_i \theta_i \mathbf{\Lambda}^i$~\cite{wu2019simplifying}. Next, it can be proved~\cite{wu2019comprehensive} that
+where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_i$ are coefficients such that $\mathbf{\hat{G}} = \sum_i \theta_i \mathbf{\Lambda}^i$~\cite{wu2019simplifying}. The truncation coefficient (the degree of the polynomial) $k$ corresponds to the neighbourhood of at most $k$ hops away from the node of interest. 
+
+Next, it can be proved~\cite{wu2019comprehensive} that
 
 \begin{equation}
     T_i(\mathbf{\tilde{L}}) = \mathbf{U}T_i(\mathbf{\tilde{\Lambda}})\mathbf{U}^{\mathrm{T}}
