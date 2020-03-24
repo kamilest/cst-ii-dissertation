@@ -218,9 +218,11 @@ with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The
 
 % ChebNet: filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet) (velickovic)
 
-\subsubsection{}
+\subsubsection{Kipf and Welling's graph convolutional networks}
+assume $k=1$, $\lambda_{\mathrm{max}}=2$ so that the polynomial in 2.18 simplifies to only two learnable parameters but even they can be further simplified to 1 parameter.
 
-Kipf and Welling~\cite{kipf2017semi} simplifying ChebNet hops as stacking single-hop layers and using renormalisation trick for the node to use the most information from itself. 
+renormalisation trick to avoid the instabilities 
+
 % Velickovic: further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
 
 
