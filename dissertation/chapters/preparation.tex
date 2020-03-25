@@ -191,9 +191,9 @@ This section reviews the steps towards optimised graph convolutional networks (G
 To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in (\ref{eq:convolution}), Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
 
 \begin{gather}
-    T_k(\mathbf{x}) = 2\mathbf{x}T_{k-1}(\mathbf{x}) - T_{k-2}(\mathbf{x}) \\
-    T_1 = \mathbf{x} \\
-    T_0 = 1
+    T_k(\mathbf{M}) = 2\mathbf{M}T_{k-1}(\mathbf{M}) - T_{k-2}(\mathbf{M}) \\
+    T_1 = \mathbf{M} \\
+    T_0 = \mathbf{I}
 \end{gather}
 
 to approximate the filter $\mathbf{\hat{G}}$ as 
@@ -202,7 +202,7 @@ to approximate the filter $\mathbf{\hat{G}}$ as
     \mathbf{\hat{G}} \approx \sum_{k = 0}^{K} \theta_k T_k(\mathbf{\tilde{\Lambda}})
 \end{equation}
 
-where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_i$ are coefficients such that $\mathbf{\hat{G}} = \sum_i \theta_i \mathbf{\Lambda}^i$~\cite{wu2019simplifying}. The truncation coefficient (polynomial order) $K$ corresponds to the neighbourhood of at most $K$ hops away from the node of interest, and such convolution is called $K$-localised. 
+where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_k$ are coefficients such that $\mathbf{\hat{G}} = \sum_k \theta_k \mathbf{\Lambda}^k$~\cite{wu2019simplifying}. The truncation coefficient (polynomial order) $K$ corresponds to the neighbourhood of at most $K$ hops away from the node of interest, and such convolution is called $K$-localised. 
 
 Next, it can be proved~\cite{wu2019comprehensive} that
 
@@ -213,23 +213,41 @@ Next, it can be proved~\cite{wu2019comprehensive} that
 with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The result is the approximated spectral graph convolution:
 
 \begin{equation}
+    \label{eq:chebnet}
     \mathbf{x} *_G \mathbf{g} \approx \sum_{k=0}^{K}\theta_k T_k(\mathbf{\tilde{L}})\mathbf{x}.
 \end{equation}
 
 % ChebNet: filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet) (velickovic)
 
 \subsubsection{GCNs}
-assume $K=1$, $\lambda_{\mathrm{max}}=2$ so that the polynomial in 2.18 simplifies to only two learnable parameters but even they can be further simplified to 1 parameter.
+Kipf and Welling's GCNs~\cite{kipf2017semi} introduce further optimisations to ChebNets: 
+\begin{enumerate}
+    \item Taking $K=1$ makes the expression in~(\ref{eq:chebnet}) linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
+    \item To minimise the number of trainable parameters, $\theta_0$ and $\theta_1$ become functions of a single parameter $\theta$: $\theta = \theta_0 = -\theta_1$.
+    \item Further assuming $\lambda_{\mathrm{max}}\approx 2$ simplifies the computation of $\mathbf{\tilde{L}}$, since this eliminates the need for eigendecomposition of the Laplacian: $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$ becomes $\mathbf{\tilde{L}} \approx \mathbf{L} - \mathbf{I}$.
+\end{enumerate}
 
-renormalisation trick to avoid the instabilities 
+This results in convolution approximation:
 
-% Velickovic: further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
+\begin{align}
+    \mathbf{x} *_G \mathbf{g} &\approx \theta_0 T_0(\mathbf{\tilde{L}}) \mathbf{x} + \theta_1 T_1(\mathbf{\tilde{L}}) \mathbf{x} \\
+    &\approx \theta \mathbf{I} \mathbf{x} - \theta (\mathbf{L} - \mathbf{I}) \mathbf{x} \\
+    \label{eq:gcnconv}
+    &= \theta(\mathbf{I} + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2})\mathbf{x}
+\end{align}
+
+Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in~(\ref{eq:gcnconv}) ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$, 
+
+\begin{equation}
+    \mathbf{x} *_G \mathbf{g} \approx \theta(\mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2})\mathbf{x}.
+\end{equation}
+ 
 
 
 % (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow)
 % can also mention~\cite{wu2019comprehensive};
 
-% extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult
+% extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult to implement
 
 \subsection{Layers of the graph convolutional network}
 Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
