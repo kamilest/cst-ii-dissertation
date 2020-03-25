@@ -191,7 +191,7 @@ This section reviews the steps towards optimised graph convolutional networks (G
 To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in (\ref{eq:convolution}), Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
 
 \begin{gather}
-    T_i(\mathbf{x}) = 2\mathbf{x}T_{i-1}(\mathbf{x}) - T_{i-2}(\mathbf{x}) \\
+    T_k(\mathbf{x}) = 2\mathbf{x}T_{k-1}(\mathbf{x}) - T_{k-2}(\mathbf{x}) \\
     T_1 = \mathbf{x} \\
     T_0 = 1
 \end{gather}
@@ -199,27 +199,27 @@ To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplicatio
 to approximate the filter $\mathbf{\hat{G}}$ as 
 
 \begin{equation}
-    \mathbf{\hat{G}} \approx \sum_{i = 0}^{k} \theta_i T_i(\mathbf{\tilde{\Lambda}})
+    \mathbf{\hat{G}} \approx \sum_{k = 0}^{K} \theta_k T_k(\mathbf{\tilde{\Lambda}})
 \end{equation}
 
-where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_i$ are coefficients such that $\mathbf{\hat{G}} = \sum_i \theta_i \mathbf{\Lambda}^i$~\cite{wu2019simplifying}. The truncation coefficient (the degree of the polynomial) $k$ corresponds to the neighbourhood of at most $k$ hops away from the node of interest. 
+where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_i$ are coefficients such that $\mathbf{\hat{G}} = \sum_i \theta_i \mathbf{\Lambda}^i$~\cite{wu2019simplifying}. The truncation coefficient (polynomial order) $K$ corresponds to the neighbourhood of at most $K$ hops away from the node of interest, and such convolution is called $K$-localised. 
 
 Next, it can be proved~\cite{wu2019comprehensive} that
 
 \begin{equation}
-    T_i(\mathbf{\tilde{L}}) = \mathbf{U}T_i(\mathbf{\tilde{\Lambda}})\mathbf{U}^{\mathrm{T}}
+    T_k(\mathbf{\tilde{L}}) = \mathbf{U}T_k(\mathbf{\tilde{\Lambda}})\mathbf{U}^{\mathrm{T}}
 \end{equation}
 
 with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The result is the approximated spectral graph convolution:
 
 \begin{equation}
-    \mathbf{x} *_G \mathbf{g} \approx \sum_{i=0}^{k}\theta_i T_i(\mathbf{\tilde{L}})\mathbf{x}.
+    \mathbf{x} *_G \mathbf{g} \approx \sum_{k=0}^{K}\theta_k T_k(\mathbf{\tilde{L}})\mathbf{x}.
 \end{equation}
 
 % ChebNet: filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet) (velickovic)
 
-\subsubsection{Kipf and Welling's graph convolutional networks}
-assume $k=1$, $\lambda_{\mathrm{max}}=2$ so that the polynomial in 2.18 simplifies to only two learnable parameters but even they can be further simplified to 1 parameter.
+\subsubsection{GCNs}
+assume $K=1$, $\lambda_{\mathrm{max}}=2$ so that the polynomial in 2.18 simplifies to only two learnable parameters but even they can be further simplified to 1 parameter.
 
 renormalisation trick to avoid the instabilities 
 
