@@ -51,7 +51,7 @@ An alternative method, which does not restrict training data only to healthy sub
 \subsection{United Kingdom Biobank}
 
 The United Kingdom Biobank (UK Biobank)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
-Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records, a total of 17,550 participants.
+Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records, a total of 17,550 subjects.
 The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
@@ -76,7 +76,7 @@ The resting state functional MRI (rs-fMRI) represents brain activity over time. 
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
-We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that \textit{parts of the brain that have related functions would also have similar activity patterns}. As a consequence, we would expect higher correlation of the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
+We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that \textit{parts of the brain that have related functions would also have similar activity patterns}. As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
 \begin{equation}
     r(T_1, T_2) = \frac{\mathrm{cov}(T_1, T_2)}{\sigma_{T_1} \sigma_{T_2}}
@@ -103,21 +103,21 @@ of which (due to symmetry and the non-informative diagonal) only the flattened l
 
 \subsection{Phenotype data}
 
-In this dissertation, the phenotype data is defined as all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education and so forth.
+In this dissertation, the phenotype data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education and so forth.
 
-The purpose of phenotype data is to define the inter-subject similarity score, which will determine the edges in the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
+The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
 
-TODO Appendix.
+TODO Appendix?
 
 \section{Population graphs}
 \label{population-graphs}
 
 The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of patients $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
-Each node $v \in V$ is the vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
+Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
 
 \subsection{Similarity metrics}
-The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes with brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (for example, the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
+The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes with brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
 
 Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
 
@@ -138,10 +138,12 @@ To avoid memory issues when $|E| \sim O(|V|^2)$ and minimise the size of the nei
 
 % Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian~\cite{kipf2017semi}, predicting the labels for the remaining nodes
 
-For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance for a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
+For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance on a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
 
 
-% TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
+TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
+
+TODO consider moving training task to after architecture description so that the illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically.
 
 
 \section{Graph convolutional networks}
@@ -191,47 +193,66 @@ This section reviews the steps towards optimised graph convolutional networks (G
 To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in (\ref{eq:convolution}), Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
 
 \begin{gather}
-    T_i(\mathbf{x}) = 2\mathbf{x}T_{i-1}(\mathbf{x}) - T_{i-2}(\mathbf{x}) \\
-    T_1 = \mathbf{x} \\
-    T_0 = 1
+    T_k(\mathbf{M}) = 2\mathbf{M}T_{k-1}(\mathbf{M}) - T_{k-2}(\mathbf{M}) \\
+    T_1 = \mathbf{M} \\
+    T_0 = \mathbf{I}
 \end{gather}
 
 to approximate the filter $\mathbf{\hat{G}}$ as 
 
 \begin{equation}
-    \mathbf{\hat{G}} \approx \sum_{i = 0}^{k} \theta_i T_i(\mathbf{\tilde{\Lambda}})
+    \mathbf{\hat{G}} \approx \sum_{k = 0}^{K} \theta_k T_k(\mathbf{\tilde{\Lambda}})
 \end{equation}
 
-where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_i$ are coefficients such that $\mathbf{\hat{G}} = \sum_i \theta_i \mathbf{\Lambda}^i$~\cite{wu2019simplifying}. The truncation coefficient (the degree of the polynomial) $k$ corresponds to the neighbourhood of at most $k$ hops away from the node of interest. 
+where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_k$ are coefficients such that $\mathbf{\hat{G}} = \sum_k \theta_k \mathbf{\Lambda}^k$~\cite{wu2019simplifying}. The truncation coefficient (polynomial order) $K$ corresponds to the neighbourhood of at most $K$ hops away from the node of interest, and such convolution is called $K$-localised. 
 
 Next, it can be proved~\cite{wu2019comprehensive} that
 
 \begin{equation}
-    T_i(\mathbf{\tilde{L}}) = \mathbf{U}T_i(\mathbf{\tilde{\Lambda}})\mathbf{U}^{\mathrm{T}}
+    T_k(\mathbf{\tilde{L}}) = \mathbf{U}T_k(\mathbf{\tilde{\Lambda}})\mathbf{U}^{\mathrm{T}}
 \end{equation}
 
 with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The result is the approximated spectral graph convolution:
 
 \begin{equation}
-    \mathbf{x} *_G \mathbf{g} \approx \sum_{i=0}^{k}\theta_i T_i(\mathbf{\tilde{L}})\mathbf{x}.
+    \label{eq:chebnet}
+    \mathbf{x} *_G \mathbf{g} \approx \sum_{k=0}^{K}\theta_k T_k(\mathbf{\tilde{L}})\mathbf{x}.
 \end{equation}
 
 % ChebNet: filters further approximated by Chebyshev expansion of the graph Laplacian avoiding the expensive eigendecomposition operation (ChebNet) (velickovic)
 
-\subsubsection{Kipf and Welling's graph convolutional networks}
-assume $k=1$, $\lambda_{\mathrm{max}}=2$ so that the polynomial in 2.18 simplifies to only two learnable parameters but even they can be further simplified to 1 parameter.
+\subsubsection{GCNs}
+Kipf and Welling's GCNs~\cite{kipf2017semi} introduce further optimisations to ChebNets: 
+\begin{enumerate}
+    \item Taking $K=1$ makes the expression in~(\ref{eq:chebnet}) linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
+    \item To minimise the number of trainable parameters, $\theta_0$ and $\theta_1$ become functions of a single parameter $\theta$: $\theta = \theta_0 = -\theta_1$.
+    \item Further assuming $\lambda_{\mathrm{max}}\approx 2$ simplifies the computation of $\mathbf{\tilde{L}}$, since this eliminates the need for eigendecomposition of the Laplacian: $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$ becomes $\mathbf{\tilde{L}} \approx \mathbf{L} - \mathbf{I}$.
+\end{enumerate}
 
-renormalisation trick to avoid the instabilities 
+This results in convolution approximation:
 
-% Velickovic: further improvements by filter restriction to local neighbourhoods and stacking them if necessary 
+\begin{align}
+    \mathbf{x} *_G \mathbf{g} &\approx \theta_0 T_0(\mathbf{\tilde{L}}) \mathbf{x} + \theta_1 T_1(\mathbf{\tilde{L}}) \mathbf{x} \\
+    &\approx \theta \mathbf{I} \mathbf{x} - \theta (\mathbf{L} - \mathbf{I}) \mathbf{x} \\
+    \label{eq:gcnconv1}
+    &= \theta(\mathbf{I} + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2})\mathbf{x}
+\end{align}
+
+Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in~(\ref{eq:gcnconv1}) ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$, 
+
+\begin{equation}
+    \label{eq:gcnconv2}
+    \mathbf{x} *_G \mathbf{g} \approx \theta(\mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2})\mathbf{x}.
+\end{equation}
+ 
 
 
 % (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow)
 % can also mention~\cite{wu2019comprehensive};
 
-% extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult
+% extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult to implement
 
-\subsection{Layers of the graph convolutional network}
+\subsection{Combining graph convolutional layers in a network}
 Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
 
 \section{Graph attention networks}
