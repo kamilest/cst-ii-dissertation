@@ -143,7 +143,7 @@ For node label prediction tasks such as brain age prediction, population graphs 
 
 TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
 
-TODO consider moving training task to after architecture description so that the illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically.
+TODO consider moving training task to after architecture description so that the illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically: Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
 
 
 \section{Graph convolutional networks}
@@ -168,7 +168,7 @@ The positive semidefinite Laplacian matrix is decomposed as
     \mathbf{L} = \mathbf{U\Lambda U}^\mathrm{T},
 \end{equation}
 
-where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{n}$ (e.g. features of some node), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse~\cite{wu2019simplifying}.
+where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{F}$ (e.g. a graph node with $F$ features), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse~\cite{wu2019simplifying}.
 
 % Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies.
 % Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation.
@@ -245,15 +245,19 @@ Finally, to avoid the numerical instability of repeated convolutions due to the 
     \mathbf{x} *_G \mathbf{g} \approx \theta(\mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2})\mathbf{x}.
 \end{equation}
  
-
-
 % (this citation also very good for follow through for what the training is doing for all layers in general rather than a single feature vector, i.e. the training flow)
 % can also mention~\cite{wu2019comprehensive};
 
 % extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult to implement
 
-\subsection{Combining graph convolutional layers in a network}
-Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
+\subsection{Graph convolutional layer}
+The graph convolution operation in~(\ref{eq:gcnconv2}) is generalised to apply to an entire layer of the network as follows. 
+
+Let $\mathbf{H}^{(k-1)} \in \mathbb{R}^{|V|\times C_{k-1}}$ be the input layer of a neural network with $C_{k-1}$ input channels, $\mathbf{H}^{(k)} \in \mathbb{R}^{|V|\times C_{k}}$ be the output layer with $C_{k}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V| \times C_0}$ containing $C_0$ input features for each of the $|V|$ nodes in the population graph (in this case the neuroimaging data for $|V|$ subjects). For the weight matrix $\mathbf{\Theta}^{(k)} \in \mathbb{R}^{C_{k-1}\times C_{k}}$ and an activation function $\sigma(\cdot)$,
+
+\begin{equation}
+    \mathbf{H}^{(k)} \leftarrow \sigma( \mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2}\mathbf{H}^{(k-1)}\mathbf{\Theta}^{(k)}).
+\end{equation}
 
 \section{Graph attention networks}
 \label{training-gat}
