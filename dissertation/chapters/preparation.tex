@@ -273,7 +273,7 @@ Analogously to the previous section, we consider an input layer $\mathbf{H}^{(l-
     e_{ij} = a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}).
 \end{equation}
 
-In Veli{\v{c}}kovi\'{c} et al.~\cite{velickovic2018graph}, the attention mechanism is implemented as a linear transformation using a learnable weight vector $\mathbf{a} \in \mathbb{R}^{2C_{l}}$, followed by a non-linearity $\sigma_1(\cdot)$):
+In Veli{\v{c}}kovi\'{c} et al.~\cite{velickovic2018graph}, the attention mechanism is implemented as a linear transformation using a learnable weight vector $\mathbf{a} \in \mathbb{R}^{2C_{l}}$, followed by a non-linearity $\sigma_1(\cdot)$:
 
 \begin{align}
     e_{ij} &= a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(k)}\mathbf{h}_j^{(l-1)}) \\
@@ -301,7 +301,7 @@ The coefficients $\alpha_{ij}$ and the weight matrix are used to compute the out
 The above attention mechanism can be repeated several times to stabilise the performance, where one independent application of attention is called an \textit{attention head}. The outputs of the independent attention heads are concatenated together until the last layer of the complete neural network architecture when they are averaged into a single output. For $M$ attention heads, the results of Equation~\eqref{eq:attention} are concatenated in non-final layers:
 
 \begin{equation}
-    \mathbf{h}_i^{(l)} = \underset{m=1}{\overset{M}{\big\|}} \sigma\left(\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(l)}_m\mathbf{h}_j^{(l-1)}\right).
+    \mathbf{h}_i^{(l)} = \underset{m=1}{\overset{M}{\big\|}} \sigma\left(\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(l)}_m\mathbf{h}_j^{(l-1)}\right),
 \end{equation}
 
 or averaged if GAT is the final ($L$-th) layer of the network:
