@@ -33,7 +33,7 @@ Our goal is to estimate the brain age $y_b$ by fitting some function $f$ of the 
     y_b = f(X) + \varepsilon_e.
 \end{equation}
 
-From Equations~\ref{brainage:eq1} and~\ref{brainage:eq2}, the estimate of chronological age is, on the other hand,
+From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of chronological age is, on the other hand,
 
 \begin{align}
     y_c &= f(X) + \varepsilon_e - \varepsilon_g \\
@@ -41,7 +41,7 @@ From Equations~\ref{brainage:eq1} and~\ref{brainage:eq2}, the estimate of chrono
         &= f(X) + \varepsilon.
 \end{align}
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation~\ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation~\ref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation~\eqref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation~\eqref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
@@ -190,7 +190,7 @@ where $\odot$ is the element-wise (Hadamard) product~\cite{wu2019simplifying}.
 This section reviews the steps towards optimised graph convolutional networks (GCNs) as proposed by Kipf and Welling~\cite{kipf2017semi}.
 
 \subsubsection{ChebNets}
-To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in (\ref{eq:convolution}), Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
+To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in Equation~\eqref{eq:convolution}, Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
 
 \begin{gather}
     T_k(\mathbf{M}) = 2\mathbf{M}T_{k-1}(\mathbf{M}) - T_{k-2}(\mathbf{M}) \\
@@ -204,7 +204,7 @@ to approximate the filter $\mathbf{\hat{G}}$ as
     \mathbf{\hat{G}} \approx \sum_{k = 0}^{K} \theta_k T_k(\mathbf{\tilde{\Lambda}})
 \end{equation}
 
-where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_k$ are coefficients such that $\mathbf{\hat{G}} = \sum_k \theta_k \mathbf{\Lambda}^k$~\cite{wu2019simplifying}. The truncation coefficient (polynomial order) $K$ corresponds to the neighbourhood of at most $K$ hops away from the node of interest, and such convolution is called $K$-localised. 
+where $\mathbf{\tilde{\Lambda}} = 2\mathbf{\Lambda}/\lambda_{\mathrm{max}} - \mathbf{I}$, $\lambda_\mathrm{max}$ is the largest eigenvalue in $\mathbf{\Lambda}$, and $\theta_k$ are coefficients such that $\mathbf{\hat{G}} = \sum_k \theta_k \mathbf{\Lambda}^k$~\cite{wu2019simplifying}. The truncation coefficient (polynomial order) $K$ corresponds to the neighbourhood of at most $K$ hops away from the node of interest, and such convolution is said to be $K$-localised. 
 
 Next, it can be proved~\cite{wu2019comprehensive} that
 
@@ -224,7 +224,7 @@ with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The
 \subsubsection{GCNs}
 Kipf and Welling's GCNs~\cite{kipf2017semi} introduce further optimisations to ChebNets: 
 \begin{enumerate}
-    \item Taking $K=1$ makes the expression in~(\ref{eq:chebnet}) linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
+    \item Taking $K=1$ makes the Equation~\eqref{eq:chebnet} linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
     \item To minimise the number of trainable parameters, $\theta_0$ and $\theta_1$ become functions of a single parameter $\theta$: $\theta = \theta_0 = -\theta_1$.
     \item Further assuming $\lambda_{\mathrm{max}}\approx 2$ simplifies the computation of $\mathbf{\tilde{L}}$, since this eliminates the need for eigendecomposition of the Laplacian: $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$ becomes $\mathbf{\tilde{L}} \approx \mathbf{L} - \mathbf{I}$.
 \end{enumerate}
@@ -238,7 +238,7 @@ This results in convolution approximation:
     &= \theta(\mathbf{I} + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2})\mathbf{x}
 \end{align}
 
-Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in~(\ref{eq:gcnconv1}) ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$, 
+Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in Equation~\eqref{eq:gcnconv1} ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$, 
 
 \begin{equation}
     \label{eq:gcnconv2}
@@ -251,66 +251,64 @@ Finally, to avoid the numerical instability of repeated convolutions due to the 
 % extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult to implement
 
 \subsection{Graph convolutional layer}
-The graph convolution operation in~(\ref{eq:gcnconv2}) is generalised to apply to an entire layer of the network as follows. 
+The graph convolution operation in Equation~(\ref{eq:gcnconv2}) is generalised to the entire layer of the network as follows~\cite{wu2019simplifying}. 
 
-Let $\mathbf{H}^{(k-1)} \in \mathbb{R}^{|V|\times C_{k-1}}$ be the input layer of a neural network with $C_{k-1}$ input channels, $\mathbf{H}^{(k)} \in \mathbb{R}^{|V|\times C_{k}}$ be the output layer with $C_{k}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V| \times C_0}$ containing $C_0$ input features for each of the $|V|$ nodes in the population graph (in this case the neuroimaging data for $|V|$ subjects). For the weight matrix $\mathbf{\Theta}^{(k)} \in \mathbb{R}^{C_{k-1}\times C_{k}}$ and an activation function $\sigma(\cdot)$,
+Let $\mathbf{H}^{(l-1)} \in \mathbb{R}^{|V|\times C_{l-1}}$ be the input layer of a neural network with $C_{l-1}$ input channels, $\mathbf{H}^{(l)} \in \mathbb{R}^{|V|\times C_{l}}$ be the GCN layer with $C_{l}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V| \times C_0}$ containing $C_0$ input features for each of the $|V|$ nodes in the population graph (in this case the neuroimaging data for $|V|$ subjects). For the weight matrix $\mathbf{\Theta}^{(l)} \in \mathbb{R}^{C_{l-1}\times C_{l}}$ and an activation function $\sigma(\cdot)$,
 
 \begin{equation}
-    \mathbf{H}^{(k)} \leftarrow \sigma( \mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2}\mathbf{H}^{(k-1)}\mathbf{\Theta}^{(k)}).
+    \mathbf{H}^{(l)} \leftarrow \sigma( \mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2}\mathbf{H}^{(l-1)}\mathbf{\Theta}^{(l)}).
 \end{equation}
 
 \section{Graph attention networks}
 \label{training-gat}
-\cite{velickovic2018graph} More based on the non-spectral (i.e. spatial) approaches where an operator is defined to work on the neighbourhoods of different sizes, maintaining the weight sharing property (usually done by defining a separate operator on the neighbourhoods of those sizes).
 
+In contrast to the \textit{spectral} GCN that relies on the computation within the Fourier domain using the graph Laplacian, the graph attention network (GAT)~\cite{velickovic2018graph} is a \textit{spatial} architecture that operates in the Euclidean domain. Here the mechanism that incorporates the neighbourhood information is defined to work on the neighbourhoods of different sizes, with each node learning the how much importance (\textit{attention}) it should assign to each one of its neighbours.
 
-\textit{Self-attention} is also added in to the concept where different parts of the node's neighbourhood are considered with different importance weights, getting a representation of the rest of the neighbourhood. 
-
+% \textit{Self-attention} is also added in to the concept where different parts of the node's neighbourhood are considered with different importance weights, getting a representation of the rest of the neighbourhood. 
 
 \subsection{Graph attentional layer}
-For the layer of an $N$-node graph with $F$ input and $F'$ output features, 
-
-input node features $\{\mathbf{h_1}, \dots, \mathbf{h_N}\}, \mathbf{h_i} \in \mathbb{R}^F$
-
-output node features $\{\mathbf{h_1'}, \dots, \mathbf{h_N'}\}, \mathbf{h_i'} \in \mathbb{R}^{F'}$
-
-linear transformation with weight matrix $\mathbf{W} \in \mathbb{R}^{F' \times F}$
-
-self attention $a: \mathbb{R}^{F'} \times \mathbb{R}^{F'} \rightarrow \mathbb{R}$
-
-attention coefficients \textit{can already include neighbourhoods} $e_{ij} = a(\mathbf{W}\mathbf{h}_i, \mathbf{W}\mathbf{h}_j)$
-
-
-
-weight vector $\mathbf{a} \in \mathbb{R}^{2F'}$
-
-\begin{align}
-    \alpha_{ij} &= \mathrm{softmax}_j(\mathbf{a}^T[\mathbf{W}\mathbf{h}_i \parallel \mathbf{W}\mathbf{h}_j]) \\
-    &=  \frac{\mathrm{exp}(\sigma_1(\mathbf{a}^T[\mathbf{W}\mathbf{h}_i \parallel \mathbf{W}\mathbf{h}_j]))}{\sum\limits_{k \in \mathcal{N}_i}\mathrm{exp}(\sigma_1(\mathbf{a}^T[\mathbf{W}\mathbf{h}_i \parallel \mathbf{W}\mathbf{h}_k]))}
-\end{align}
-
-where $\alpha_{ij}$ is the attention coefficient for an edge $i\leadsto j$ (corresponding to the importance of features in node $j$ to the features in node $i$), normalised across $i$'s neighbourhood $\mathcal{N}_i$ (defined as e.g. all nodes one hop away); $\sigma_1$ is a non-linearity. $\parallel$ means concatenation
-
-The coefficients $\alpha_{ij}$ and the weight matrix are used to compute the output features:
+Analogously to the previous section, we consider an input layer $\mathbf{H}^{(l-1)} \in \mathbb{R}^{|V|\times C_{l-1}}$ (with $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V|\times C_{0}}$ as before) and the GAT layer $\mathbf{H}^{(l)} \in \mathbb{R}^{|V|\times C_{l}}$. Write the input layer $\mathbf{H}^{(l-1)}$ as $[\mathbf{h}_1^{(l-1)} \cdots \mathbf{h}_{|V|}^{(l-1)}]^{\mathrm{T}}$, and $\mathbf{H}^{(l)}$ as $[\mathbf{h}_1^{(l)} \cdots \mathbf{h}_{|V|}^{(l)}]^{\mathrm{T}}$. For a trainable weight matrix $\mathbf{W}^{(l)} \in \mathbb{R}^{C_{l} \times C_{l-1}}$ and an \textit{attentional mechanism} $a: \mathbb{R}^{C_{l}} \times \mathbb{R}^{C_{l}} \rightarrow \mathbb{R}$ we compute (unnormalised) \textit{attentional coefficients} $e_{ij}$:
 
 \begin{equation}
-    \mathbf{h}_i' = \sigma(\sum\limits_{k \in \mathcal{N}_i} \alpha_{ij}\mathbf{W}\mathbf{h}_j)\label{eq:2.11}
+    e_{ij} = a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}).
+\end{equation}
+
+In Veli{\v{c}}kovi\'{c} et al.~\cite{velickovic2018graph}, the attention mechanism is implemented as a linear transformation using a learnable weight vector $\mathbf{a} \in \mathbb{R}^{2C_{l}}$, followed by a non-linearity $\sigma_1(\cdot)$):
+
+\begin{align}
+    e_{ij} &= a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(k)}\mathbf{h}_j^{(l-1)}) \\
+    &= \sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}]),
+\end{align}
+
+where $\parallel$ denotes concatenation.
+
+The graph topology is accounted for by discarding any coefficients $e_{ij}$ where $(i, j) \notin E$, and normalising the coefficients $\alpha_{ij}, (i, j) \in E$ for the rest using the softmax function:
+
+\begin{align}
+    \alpha_{ij} &= \underset{{j: (i, j) \in E}}{\mathrm{softmax}}\left(e_{ij}\right) \\
+    &= \underset{{j: (i, j) \in E}}{\mathrm{softmax}}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}])\right) \\
+    &=  \frac{\mathrm{exp}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}])\right)}{\sum\limits_{k: (i, k) \in E}\mathrm{exp}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_k^{(l-1)}])\right)}.
+\end{align}
+
+The coefficients $\alpha_{ij}$ and the weight matrix are used to compute the output features for another non-linearity $\sigma$:
+
+\begin{equation}
+    \label{eq:attention}
+    \mathbf{h}_i^{(l)} = \sigma\left(\sum\limits_{j: (i, j) \in E} \alpha_{ij}\mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}\right)
 \end{equation}
 
 \subsection{Multiple attention}
-The above attention mechanism can be repeated several times to stabilise the performance, where one independent application of attention is called and attention head. The outputs of the independent attention heads are concatenated together until the last layer when they are averaged into a single output. For $K$ attention heads, the results of \eqref{eq:2.11} are concatenated:
+The above attention mechanism can be repeated several times to stabilise the performance, where one independent application of attention is called an \textit{attention head}. The outputs of the independent attention heads are concatenated together until the last layer of the complete neural network architecture when they are averaged into a single output. For $M$ attention heads, the results of Equation~\eqref{eq:attention} are concatenated in non-final layers:
 
 \begin{equation}
-    \mathbf{h}_i' = \big\|_{k=1}^{K} \sigma(\sum\limits_{k \in \mathcal{N}_i} \alpha_{ij}^k\mathbf{W}^k\mathbf{h}_j)
+    \mathbf{h}_i^{(l)} = \underset{m=1}{\overset{M}{\big\|}} \sigma\left(\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(l)}_m\mathbf{h}_j^{(l-1)}\right).
 \end{equation}
 
-Which is averaged in the last layer:
+or averaged if GAT is the final ($L$-th) layer of the network:
 
 \begin{equation}
-    \mathbf{h}_i' = \sigma(\frac{1}{K}\sum\limits_{k=1}^K\sum\limits_{j \in \mathcal{N}_i} \alpha_{ij}^k\mathbf{W}^k\mathbf{h}_j).
+    \mathbf{h}_i^{(L)} = \sigma\left(\frac{1}{M}\sum\limits_{m=1}^M\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(L)}_m\mathbf{h}_j^{(L-1)}\right).
 \end{equation}
-
-TODO Talk about the initial features, \textit{diagram of the attention heads I guess} etc.
 
 
 \section{Requirements analysis}
