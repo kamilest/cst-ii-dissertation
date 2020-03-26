@@ -253,10 +253,10 @@ Finally, to avoid the numerical instability of repeated convolutions due to the 
 \subsection{Graph convolutional layer}
 The graph convolution operation in Equation~(\ref{eq:gcnconv2}) is generalised to the entire layer of the network as follows~\cite{wu2019simplifying}. 
 
-Let $\mathbf{H}^{(k-1)} \in \mathbb{R}^{|V|\times C_{k-1}}$ be the input layer of a neural network with $C_{k-1}$ input channels, $\mathbf{H}^{(k)} \in \mathbb{R}^{|V|\times C_{k}}$ be the GCN layer with $C_{k}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V| \times C_0}$ containing $C_0$ input features for each of the $|V|$ nodes in the population graph (in this case the neuroimaging data for $|V|$ subjects). For the weight matrix $\mathbf{\Theta}^{(k)} \in \mathbb{R}^{C_{k-1}\times C_{k}}$ and an activation function $\sigma(\cdot)$,
+Let $\mathbf{H}^{(l-1)} \in \mathbb{R}^{|V|\times C_{l-1}}$ be the input layer of a neural network with $C_{l-1}$ input channels, $\mathbf{H}^{(l)} \in \mathbb{R}^{|V|\times C_{l}}$ be the GCN layer with $C_{l}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V| \times C_0}$ containing $C_0$ input features for each of the $|V|$ nodes in the population graph (in this case the neuroimaging data for $|V|$ subjects). For the weight matrix $\mathbf{\Theta}^{(l)} \in \mathbb{R}^{C_{l-1}\times C_{l}}$ and an activation function $\sigma(\cdot)$,
 
 \begin{equation}
-    \mathbf{H}^{(k)} \leftarrow \sigma( \mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2}\mathbf{H}^{(k-1)}\mathbf{\Theta}^{(k)}).
+    \mathbf{H}^{(l)} \leftarrow \sigma( \mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2}\mathbf{H}^{(l-1)}\mathbf{\Theta}^{(l)}).
 \end{equation}
 
 \section{Graph attention networks}
@@ -267,17 +267,17 @@ In contrast to the \textit{spectral} GCN that relies on the computation within t
 % \textit{Self-attention} is also added in to the concept where different parts of the node's neighbourhood are considered with different importance weights, getting a representation of the rest of the neighbourhood. 
 
 \subsection{Graph attentional layer}
-Analogously to the previous section, we consider an input layer $\mathbf{H}^{(k-1)} \in \mathbb{R}^{|V|\times C_{k-1}}$ (with $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V|\times C_{0}}$ as before) and the GAT layer $\mathbf{H}^{(k)} \in \mathbb{R}^{|V|\times C_{k}}$. Write the input layer $\mathbf{H}^{(k-1)}$ as $[\mathbf{h}_1^{(k-1)} \cdots \mathbf{h}_{|V|}^{(k-1)}]^{\mathrm{T}}$, and $\mathbf{H}^{(k)}$ as $[\mathbf{h}_1^{(k)} \cdots \mathbf{h}_{|V|}^{(k)}]^{\mathrm{T}}$. For a trainable weight matrix $\mathbf{W}^{(k)} \in \mathbb{R}^{C_{k} \times C_{k-1}}$ and an \textit{attentional mechanism} $a: \mathbb{R}^{C_{k}} \times \mathbb{R}^{C_{k}} \rightarrow \mathbb{R}$ we compute (unnormalised) \textit{attentional coefficients} $e_{ij}$:
+Analogously to the previous section, we consider an input layer $\mathbf{H}^{(l-1)} \in \mathbb{R}^{|V|\times C_{l-1}}$ (with $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V|\times C_{0}}$ as before) and the GAT layer $\mathbf{H}^{(l)} \in \mathbb{R}^{|V|\times C_{l}}$. Write the input layer $\mathbf{H}^{(l-1)}$ as $[\mathbf{h}_1^{(l-1)} \cdots \mathbf{h}_{|V|}^{(l-1)}]^{\mathrm{T}}$, and $\mathbf{H}^{(l)}$ as $[\mathbf{h}_1^{(l)} \cdots \mathbf{h}_{|V|}^{(l)}]^{\mathrm{T}}$. For a trainable weight matrix $\mathbf{W}^{(l)} \in \mathbb{R}^{C_{l} \times C_{l-1}}$ and an \textit{attentional mechanism} $a: \mathbb{R}^{C_{l}} \times \mathbb{R}^{C_{l}} \rightarrow \mathbb{R}$ we compute (unnormalised) \textit{attentional coefficients} $e_{ij}$:
 
 \begin{equation}
-    e_{ij} = a(\mathbf{W}^{(k)}\mathbf{h}_i^{(k-1)}, \mathbf{W}^{(k)}\mathbf{h}_j^{(k-1)}).
+    e_{ij} = a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}).
 \end{equation}
 
-In Veli{\v{c}}kovi\'{c} et al.~\cite{velickovic2018graph}, the attention mechanism is implemented as a linear transformation using a learnable weight vector $\mathbf{a} \in \mathbb{R}^{2C_{k}}$, followed by a non-linearity $\sigma_1(\cdot)$):
+In Veli{\v{c}}kovi\'{c} et al.~\cite{velickovic2018graph}, the attention mechanism is implemented as a linear transformation using a learnable weight vector $\mathbf{a} \in \mathbb{R}^{2C_{l}}$, followed by a non-linearity $\sigma_1(\cdot)$):
 
 \begin{align}
-    e_{ij} &= a(\mathbf{W}^{(k)}\mathbf{h}_i^{(k-1)}, \mathbf{W}^{(k)}\mathbf{h}_j^{(k-1)}) \\
-    &= \sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(k)}\mathbf{h}_i^{(k-1)} \parallel \mathbf{W}^{(k)}\mathbf{h}_j^{(k-1)}]),
+    e_{ij} &= a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(k)}\mathbf{h}_j^{(l-1)}) \\
+    &= \sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}]),
 \end{align}
 
 where $\parallel$ denotes concatenation.
@@ -286,22 +286,22 @@ The graph topology is accounted for by discarding any coefficients $e_{ij}$ wher
 
 \begin{align}
     \alpha_{ij} &= \underset{{j: (i, j) \in E}}{\mathrm{softmax}}\left(e_{ij}\right) \\
-    &= \underset{{j: (i, j) \in E}}{\mathrm{softmax}}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(k)}\mathbf{h}_i^{(k-1)} \parallel \mathbf{W}^{(k)}\mathbf{h}_j^{(k-1)}])\right) \\
-    &=  \frac{\mathrm{exp}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}\mathbf{h}_i^{(k-1)} \parallel \mathbf{W}^{(k)}\mathbf{h}_j^{(k-1)}])\right)}{\sum\limits_{l: (i, l) \in E}\mathrm{exp}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(k)}\mathbf{h}_i^{(k-1)} \parallel \mathbf{W}^{(k)}\mathbf{h}_l^{(k-1)}])\right)}.
+    &= \underset{{j: (i, j) \in E}}{\mathrm{softmax}}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}])\right) \\
+    &=  \frac{\mathrm{exp}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}])\right)}{\sum\limits_{k: (i, k) \in E}\mathrm{exp}\left(\sigma_1(\mathbf{a}^{\mathrm{T}}[\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)} \parallel \mathbf{W}^{(l)}\mathbf{h}_k^{(l-1)}])\right)}.
 \end{align}
 
 The coefficients $\alpha_{ij}$ and the weight matrix are used to compute the output features for another non-linearity $\sigma$:
 
 \begin{equation}
     \label{eq:attention}
-    \mathbf{h}_i^{(k)} = \sigma\left(\sum\limits_{j: (i, j) \in E} \alpha_{ij}\mathbf{W}^{(k)}\mathbf{h}_j^{(k-1)}\right)
+    \mathbf{h}_i^{(l)} = \sigma\left(\sum\limits_{j: (i, j) \in E} \alpha_{ij}\mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}\right)
 \end{equation}
 
 \subsection{Multiple attention}
 The above attention mechanism can be repeated several times to stabilise the performance, where one independent application of attention is called an \textit{attention head}. The outputs of the independent attention heads are concatenated together until the last layer of the complete neural network architecture when they are averaged into a single output. For $M$ attention heads, the results of Equation~\eqref{eq:attention} are concatenated in non-final layers:
 
 \begin{equation}
-    \mathbf{h}_i^{(k)} = \underset{m=1}{\overset{M}{\big\|}} \sigma\left(\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(k)}_m\mathbf{h}_j^{(k-1)}\right).
+    \mathbf{h}_i^{(l)} = \underset{m=1}{\overset{M}{\big\|}} \sigma\left(\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(l)}_m\mathbf{h}_j^{(l-1)}\right).
 \end{equation}
 
 or averaged if GAT is the final ($L$-th) layer of the network:
@@ -310,7 +310,6 @@ or averaged if GAT is the final ($L$-th) layer of the network:
     \mathbf{h}_i^{(L)} = \sigma\left(\frac{1}{M}\sum\limits_{m=1}^M\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(L)}_m\mathbf{h}_j^{(L-1)}\right).
 \end{equation}
 
-TODO notation: eqref instead of ref for equations, use $l_1,\dots, L$ for layers and $k$ for other things.
 
 \section{Requirements analysis}
 
