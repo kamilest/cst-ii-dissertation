@@ -352,18 +352,18 @@ To track the workflow, prevent loss of data and ease the readability and/or any 
 
 \section{Choice of tools}
 
-This project will use \textit{PyTorch Geometric}~\cite{fey2019pytorch}, an extension library for \textit{PyTorch}~\cite{pytorch} that implements a variety of graph neural network architectures, including GCNs and GATs. The library is only supported in Python, which will be the implementation language of this project. For scientific computing I will use common Python packa such as \textit{scikit-learn}~\cite{pedregosa2011scikit}, \textit{pandas}~\cite{mckinney2010scipy}, and \textit{NumPy}~\cite{walt2011numpy}. 
+This project will use \textit{PyTorch Geometric}~\cite{fey2019pytorch}, an extension library for \textit{PyTorch}~\cite{pytorch} that implements a variety of graph neural network architectures. The library is supported in Python, which will be the implementation language of this project. 
 
-The neuroimaging machine learning library \textit{Nilearn}\footnote{https://nilearn.github.io} will be used for some of the neuroimaging data processing and visualisation~\cite{abraham2014machine}.
+For scientific computing I will use common Python packages such as \textit{scikit-learn}~\cite{pedregosa2011scikit}, \textit{pandas}~\cite{mckinney2010scipy}, and \textit{NumPy}~\cite{walt2011numpy}. 
+
+The neuroimaging machine learning library \textit{Nilearn} will be used for some of the neuroimaging data processing and visualisation~\cite{abraham2014machine, nilearn}.
 
 For model logging, visualisation and hyperparameter tuning, I will use the free \textit{Weights \& Biases}~\cite{wandb} framework.
 
 
 \section{Starting point}
-\begin{itemize}
-    \item dataset, preprocessed by Dr Richard A.I. Bethlehem
-    \item PyTorch, PyTorch geometric implementing GCN and GAT APIs and the graph API
-    \item no previous experience with graph neural networks or the mathematics behind it
-    \item no previous experience with PyTorch; limited experience with machine learning frameworks (basics of TensorFlow), no experience with neuroimaging data
-    \item previous Part IB courses like Artificial intelligence on the knowledge of which a lot of the preparation section material is based on.
-\end{itemize}
+The discussion of the architectures proposed in this section assumes the knowledge of the Computer Science Tripos courses relating to scientific computing, artificial intelligence, machine learning, and information theory. The conceptual understanding of the brain age estimation, neuroimaging data processing and graph neural networks (none of which I had previous experience with) required the study of papers cited as well as other supporting resources.
+
+The code builds on implementations provided by the packages listed in the previous section. I had no previous experience with most of them.
+
+The preprocessed dataset has been kindly provided by Dr Richard A.I. Bethlehem of Department of Psychiatry.
