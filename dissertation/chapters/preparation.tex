@@ -112,6 +112,8 @@ TODO Appendix?
 \section{Population graphs}
 \label{population-graphs}
 
+TODO assign $|V| = N$ which would look nicer throughout the sections.
+
 The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of patients $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
 Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
@@ -329,7 +331,7 @@ The project has three main stages that directly correspond to the Success Criter
     \item Training and evaluation of the two graph neural network architectures on the UK Biobank population graph. This includes the \textit{extension} of implementing the robustness measurement framework.
 \end{enumerate}
 
-Since every stage depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (aside from the extensions to be implemented last). 
+Since every stage depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). 
 
 I also expect the first stage to be the most complex for the following reasons.
 \begin{enumerate}
@@ -343,20 +345,10 @@ This requirement in itself largely fulfils the proposed \textit{extension} of im
 The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in the Implementation chapter.
 
 \section{Software engineering practice}
-Implementing a flexible preprocessing pipeline which could be customised in the future for a variety of machine learning tasks even outside graph neural networks (a package).
 
-Modular structure encapsulating specific task and having well defined documentations of the others.
+As mentioned in the previous section, this project requires particular care in pipeline design to fulfil the requirements for \textit{correctness}, \textit{flexibility} and \textit{modularity}. This design, carefully thought through in advance of the implementation, will be discussed in the Implementation chapter.
 
-Description of software engineering techniques: planning out and executing the project based on requirements analysis, setting tasks, and smoothly meeting the success criteria.
-
-Code reuse (of open source well tested libraries), follow documentation and follow the PEP-8 style guide (or whatever PyCharm encourages).
-
-Incremental development.
-
-Modular structure: e.g. data processing, graph construction, graph neural network modules, robustness evaluation framework. Figure out where validation and cross validation sections should be (while training, separately etc.)
-
-Diagram of the pipelines and module interaction (like in google design docs)
-
+To track the workflow, prevent loss of data and ease readability and/or any future extensions to this project, the common practices of code style, documentation, version control and code reuse will be extensively applied.
 
 \section{Choice of tools}
 PyTorch, PyTorch geometric extension, graph spectral filters/convolutions, message passing, time-series preprocessing into correlation matrices, IDEs, backup strategies
