@@ -33,7 +33,7 @@ Our goal is to estimate the brain age $y_b$ by fitting some function $f$ of the 
     y_b = f(X) + \varepsilon_e.
 \end{equation}
 
-From Equations~\ref{brainage:eq1} and~\ref{brainage:eq2}, the estimate of chronological age is, on the other hand,
+From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of chronological age is, on the other hand,
 
 \begin{align}
     y_c &= f(X) + \varepsilon_e - \varepsilon_g \\
@@ -41,7 +41,7 @@ From Equations~\ref{brainage:eq1} and~\ref{brainage:eq2}, the estimate of chrono
         &= f(X) + \varepsilon.
 \end{align}
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation~\ref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation~\ref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation~\eqref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation~\eqref{brainage:assume} still permits learning the brain age function $f$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
@@ -190,7 +190,7 @@ where $\odot$ is the element-wise (Hadamard) product~\cite{wu2019simplifying}.
 This section reviews the steps towards optimised graph convolutional networks (GCNs) as proposed by Kipf and Welling~\cite{kipf2017semi}.
 
 \subsubsection{ChebNets}
-To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in Equation~(\ref{eq:convolution}), Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
+To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in Equation~\eqref{eq:convolution}, Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
 
 \begin{gather}
     T_k(\mathbf{M}) = 2\mathbf{M}T_{k-1}(\mathbf{M}) - T_{k-2}(\mathbf{M}) \\
@@ -224,7 +224,7 @@ with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The
 \subsubsection{GCNs}
 Kipf and Welling's GCNs~\cite{kipf2017semi} introduce further optimisations to ChebNets: 
 \begin{enumerate}
-    \item Taking $K=1$ makes the Equation~(\ref{eq:chebnet}) linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
+    \item Taking $K=1$ makes the Equation~\eqref{eq:chebnet} linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
     \item To minimise the number of trainable parameters, $\theta_0$ and $\theta_1$ become functions of a single parameter $\theta$: $\theta = \theta_0 = -\theta_1$.
     \item Further assuming $\lambda_{\mathrm{max}}\approx 2$ simplifies the computation of $\mathbf{\tilde{L}}$, since this eliminates the need for eigendecomposition of the Laplacian: $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$ becomes $\mathbf{\tilde{L}} \approx \mathbf{L} - \mathbf{I}$.
 \end{enumerate}
@@ -238,7 +238,7 @@ This results in convolution approximation:
     &= \theta(\mathbf{I} + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2})\mathbf{x}
 \end{align}
 
-Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in~(\ref{eq:gcnconv1}) ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$, 
+Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in Equation~\eqref{eq:gcnconv1} ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$, 
 
 \begin{equation}
     \label{eq:gcnconv2}
