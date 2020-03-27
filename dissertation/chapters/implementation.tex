@@ -7,27 +7,25 @@
 %  ~4,500 words
 
 % Tangent works better than correlation or partial correlation.
+\section{Overview}
 
-This project is based around central pipeline which 
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{pipeline_overview.pdf}
+    \caption{Central pipeline overview.}\label{pipeline-overview}
+\end{figure}
+
+This project is based around the \textit{central pipeline} (Figure~\ref{pipeline-overview}) which 
 \begin{enumerate}
     \item Prepares the partially preprocessed United Kingdom Biobank (UKB) data;
     \item Constructs the population graph based on a given parameterisation;
     \item Prepares the population graph for training;
-    \item Runs a graph neural network architecture to learn the population graph node labels.
+    \item Runs a graph neural network architecture to learn the population graph node labels;
+    \item Reports the results to the evaluation framework.
 \end{enumerate}
 
-This chapter will provide the overview of this pipeline and then explain in increasing detail the steps behind each one of the pipeline stages.
+This chapter will explain in increasing detail the steps behind each one of the stages.
 
-\section{Graph construction pipeline}
-
-
-\begin{figure}[!ht]
-    \includegraphics[width=\textwidth]{graphpipeline.pdf}
-    \label{graphpipeline}
-    \caption{Graph pipeline.}
-\end{figure}
-
-\section{Data preprocessing framework}
+\section{UKB preprocessing framework}
 \subsection{UK Biobank subject selection}
 Selecting the subset of subjects that has all data modalities available: some modalities (e.g. phenotypic data) were unavailable because the subjects retracted the permissions to use their data and were removed from the UK Biobank.
 
