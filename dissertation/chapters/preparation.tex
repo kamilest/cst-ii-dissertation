@@ -50,8 +50,8 @@ An alternative method, which does not restrict training data only to healthy sub
 
 \subsection{United Kingdom Biobank}
 
-The United Kingdom Biobank (UK Biobank)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
-Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records, a total of 17,550 subjects.
+The United Kingdom Biobank (UKB)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
+Of particular relevance to this dissertation are the UKB participants with neuroimaging data records, a total of 17,550 subjects.
 The MRI scan data of those subjects has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
@@ -322,13 +322,13 @@ The project has three main stages that directly correspond to the Success Criter
 
 \begin{enumerate}
     \item Implementation of the population graph data structure, with nodes containing the individual neuroimaging data and edges representing associations between them based on pairwise similarity. This involves: \begin{enumerate}
-        \item Preprocessing of the functional, structural imaging and phenotypic (non-imaging) data of the UK Biobank subjects.
+        \item Preprocessing of the functional, structural imaging and phenotypic (non-imaging) data of the UKB subjects.
         \item Implementation of the customisable similarity metric that would compare two subjects and return the similarity score.
         \item A pipeline that would generate the population graph for a given set of subjects, their modalities, similarity metric and similarity threshold.
         \item An \textit{extension} for supporting higher flexibility in similarity metrics by including the similarity score as an edge feature rather than having a 1-weighted edge whenever the similarity score exceeds a given threshold.
     \end{enumerate}
     \item Implementation of the graph convolutional network (GCN) and graph attention network (GAT) architectures for the age regression task. 
-    \item Training and evaluation of the two graph neural network architectures on the UK Biobank population graph. This includes the \textit{extension} of implementing the robustness measurement framework.
+    \item Training and evaluation of the two graph neural network architectures on the UKB population graph. This includes the \textit{extension} of implementing the robustness measurement framework.
 \end{enumerate}
 
 Since every stage depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). 
