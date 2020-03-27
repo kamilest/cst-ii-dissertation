@@ -17,13 +17,13 @@
 This project is based around the \textit{central pipeline} (Figure~\ref{pipeline-overview}) which 
 \begin{enumerate}
     \item Prepares the partially preprocessed United Kingdom Biobank (UKB) data;
-    \item Constructs the population graph based on a given parameterisation;
+    \item Constructs the intermediate population graph based on a given parameterisation;
     \item Prepares the population graph for training;
     \item Runs a graph neural network architecture to learn the population graph node labels;
     \item Reports the results to the evaluation framework.
 \end{enumerate}
 
-This chapter will explain in increasing detail the steps behind each one of the stages.
+This chapter will explain in increasing detail the steps behind each of the stages.
 
 \section{UKB preprocessing framework}
 \subsection{UK Biobank subject selection}
