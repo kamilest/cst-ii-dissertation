@@ -50,12 +50,13 @@ An alternative method, which does not restrict training data only to healthy sub
 
 \subsection{United Kingdom Biobank}
 
-The United Kingdom Biobank (UKB)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
+The United Kingdom Biobank (UKB)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. 
 Of particular relevance to this dissertation are the UKB participants with neuroimaging data records, a total of 17,550 subjects.
-The MRI scan data of those subjects have been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
+The MRI scan data of those subjects have been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated (see Section~\ref{parcellation}) at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
-A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
+\label{parcellation}
+A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels (three-dimensional extension of pixels) are split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
@@ -73,7 +74,7 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 
 \subsection{Functional data}
 \label{fmri}
-The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
+The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. In particular, a surge in oxygenation level indicates a higher activation level of neurons in the corresponding brain area. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
@@ -154,7 +155,7 @@ TODO consider moving training task to after architecture description so that the
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-To make the computation independent of (irregular) graph topology, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
+To make the local computation independent of irregularities in node neighbourhoods, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
 
 \subsection{Graph spectral decomposition}
 
@@ -353,13 +354,15 @@ To track the workflow, prevent loss of data and ease the readability and/or any 
 
 \section{Choice of tools}
 
-This project will use \textit{PyTorch Geometric}~\cite{fey2019pytorch}, an extension library for \textit{PyTorch}~\cite{pytorch} that implements a variety of graph neural network architectures. The library is supported in Python, which will be the implementation language of this project. 
+Because of its popularity and wide community support in both machine learning and neuroimaging, I chose Python as the implementation language for this interdisciplinary project.
 
-For scientific computing I will use common Python packages such as \textit{scikit-learn}~\cite{pedregosa2011scikit}, \textit{pandas}~\cite{mckinney2010scipy}, and \textit{NumPy}~\cite{walt2011numpy}. 
+This project will use \textit{PyTorch Geometric}~\cite{fey2019pytorch}, a popular extension library for \textit{PyTorch}~\cite{pytorch} that provides out-of-the-box graph neural network architecture implementations and has the advantage over other libraries (and other machine learning frameworks such as TensorFlow) of being easy to learn and use. 
 
 The neuroimaging machine learning library \textit{Nilearn} will be used for some of the neuroimaging data processing and visualisation~\cite{abraham2014machine, nilearn}.
 
-For model logging, visualisation and hyperparameter tuning, I will use the free \textit{Weights \& Biases}~\cite{wandb} framework.
+For scientific computing, I will use common Python packages such as \textit{scikit-learn}~\cite{pedregosa2011scikit}, \textit{pandas}~\cite{mckinney2010scipy}, and \textit{NumPy}~\cite{walt2011numpy}. 
+
+For model logging, visualisation and hyperparameter tuning, I will use the free \textit{Weights \& Biases}~\cite{wandb} framework because of its clean, intuitive interface and automated machine learning capabilities.
 
 
 \section{Starting point}
