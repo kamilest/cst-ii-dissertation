@@ -8,7 +8,15 @@
 
 % Tangent works better than correlation or partial correlation.
 
-The key part of this project is the central pipeline, which 1) takes the partially preprocessed United Kingdom Biobank (UKB) data
+This project is based around central pipeline which 
+\begin{enumerate}
+    \item Prepares the partially preprocessed United Kingdom Biobank (UKB) data;
+    \item Constructs the population graph based on a given parameterisation;
+    \item Prepares the population graph for training;
+    \item Runs a graph neural network architecture to learn the population graph node labels.
+\end{enumerate}
+
+This chapter will provide the overview of this pipeline and then explain in increasing detail the steps behind each one of the pipeline stages.
 
 \section{Graph construction pipeline}
 
