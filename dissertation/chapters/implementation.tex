@@ -6,40 +6,94 @@
 
 %  ~4,500 words
 
-Could be split into \textit{preprocessing, parameter tuning, evaluation framework, software engineering techniques, repository overview}
+% Tangent works better than correlation or partial correlation.
+\section{Overview}
 
-\subsection{Precomputation and preprocessing of connectivity matrices}
-Tangent works better than correlation or partial correlation.
-
-\subsection{Structural and functional data extraction}
-
-
-\subsection{Graph construction pipeline}
-
-\begin{figure}[!ht]
-    \includegraphics[width=\textwidth]{graphpipeline.pdf}
-    \label{graphpipeline}
-    \caption{Graph pipeline.}
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{pipeline_overview.pdf}
+    \caption{Central pipeline overview.}\label{pipeline-overview}
 \end{figure}
 
-\subsection{Train, test, validation split}
+This project is based around the \textit{central pipeline} (Figure~\ref{pipeline-overview}) which 
+\begin{enumerate}
+    \item Prepares the partially preprocessed United Kingdom Biobank (UKB) data;
+    \item Constructs the population graph based on a given parameterisation;
+    \item Prepares the population graph for training;
+    \item Runs a graph neural network architecture to learn the population graph node labels;
+    \item Reports the results to the evaluation framework.
+\end{enumerate}
 
-\section{Non-graph baselines}
-I have played around with \textit{xgboost}, ElasticNet and simple multilayer perceptrons to get a good idea of the minimum baselines my new architectures need to reach to be considered more effective.
+This chapter will explain in increasing detail the steps behind each one of the stages.
 
-\section{Graph convolutional network}
-Describe the architecture in \texttt{BrainGCN}
+\section{UKB preprocessing framework}
+\subsection{UK Biobank subject selection}
+Selecting the subset of subjects that has all data modalities available: some modalities (e.g. phenotypic data) were unavailable because the subjects retracted the permissions to use their data and were removed from the UK Biobank.
 
-\section{Graph attention network}
+Three subjects with inconsistent functional MRI imaging data with some of the regions absent were discarded.
 
-\section{Robustness evaluation framework}
+
+\subsection{Functional connectivity matrix precomputation}
+
+\subsubsection{Dimensionality reduction for neural networks}
+The full flattened functional connectivity matrix has over 75,000 features per patient, which, considering pairwise similarities and a large number of subjects, makes the graph (and the training on it) very large: the number of resulting training parameters runs out of memory even for small architectures.
+
+The easiest solution mitigating this is running a PCA on the matrix, assuming that the first few principal components (how many?) would give a good representation of functional data features. Preliminary runs on small datasets of a few thousand subjects give similar performance.
+
+\subsection{Phenotypic data lookup table}
+For faster and more convenient similarity matrix precomputation.
+
+One feature in the UK Biobank might be described using several feature IDs corresponding to their versions (or in case of mental health/diagnosis, the indication whether a subject has a particular disorder). Some subjects might have 
+
+Testing.
+
+\subsection{Similarity matrix precomputation}
+\textit{Initially considered straightforward pairwise similarities but on the full dataset this proved to be computationally infeasible (estimated runtime over 85 hours just for the mental health similarity)}
+
+Give the maths of how the similarities were vectorised and accelerated using GPUs.
+
+Testing.
+
+\section{Graph construction framework}
+This framework accounts for the graph construction once the set of subjects, data modalities, similarity functions and similarity threshold are specified.
+
+
+\subsection{Similarity function specification}
+With \textit{extension}: custom similarity functions
+
+
+\subsection{Intermediate graph representation}
+Describe the resulting intermediate representation as graph construction pipeline is called with specific graph parameters.
+
+Could here mention the \textit{extension} of having weighted edges where edge features would store raw similarity thresholds.
+
+\subsubsection{Node features}
+Stored raw because unclear how they should be normalised until the training parameters are set.
+
+\subsubsection{Edge computation}
+
+
+
+\section{Graph transformation framework}
+Describe how the graph intermediate representation is changed based on the training transformation parameters (training fold, train/validation/test set split). The intermediate graph is prepared for training by normalising the features based on the train subset, adding train/validation/test set masks to ignore subjects that should not be used for feedback in training, concatenating the multiple modalities into a single feature set.
+
+Subject stratification, removing subjects with too few age occurrences because the data cannot be correctly stratified otherwise.
+
+
+\section{Graph neural network framework}
+Description of architecture: number and size of layers etc.
+
+Could have a diagram.
+
+\subsection{Hyperparameter tuning}
+Describe which hyperparameters were tuned using Bayesian optimisation strategy, early stopping, cross-validation etc.
+
+
+\section{Evaluation framework}
+The standard performance metrics $r$ and $r^2$ tracked and logged with training.
+
+Describe the additional graph transformation stages which add noise to node features/edges.
+
 
 \section{Repository overview}
-% TODO  The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
+% The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
 
-TODO rougly split into \textit{precompute} (with tests), \textit{preprocessing} (with tests?), \textit{similarity} (with tests), \textit{evaluation}, \textit{brainGAT, brainGCN}, ... 
-
-
-Figure out how to split framework modules.
-
-Could have a base BrainGNN class which can then be \textit{extended} with BrainGAT, BrainGCN.
