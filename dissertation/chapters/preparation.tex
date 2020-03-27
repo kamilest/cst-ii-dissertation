@@ -52,7 +52,7 @@ An alternative method, which does not restrict training data only to healthy sub
 
 The United Kingdom Biobank (UK Biobank)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
 Of particular relevance to this dissertation are the UK Biobank participants with neuroimaging data records, a total of 17,550 subjects.
-The MRI scan data of those patients has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
+The MRI scan data of those subjects has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
 A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
@@ -366,4 +366,4 @@ The discussion of the architectures proposed in this section assumes the knowled
 
 The code builds on implementations provided by the packages listed in the previous section. I had no previous experience with most of them.
 
-The preprocessed dataset has been kindly provided by Dr Richard A.I. Bethlehem of Department of Psychiatry.
+The preprocessed dataset has been kindly provided by Dr Richard Bethlehem of Department of Psychiatry.
