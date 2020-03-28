@@ -20,16 +20,16 @@ This project is based around the \textit{central pipeline} (Figure~\ref{pipeline
     \item Constructs the intermediate population graph based on a given parameterisation;
     \item Prepares the population graph for training;
     \item Runs a graph neural network architecture to learn the population graph node labels;
-    \item Reports the results to the evaluation framework.
+    \item Reports the results to the evaluation component.
 \end{enumerate}
 
 This chapter will explain in increasing detail the steps behind each of the stages.
 
-\section{UKB preprocessing framework}
+\section{UKB preprocessing component}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{preprocessing_framework.pdf}
-    \caption{UKB preprocessing framework.}\label{preprocessing-framework}
+    \includegraphics[width=0.8\textwidth]{preprocessing_component.pdf}
+    \caption{UKB preprocessing component.}\label{preprocessing-component}
 \end{figure}
 
 \subsection{UK Biobank subject selection}
@@ -59,14 +59,14 @@ Give the maths of how the similarities were vectorised and accelerated using GPU
 
 Testing.
 
-\section{Graph construction framework}
+\section{Graph construction component}
 
 \begin{figure}[h]
-    \includegraphics[width=\textwidth]{graph_construction_framework.pdf}
-    \caption{Graph construction framework.}\label{graph-construction-framework}
+    \includegraphics[width=\textwidth]{graph_construction_component.pdf}
+    \caption{Graph construction component.}\label{graph-construction-component}
 \end{figure}
 
-This framework accounts for the graph construction once the set of subjects, data modalities, similarity functions and similarity threshold are specified.
+This component accounts for the graph construction once the set of subjects, data modalities, similarity functions and similarity threshold are specified.
 
 
 \subsection{Similarity function specification}
@@ -85,13 +85,13 @@ Stored raw because unclear how they should be normalised until the training para
 
 
 
-\section{Graph transformation framework}
+\section{Graph transformation component}
 Describe how the graph intermediate representation is changed based on the training transformation parameters (training fold, train/validation/test set split). The intermediate graph is prepared for training by normalising the features based on the train subset, adding train/validation/test set masks to ignore subjects that should not be used for feedback in training, concatenating the multiple modalities into a single feature set.
 
 Subject stratification, removing subjects with too few age occurrences because the data cannot be correctly stratified otherwise.
 
 
-\section{Graph neural network framework}
+\section{Graph neural network component}
 Description of architecture: number and size of layers etc.
 
 Could have a diagram.
@@ -100,7 +100,7 @@ Could have a diagram.
 Describe which hyperparameters were tuned using Bayesian optimisation strategy, early stopping, cross-validation etc.
 
 
-\section{Evaluation framework}
+\section{Evaluation component}
 The standard performance metrics $r$ and $r^2$ tracked and logged with training.
 
 Describe the additional graph transformation stages which add noise to node features/edges.
