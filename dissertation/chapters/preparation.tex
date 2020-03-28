@@ -12,7 +12,7 @@ This section presents in more depth the brain age estimation method (Section~\re
 \section{Brain age estimation}
 \label{brain-age-estimation}
 
-Similar to the model proposed in Niu et al.~\cite{niu2019improved}, we express the \textit{brain age} ($y_b$) as the sum of the known \textit{chronological age} ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$):
+Similar to the model proposed by Niu et al.~\cite{niu2019improved}, we express the \textit{brain age} ($y_b$) as the sum of the known \textit{chronological age} ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$):
 
 \begin{equation}
     \label{brainage:eq1}
@@ -50,12 +50,13 @@ An alternative method, which does not restrict training data only to healthy sub
 
 \subsection{United Kingdom Biobank}
 
-The United Kingdom Biobank (UKB)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of phenotypic and genetic data. 
+The United Kingdom Biobank (UKB)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. 
 Of particular relevance to this dissertation are the UKB participants with neuroimaging data records, a total of 17,550 subjects.
-The MRI scan data of those subjects has been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
+The MRI scan data of those subjects have been initially processed (denoised and motion-corrected) with the standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}} and further parcellated (see Section~\ref{parcellation}) at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}} The details related to this neuroimaging dataset are described below.
 
 \subsection{Parcellation}
-A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels are split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
+\label{parcellation}
+A \textit{parcellation} or \textit{atlas} refers to the way the brain voxels (three-dimensional extension of pixels) are split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
@@ -69,10 +70,11 @@ These features have been derived from two types of an MRI image called T1-weight
 % The images emphasise different aspects of the MRI scan a. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features 
 
 \subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D model of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality.
+Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use the latter approach.
 
 \subsection{Functional data}
-The resting state functional MRI (rs-fMRI) represents brain activity over time. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel.
+\label{fmri}
+The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task. In the MRI scanner this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. In particular, a surge in oxygenation level indicates a higher activation level of neurons in the corresponding brain area. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
@@ -99,11 +101,11 @@ The correlations are used to derive the \textit{functional connectivity matrix} 
     \end{bmatrix},
 \end{equation}
 
-of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used as input for the machine learning models.
+of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used as input for the downstream machine learning analysis.
 
 \subsection{Phenotype data}
 
-In this dissertation, the phenotype data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education and so forth.
+In this dissertation, the phenotype data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, among others.
 
 The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
 
@@ -117,7 +119,7 @@ The multi-modal MRI imaging (structural, functional, quality control) and phenot
 Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
 
 \subsection{Similarity metrics}
-The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes with brain imaging data. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
+The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
 
 Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
 
@@ -125,12 +127,12 @@ Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim
     \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. (In practice, if the metric is floating point, ``matching'' could be defined in terms of phenotypic metrics being within some constant $\epsilon$.) 
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
 
-To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\theta$ is used such that
+To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
 
 \begin{equation}
-    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \theta.
+    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
 \end{equation}
 
 \subsection{Training task}
@@ -151,7 +153,7 @@ TODO consider moving training task to after architecture description so that the
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-To make the computation independent of (irregular) graph topology, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
+To make the local computation independent of irregularities in node neighbourhoods, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
 
 \subsection{Graph spectral decomposition}
 
@@ -252,7 +254,7 @@ Finally, to avoid the numerical instability of repeated convolutions due to the 
 % extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult to implement
 
 \subsection{Graph convolutional layer}
-The graph convolution operation in Equation~(\ref{eq:gcnconv2}) is generalised to the entire layer of the network as follows~\cite{wu2019simplifying}. 
+The graph convolution operation in Equation~(\ref{eq:gcnconv2}) is generalised to the entire layer of the network as follows. 
 
 Let $\mathbf{H}^{(l-1)} \in \mathbb{R}^{N\times C_{l-1}}$ be the input layer of a neural network with $C_{l-1}$ input channels, $\mathbf{H}^{(l)} \in \mathbb{R}^{N\times C_{l}}$ be the GCN layer with $C_{l}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{N \times C_0}$ containing $C_0$ input features for each of the $N$ nodes in the population graph (in this case the neuroimaging data for $N$ subjects). For the weight matrix $\mathbf{\Theta}^{(l)} \in \mathbb{R}^{C_{l-1}\times C_{l}}$ and an activation function $\sigma(\cdot)$,
 
@@ -263,12 +265,12 @@ Let $\mathbf{H}^{(l-1)} \in \mathbb{R}^{N\times C_{l-1}}$ be the input layer of 
 \section{Graph attention networks}
 \label{training-gat}
 
-In contrast to the \textit{spectral} GCN that relies on the computation within the Fourier domain using the graph Laplacian, the graph attention network (GAT)~\cite{velickovic2018graph} is a \textit{spatial} architecture that operates in the Euclidean domain. Here the mechanism that incorporates the neighbourhood information is defined to work on the neighbourhoods of different sizes, with each node learning the how much importance (\textit{attention}) it should assign to each one of its neighbours.
+In contrast to the \textit{spectral} GCN that relies on the computation within the Fourier domain using the graph Laplacian, the graph attention network (GAT)~\cite{velickovic2018graph} is a \textit{spatial} architecture that operates in the Euclidean domain. Here, the mechanism that incorporates the neighbourhood information is defined to work on the neighbourhoods of different sizes, with each node learning how much importance (\textit{attention}) it should assign to each one of its neighbours.
 
 % \textit{Self-attention} is also added in to the concept where different parts of the node's neighbourhood are considered with different importance weights, getting a representation of the rest of the neighbourhood. 
 
 \subsection{Graph attentional layer}
-Analogously to the previous section, we consider an input layer $\mathbf{H}^{(l-1)} \in \mathbb{R}^{N\times C_{l-1}}$ (with $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{N\times C_{0}}$ as before) and the GAT layer $\mathbf{H}^{(l)} \in \mathbb{R}^{N\times C_{l}}$. Write the input layer $\mathbf{H}^{(l-1)}$ as $[\mathbf{h}_1^{(l-1)} \cdots \mathbf{h}_{N}^{(l-1)}]^{\mathrm{T}}$, and $\mathbf{H}^{(l)}$ as $[\mathbf{h}_1^{(l)} \cdots \mathbf{h}_{N}^{(l)}]^{\mathrm{T}}$. For a trainable weight matrix $\mathbf{W}^{(l)} \in \mathbb{R}^{C_{l} \times C_{l-1}}$ and an \textit{attentional mechanism} $a: \mathbb{R}^{C_{l}} \times \mathbb{R}^{C_{l}} \rightarrow \mathbb{R}$ we compute (unnormalised) \textit{attentional coefficients} $e_{ij}$:
+Analogously to the previous section, we consider an input layer $\mathbf{H}^{(l-1)} \in \mathbb{R}^{|V|\times C_{l-1}}$ (with $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V|\times C_{0}}$ as before) and the GAT layer $\mathbf{H}^{(l)} \in \mathbb{R}^{|V|\times C_{l}}$. Denote the input layer $\mathbf{H}^{(l-1)}$ as $[\mathbf{h}_1^{(l-1)} \cdots \mathbf{h}_{|V|}^{(l-1)}]^{\mathrm{T}}$, and $\mathbf{H}^{(l)}$ as $[\mathbf{h}_1^{(l)} \cdots \mathbf{h}_{|V|}^{(l)}]^{\mathrm{T}}$. For a trainable weight matrix $\mathbf{W}^{(l)} \in \mathbb{R}^{C_{l} \times C_{l-1}}$ and an \textit{attentional mechanism} $a: \mathbb{R}^{C_{l}} \times \mathbb{R}^{C_{l}} \rightarrow \mathbb{R}$ we compute (unnormalised) \textit{attentional coefficients} $e_{ij}$:
 
 \begin{equation}
     e_{ij} = a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}).
@@ -298,8 +300,8 @@ The coefficients $\alpha_{ij}$ and the weight matrix are used to compute the out
     \mathbf{h}_i^{(l)} = \sigma\left(\sum\limits_{j: (i, j) \in E} \alpha_{ij}\mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}\right)
 \end{equation}
 
-\subsection{Multiple attention}
-The above attention mechanism can be repeated several times to stabilise the performance, where one independent application of attention is called an \textit{attention head}. The outputs of the independent attention heads are concatenated together until the last layer of the complete neural network architecture when they are averaged into a single output. For $M$ attention heads, the results of Equation~\eqref{eq:attention} are concatenated in non-final layers:
+\subsection{Multi-head attention}
+The above attention mechanism can be repeated several times to stabilise the performance, where one independent application of attention is called an \textit{attention head}. The outputs of the independent attention heads are concatenated or averaged together until the last layer of the complete neural network architecture when they are averaged into a single output. For $M$ attention heads, the results of Equation~\eqref{eq:attention} are concatenated in non-final layers:
 
 \begin{equation}
     \mathbf{h}_i^{(l)} = \underset{m=1}{\overset{M}{\big\|}} \sigma\left(\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(l)}_m\mathbf{h}_j^{(l-1)}\right),
@@ -346,17 +348,19 @@ The full design of the neuroimaging processing pipeline with respect to those re
 
 As mentioned in the previous section, this project requires particular care in pipeline design to fulfil the requirements for \textit{correctness}, \textit{flexibility} and \textit{modularity}. This design, carefully thought through in advance of the implementation, will be discussed in the Implementation chapter.
 
-To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of code style, documentation, unit testing, version control and code reuse will be extensively applied.
+To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of consistent code style, comprehensive documentation, unit testing, version control and code reuse will be extensively applied.
 
 \section{Choice of tools}
 
-This project will use \textit{PyTorch Geometric}~\cite{fey2019pytorch}, an extension library for \textit{PyTorch}~\cite{pytorch} that implements a variety of graph neural network architectures. The library is supported in Python, which will be the implementation language of this project. 
+Because of its popularity and wide community support in both machine learning and neuroimaging, I chose Python as the implementation language for this interdisciplinary project.
 
-For scientific computing I will use common Python packages such as \textit{scikit-learn}~\cite{pedregosa2011scikit}, \textit{pandas}~\cite{mckinney2010scipy}, and \textit{NumPy}~\cite{walt2011numpy}. 
+This project will use \textit{PyTorch Geometric}~\cite{fey2019pytorch}, a popular extension library for \textit{PyTorch}~\cite{pytorch} that provides out-of-the-box graph neural network architecture implementations and has the advantage over other libraries (and other machine learning frameworks such as TensorFlow) of being easy to learn and use. 
 
 The neuroimaging machine learning library \textit{Nilearn} will be used for some of the neuroimaging data processing and visualisation~\cite{abraham2014machine, nilearn}.
 
-For model logging, visualisation and hyperparameter tuning, I will use the free \textit{Weights \& Biases}~\cite{wandb} framework.
+For scientific computing, I will use common Python packages such as \textit{scikit-learn}~\cite{pedregosa2011scikit}, \textit{pandas}~\cite{mckinney2010scipy}, and \textit{NumPy}~\cite{walt2011numpy}. 
+
+For model logging, visualisation and hyperparameter tuning, I will use the free \textit{Weights \& Biases}~\cite{wandb} framework because of its clean, intuitive interface and automated machine learning capabilities.
 
 
 \section{Starting point}
