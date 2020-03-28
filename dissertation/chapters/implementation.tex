@@ -86,6 +86,13 @@ Stored raw because unclear how they should be normalised until the training para
 
 
 \section{Graph transformation component}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{graph_transformation_component.pdf}
+    \caption{Graph transformation component.}\label{graph-transformation-component}
+\end{figure}
+
 Describe how the graph intermediate representation is changed based on the training transformation parameters (training fold, train/validation/test set split). The intermediate graph is prepared for training by normalising the features based on the train subset, adding train/validation/test set masks to ignore subjects that should not be used for feedback in training, concatenating the multiple modalities into a single feature set.
 
 Subject stratification, removing subjects with too few age occurrences because the data cannot be correctly stratified otherwise.
