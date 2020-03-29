@@ -7,9 +7,11 @@
 
 %  ~2,500 words
 
+TODO update
 This chapter presents in more depth the brain age estimation method (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing (Sections~\ref{training-gcn} and~\ref{training-gat}).
 
-\section{Brain age estimation}
+\section{Background}
+\subsection{Brain age estimation}
 \label{brain-age-estimation}
 
 The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to a normal brain ageing process. 
@@ -57,6 +59,34 @@ Since the true brain age is unknown, any (semi-)supervised machine learning mode
 TODO Something like: when trained on healthy patient f tells how much of chron age can be explained by X. Therefore when applied to non healthy patient the same f explains how much of the brain is health and explains age, leaving the unexplained variance too become part of epislon which we assume is the brain age gap
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
+
+
+
+\subsection{Population graphs}
+\label{population-graphs}
+TODO In order for the neroimaging data to be used in GNN, need to make it into a graph structure. As previosuly mentioned, I chose to use a population graph structure....
+
+The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of $N$ subjects $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+
+Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. 
+
+Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
+
+Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
+
+\begin{equation}
+    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
+\end{equation}
+
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
+
+To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
+
+\begin{equation}
+    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
+\end{equation}
+
+
 
 \section{Dataset}
 \label{dataset}
@@ -156,30 +186,7 @@ The purpose of phenotype data is to compute the inter-subject similarity score, 
 TODO Insert table of pheotype data
 
 
-\section{Population graphs}
-\label{population-graphs}
-TODO In order for the neroimaging data to be used in GNN, need to make it into a graph structure. As previosuly mentioned, I chose to use a population graph structure....
 
-The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of $N$ subjects $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
-
-Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
-
-\subsection{Similarity metrics}
-The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
-
-Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
-
-\begin{equation}
-    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
-\end{equation}
-
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
-
-To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
-
-\begin{equation}
-    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
-\end{equation}
 
 \subsection{Training task}
 \label{training-task}
