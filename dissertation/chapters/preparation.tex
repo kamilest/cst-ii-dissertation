@@ -104,7 +104,7 @@ All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) wi
 A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries.
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
-
+TODO Combine with this above
 Both structural and functional datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 TODO Insert diagram flow diagram of preproessing steps here
@@ -120,7 +120,7 @@ TODO - Feature
 -Expalanation
 
 \subsection{Structural features}
-Structural MRI measures X. The main modalities are a b and c. The features used were extracted from these image modalieies.
+TODO Structural MRI measures X. The main modalities are a b and c. The features used were extracted from these image modalieies.
 
 Structural brain imaging data refers to cortical thickness, surface area and gray matter volume, reported at parcel granularity.
 
@@ -141,13 +141,14 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 \subsection{Functional features}
 \label{fmri}
 
-The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task.  this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. In particular, a surge in oxygenation level indicates a higher activation level of neurons in the corresponding brain area. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
+The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task. This is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. In particular, a surge in oxygenation level indicates a higher activation level of neurons in the corresponding brain area. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
 
 TODO Simplfy this section. What is fMRI? State the two types. State that you used rs-FMRI. It is an indrect measure of brain activity!
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
 
+TODO Keep it brief: from the rs-fMRI we extracted connectivity features. Connectivity features are...
 We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that \textit{parts of the brain that have related functions would also have similar activity patterns}. As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
 \begin{equation}
@@ -181,6 +182,7 @@ TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated bra
 
 In this dissertation, the phenotype data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, among others.
 
+TODO Link phenotype data to literature on confounding!
 The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
 
 TODO Insert table of pheotype data
