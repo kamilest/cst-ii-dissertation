@@ -7,9 +7,11 @@
 
 %  ~2,500 words
 
+TODO update
 This chapter presents in more depth the brain age estimation method (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing (Sections~\ref{training-gcn} and~\ref{training-gat}).
 
-\section{Brain age estimation}
+\section{Background}
+\subsection{Brain age estimation}
 \label{brain-age-estimation}
 
 The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to a normal brain ageing process. 
@@ -58,6 +60,34 @@ TODO Something like: when trained on healthy patient f tells how much of chron a
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
+
+
+\subsection{Population graphs}
+\label{population-graphs}
+TODO In order for the neroimaging data to be used in GNN, need to make it into a graph structure. As previosuly mentioned, I chose to use a population graph structure....
+
+The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of $N$ subjects $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+
+Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. 
+
+Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
+
+Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
+
+\begin{equation}
+    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
+\end{equation}
+
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
+
+To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
+
+\begin{equation}
+    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
+\end{equation}
+
+
+
 \section{Dataset}
 \label{dataset}
 
@@ -74,7 +104,7 @@ All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) wi
 A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries.
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
-
+TODO Combine with this above
 Both structural and functional datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 TODO Insert diagram flow diagram of preproessing steps here
@@ -90,7 +120,7 @@ TODO - Feature
 -Expalanation
 
 \subsection{Structural features}
-Structural MRI measures X. The main modalities are a b and c. The features used were extracted from these image modalieies.
+TODO Structural MRI measures X. The main modalities are a b and c. The features used were extracted from these image modalieies.
 
 Structural brain imaging data refers to cortical thickness, surface area and gray matter volume, reported at parcel granularity.
 
@@ -111,13 +141,14 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 \subsection{Functional features}
 \label{fmri}
 
-The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task.  this is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. In particular, a surge in oxygenation level indicates a higher activation level of neurons in the corresponding brain area. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
+The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task. This is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. In particular, a surge in oxygenation level indicates a higher activation level of neurons in the corresponding brain area. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
 
 TODO Simplfy this section. What is fMRI? State the two types. State that you used rs-FMRI. It is an indrect measure of brain activity!
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
 
+TODO Keep it brief: from the rs-fMRI we extracted connectivity features. Connectivity features are...
 We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that \textit{parts of the brain that have related functions would also have similar activity patterns}. As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
 \begin{equation}
@@ -151,35 +182,13 @@ TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated bra
 
 In this dissertation, the phenotype data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, among others.
 
+TODO Link phenotype data to literature on confounding!
 The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
 
 TODO Insert table of pheotype data
 
 
-\section{Population graphs}
-\label{population-graphs}
-TODO In order for the neroimaging data to be used in GNN, need to make it into a graph structure. As previosuly mentioned, I chose to use a population graph structure....
 
-The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of $N$ subjects $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
-
-Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on phenotypic similarity, defined by some similarity metric.
-
-\subsection{Similarity metrics}
-The topology of the graph is determined by a similarity metric that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
-
-Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
-
-\begin{equation}
-    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
-\end{equation}
-
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
-
-To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
-
-\begin{equation}
-    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
-\end{equation}
 
 \subsection{Training task}
 \label{training-task}
