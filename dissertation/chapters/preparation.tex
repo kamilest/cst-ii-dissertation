@@ -12,16 +12,16 @@ This section presents in more depth the brain age estimation method (Section~\re
 \section{Brain age estimation}
 \label{brain-age-estimation}
 
-Similar to the model proposed by Niu et al.~\cite{niu2019improved}, we express the \textit{brain age} ($y_b$) as the sum of the known \textit{chronological age} ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$):
+The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person (although the opposite is true for their chronological age).
 
-TODO Before getting into the maths, start by restating the definition of brain age in words. "Simply put, the brain age is defined as..."
+Following the model proposed by Niu et al.~\cite{niu2019improved}, the brain age ($y_b$) could be expressed as the sum of the known chronological age ($y_c$) and the unknown \textit{brain age gap} ($\varepsilon_g$), defined as the discrepancy between the chronological and the brain age:
 
 \begin{equation}
     \label{brainage:eq1}
     y_b = y_c + \varepsilon_g.
 \end{equation}
 
-Typical brain age gap estimation techniques (such as \textit{BrainAGE}~\cite{franke2019ten}) assume that for healthy subjects in the general population the brain age corresponds to chronological age:
+It is generally assumed~\cite{franke2019ten} that, for healthy subjects in the general population, the brain age corresponds to chronological age:
 
 \begin{equation}
     \label{brainage:assume}
@@ -43,9 +43,10 @@ From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of ch
         \label{brainage:eq3}
         &= f(X) + \varepsilon.
 \end{align}
-TODO where $\varepsilon$ is the error term consisting of..
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation~\eqref{brainage:eq3}, where the prediction error $\varepsilon$ contains both the brain age gap $\varepsilon_g$ and the brain age estimation error $\varepsilon_e$. However, the assumption in Equation~\eqref{brainage:assume} still permits learning the brain age function $f(.)$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
+where $\varepsilon$ is the error term consisting of both the brain age gap and the model prediction error.
+
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only work on chronological age labels following Equation~\eqref{brainage:eq3}. However, the assumption in Equation~\eqref{brainage:assume} still permits learning the brain age function $f(\cdot)$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap.  
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
@@ -62,9 +63,7 @@ TODO Insert image of MRI and fMRI single axial slice
 
 All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
 
-A \textit{parcellation} refers to the way the brain  split into meaningful regions depending on their proximity, empirical evidence of them being responsible for the same function and so forth. This compresses the high dimensional per-voxel measurements into per-parcel summaries of much lower dimension, the latter being easier to manage in further analysis.
-
-TODO Keep this short. Parcellation splits an image of a brain into biologically meaningul regions for downstream analysis.
+A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries.
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
@@ -147,7 +146,7 @@ In this dissertation, the phenotype data refers to all subject data that does no
 The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
 
 TODO Insert table of pheotype data
-TODO Appendix?
+
 
 \section{Population graphs}
 \label{population-graphs}
