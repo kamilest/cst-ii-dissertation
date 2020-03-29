@@ -16,25 +16,25 @@ This chapter presents in more depth the brain age estimation method (Section~\re
 
 The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to a normal brain ageing process. 
 
-Following the model proposed by Niu et al.~\cite{niu2019improved}, the brain age $y_b$ could be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$, defined as the discrepancy between the chronological and the brain age:
+Following the model proposed by Niu et al.~\cite{niu2019improved}, the brain age $y_b$ could be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that defined as the discrepancy between the chronological and the brain age:
 
 \begin{equation}
     \label{brainage:eq1}
     y_b = y_c + \varepsilon_g.
 \end{equation}
 
-It is generally assumed~\cite{franke2019ten} that, for healthy subjects in the general population, the brain age corresponds to chronological age:
+It is generally assumed~\cite{franke2019ten} that a typical healthy person has a normally ageing brain, so the brain age corresponds to chronological age:
 
 \begin{equation}
     \label{brainage:assume}
-    y_b \approx y_c
+    y_b \approx y_c.
 \end{equation}
 
 Our goal is to estimate brain age $y_b$ as a function $f$ of brain imaging features $X$ such that
 
 \begin{equation}
     \label{brainage:eq2}
-    y_b = f(X) + \varepsilon_e
+    y_b = f(X) + \varepsilon_e,
 \end{equation}
 where $\varepsilon_e$ is the prediction error.
 
@@ -43,16 +43,26 @@ From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of ch
 \begin{align}
     y_c &= f(X) + \varepsilon_e - \varepsilon_g \\
         \label{brainage:eq3}
-        &= f(X) + \varepsilon.
+        &= f(X) + \varepsilon,
 \end{align}
 
 where $\varepsilon$ is the error term consisting of both the brain age gap and the model prediction error.
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as labels, following Equation~\eqref{brainage:eq3}.
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as labels, following Equation~\eqref{brainage:eq3}. When trained on healthy patient f tells how much of chron age can be explained by X. Therefore when applied to non healthy patient the same f explains how much of the brain is health and explains age, leaving the unexplained variance too become part of epislon which we assume is the brain age gap
 
-% When the model is trained only on healthy subjects, $f(\cdot)$ will tell how much of \textit{chronological} age can be explained by $X$, but because for healthy subjects $\varepsilon \approx \varepsilon_e$ (which follows from Equation~\eqref{brainage:assume}). When applied to non-healthy subject, the same $f(\cdot)$ will explain the chronological age, leaving the
 
-% When the model is trained only on healthy subjects, $f(\cdot)$ will tell how much of \textit{chronological} age can be explained by $X$. When the same model is applied to non-healthy subject, 
+
+But because for healthy subjects $\varepsilon \approx \varepsilon_e$ (which follows from Equation~\eqref{brainage:assume}), learning the function $f(\cdot)$ for chronological age corresponds to learning the function $f(\cdot)$ for brain age. When the same model is applied to a non-healthy subject, 
+
+the model is trained only on healthy subjects, $f(\cdot)$ will still learn the brain age even with the chronological age label, since for healthy subjects $y_b \approx e_c$. 
+
+
+will tell how much of \textit{chronological} age can be explained by $X$. However, because $\varepsilon \approx \varepsilon_e$ (which follows from Equation~\eqref{brainage:assume}), $f(\cdot)$ 
+
+
+When the same model is applied to a subject with some brain disorder, the same function $f(\cdot)$ will  
+
+% 
 
 % However, the assumption in Equation~\eqref{brainage:assume} still permits learning the brain age function $f(\cdot)$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap. 
 
@@ -64,9 +74,10 @@ An alternative method, which does not restrict training data only to healthy sub
 
 \subsection{Population graphs}
 \label{population-graphs}
-TODO In order for the neroimaging data to be used in GNN, need to make it into a graph structure. As previosuly mentioned, I chose to use a population graph structure....
 
-The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of $N$ subjects $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects is a \textit{population graph} data structure as it is presented in Parisot et al.~\cite{parisot2018disease}.
+
+The set of $N$ subjects $S$ is connected into a undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
 Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. 
 
@@ -91,7 +102,7 @@ To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neigh
 \section{Dataset}
 \label{dataset}
 
-TODO The dataset usaed was UKB....Features were extracted ....
+TODO The dataset  was UKB....Features were extracted ....
 
 The United Kingdom Biobank (UKB)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional MRI, a total of 17,550 subjects.
 
