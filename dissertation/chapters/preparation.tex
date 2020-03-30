@@ -84,7 +84,7 @@ To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neigh
 For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional MRI data, a total of 17,550 subjects. 
 % The training features, discussed below, are extracted from the structural and functional MRI images as well as the non-imaging data.
 
-TODO Insert image of MRI and fMRI single axial slice
+% TODO Insert image of MRI and fMRI single axial slice
 
 \subsection{Preprocessing}
 
@@ -106,7 +106,6 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 % -Expalanation
 
 \subsection{Structural features}
-\textit{Structural} MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The image processing has been done using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
 
 \begin{table}[]
     \centering
@@ -120,49 +119,53 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
     \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
 \end{table}
 
-The features derived from structural MRI that will be used for this project are \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}), reported at parcel granularity.
+\textit{Structural} MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
 
 
-TODO Insert image of axial slice of t1, t2, and FLAIR brain scan
+% TODO Insert image of axial slice of t1, t2, and FLAIR brain scan
 
 \subsection{Functional features}
 \label{fmri}
 
 \textit{Functional} MRI (fMRI) data is an indirect measure of brain activity over time. It is a time-series showing the change in oxygenation of the blood vessels (\textit{blood oxygenation level dependent}, or BOLD time-series), with sudden increases in oxygen demand indicating higher brain activity in the corresponding brain region.
 
-The two types of an fMRI image is \textit{task fMRI}, when the subject is asked to perform a specific cognitive task, and \textit{resting state fMRI} (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
+The two types of an fMRI image are \textit{task} fMRI, when the subject is asked to perform a specific cognitive task, and \textit{resting state} fMRI (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
-% well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
+For training, this project will use the \textit{functional connectivity matrix} which is derived from rs-fMRI. Functional connectivity is estimated by correlating the time-series of different parcels together under the assumption that parts of the brain that have related functions would also have similar activity patterns. 
+
+% TODO maybe include the maths as this is something that I have to do myself anyway, so I have to explain it (and it's more maths).
+% As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
+
+% \begin{equation}
+%     r(T_1, T_2) = \frac{\mathrm{cov}(T_1, T_2)}{\sigma_{T_1} \sigma_{T_2}}
+% \end{equation}
+
+% where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation.
+
+% The correlations are used to derive the \textit{functional connectivity matrix} storing pairwise correlations between the different voxels (or parcels) as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
+
+% \begin{equation}
+%     \mathrm{fcm}(T_1, \dots, T_N) = \begin{bmatrix}
+%         r(T_1, T_1) & \cdots & r(T_1, T_N) \\
+%         \vdots & \ddots & \vdots \\
+%         r(T_N, T_1) & \cdots & r(T_N, T_N)
+%     \end{bmatrix},
+% \end{equation}
+
+% of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used as input for the downstream machine learning analysis.
 
 
-TODO Keep it brief: from the rs-fMRI we extracted connectivity features. Connectivity features are...
-We are interested in estimating which parts of the brain are connected to each other, which we do by making use of the assumption that \textit{parts of the brain that have related functions would also have similar activity patterns}. As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
-
-\begin{equation}
-    r(T_1, T_2) = \frac{\mathrm{cov}(T_1, T_2)}{\sigma_{T_1} \sigma_{T_2}}
-\end{equation}
-
-where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation.
-
-% Could include (Pearson's, lasso, partial correlation, covariance) -- but these are not used?
+% Could include (Pearson's, lasso, partial correlation, covariance)
 
 % Tiago's observation that partial correlation may give better results when including functional MRI time-series in the machine learning model.
 % From wiki on partial correlation: In probability theory and statistics, partial correlation measures the degree of association between two random variables, with the effect of a set of controlling random variables removed. If we are interested in finding whether or to what extent there is a numerical relationship between two variables of interest, using their correlation coefficient will give misleading results if there is another, confounding, variable that is numerically related to both variables of interest. This misleading information can be avoided by controlling for the confounding variable, which is done by computing the partial correlation coefficient. This is precisely the motivation for including other right-side variables in a multiple regression; but while multiple regression gives unbiased results for the effect size, it does not give a numerical value of a measure of the strength of the relationship between the two variables of interest.
 
-The correlations are used to derive the \textit{functional connectivity matrix} storing pairwise correlations between the different voxels (or parcels) as the overall representation of functional brain connectivity. For time-series $T_1, \dots, T_N$,
 
-\begin{equation}
-    \mathrm{fcm}(T_1, \dots, T_N) = \begin{bmatrix}
-        r(T_1, T_1) & \cdots & r(T_1, T_N) \\
-        \vdots & \ddots & \vdots \\
-        r(T_N, T_1) & \cdots & r(T_N, T_N)
-    \end{bmatrix},
-\end{equation}
+% TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated brain.
 
-of which (due to symmetry and the non-informative diagonal) only the flattened lower triangle is usually used as input for the downstream machine learning analysis.
+% TODO maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like
 
-TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated brain.
-
+% TODO maybe is better to show how the correlation matrix looks like for one person
 
 \subsection{Euler indices}
 Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use the latter approach.
@@ -170,28 +173,12 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 
 \subsection{Phenotype features}
 
-In this dissertation, the phenotype data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, among others.
+In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, among others.
 
 TODO Link phenotype data to literature on confounding!
-The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
+The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph.
 
 TODO Insert table of pheotype data
-
-
-
-
-\subsection{Training task}
-\label{training-task}
-% Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
-
-% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian~\cite{kipf2017semi}, predicting the labels for the remaining nodes
-
-For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance on a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
-
-
-TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
-
-TODO consider moving training task to after architecture description so that the illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically: Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
 
 
 \section{Graph convolutional networks}
@@ -358,8 +345,21 @@ or averaged if GAT is the final ($L$-th) layer of the network:
     \mathbf{h}_i^{(L)} = \sigma\left(\frac{1}{M}\sum\limits_{m=1}^M\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(L)}_m\mathbf{h}_j^{(L-1)}\right).
 \end{equation}
 
+\section{Training task}
+\label{training-task}
+% Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
 
-TODO (consider combining with the \ref{training-task}) add a section about the architecture as a whole (but maybe in the implementation?) which describes how many layers the architectures will have and that I add fully connected MLP layers at the end.
+% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian~\cite{kipf2017semi}, predicting the labels for the remaining nodes
+
+For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance on a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
+
+
+TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
+
+% TODO illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically: Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
+
+
+% TODO add a section about the architecture as a whole (but maybe in the implementation?) which describes how many layers the architectures will have and that I add fully connected MLP layers at the end.
 
 \section{Requirements analysis}
 
