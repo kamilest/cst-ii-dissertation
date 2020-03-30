@@ -16,25 +16,25 @@ This chapter presents in more depth the brain age estimation method (Section~\re
 
 The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to a normal brain ageing process. 
 
-Following the model proposed by Niu et al.~\cite{niu2019improved}, the brain age $y_b$ could be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$, defined as the discrepancy between the chronological and the brain age:
+Following the model proposed by Niu et al.~\cite{niu2019improved}, the brain age $y_b$ could be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that defined as the discrepancy between the chronological and the brain age:
 
 \begin{equation}
     \label{brainage:eq1}
     y_b = y_c + \varepsilon_g.
 \end{equation}
 
-It is generally assumed~\cite{franke2019ten} that, for healthy subjects in the general population, the brain age corresponds to chronological age:
+It is generally assumed~\cite{franke2019ten} that a typical healthy person has a normally ageing brain, so the brain age corresponds to chronological age:
 
 \begin{equation}
     \label{brainage:assume}
-    y_b \approx y_c
+    y_b \approx y_c.
 \end{equation}
 
 Our goal is to estimate brain age $y_b$ as a function $f$ of brain imaging features $X$ such that
 
 \begin{equation}
     \label{brainage:eq2}
-    y_b = f(X) + \varepsilon_e
+    y_b = f(X) + \varepsilon_e,
 \end{equation}
 where $\varepsilon_e$ is the prediction error.
 
@@ -43,30 +43,21 @@ From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of ch
 \begin{align}
     y_c &= f(X) + \varepsilon_e - \varepsilon_g \\
         \label{brainage:eq3}
-        &= f(X) + \varepsilon.
+        &= f(X) + \varepsilon,
 \end{align}
 
 where $\varepsilon$ is the error term consisting of both the brain age gap and the model prediction error.
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as labels, following Equation~\eqref{brainage:eq3}.
-
-% When the model is trained only on healthy subjects, $f(\cdot)$ will tell how much of \textit{chronological} age can be explained by $X$, but because for healthy subjects $\varepsilon \approx \varepsilon_e$ (which follows from Equation~\eqref{brainage:assume}). When applied to non-healthy subject, the same $f(\cdot)$ will explain the chronological age, leaving the
-
-% When the model is trained only on healthy subjects, $f(\cdot)$ will tell how much of \textit{chronological} age can be explained by $X$. When the same model is applied to non-healthy subject, 
-
-% However, the assumption in Equation~\eqref{brainage:assume} still permits learning the brain age function $f(\cdot)$ as long as the model is trained only on healthy subjects, so that $\varepsilon \approx \varepsilon_e$. When the same model is applied to subjects with various brain health conditions, the errors outside of the $\varepsilon_e$ could be assumed to come from the brain age gap. 
-
-TODO Something like: when trained on healthy patient f tells how much of chron age can be explained by X. Therefore when applied to non healthy patient the same f explains how much of the brain is health and explains age, leaving the unexplained variance too become part of epislon which we assume is the brain age gap
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as labels, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy patients only, $f(\cdot)$ can still tell how much of chronological \textit{and} brain age can be explained by $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error. When the same model is applied to non healthy patients, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap.
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
-
-
 \subsection{Population graphs}
 \label{population-graphs}
-TODO In order for the neroimaging data to be used in GNN, need to make it into a graph structure. As previosuly mentioned, I chose to use a population graph structure....
 
-The multi-modal MRI imaging (structural, functional, quality control) and phenotypic data of the set of $N$ subjects $S$ can be connected into a undirected \textit{population graph} $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects is a \textit{population graph} data structure as it is presented in Parisot et al.~\cite{parisot2018disease}.
+
+The set of $N$ subjects $S$ is connected into a undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
 Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. 
 
@@ -87,63 +78,59 @@ To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neigh
 \end{equation}
 
 
-
 \section{Dataset}
 \label{dataset}
 
-TODO The dataset usaed was UKB....Features were extracted ....
-
-The United Kingdom Biobank (UKB)~\cite{sudlow2015uk} is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional MRI, a total of 17,550 subjects.
+For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional MRI data, a total of 17,550 subjects. 
+% The training features, discussed below, are extracted from the structural and functional MRI images as well as the non-imaging data.
 
 TODO Insert image of MRI and fMRI single axial slice
 
 \subsection{Preprocessing}
 
-All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further parcellated at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
+All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
 
-A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries.
+A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
-TODO Combine with this above
-Both structural and functional datasets in this dissertation will use one of the most common parcellations, developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
-TODO Insert diagram flow diagram of preproessing steps here
+% TODO Insert diagram flow diagram of preprocessing steps here
 
-TODO Insert image of a parcellated brain image
+% TODO Insert image of a parcellated brain image
 
-TODO After processing features were extracted from the structural and functional data. Table X gives an overview of these features.
 
-TODO Insert feature table here.
+% TODO Insert feature table here.
 
-TODO - Feature
-- Type - fMRI, MRI, pheo.
--Expalanation
+% TODO - Feature
+% - Type - fMRI, MRI, pheo.
+% -Expalanation
 
 \subsection{Structural features}
-TODO Structural MRI measures X. The main modalities are a b and c. The features used were extracted from these image modalieies.
+\textit{Structural} MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The image processing has been done using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
 
-Structural brain imaging data refers to cortical thickness, surface area and gray matter volume, reported at parcel granularity.
+\begin{table}[]
+    \centering
+    \begin{tabular}{lp{11cm}}
+        \hline
+    \textbf{Structural feature}            & \textbf{Description} \\ \hline
+    Cortical thickness &  Average thickness of the cerebral cortex in the parcel \\
+    Surface area       &  Cortical surface area of cortex in the parcel \\
+    Grey matter volume &  Total volume of the grey matter (the inner component) in a parcel
+    \end{tabular}
+    \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
+\end{table}
 
-These features have been derived from two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The image processing has been done using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
+The features derived from structural MRI that will be used for this project are \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}), reported at parcel granularity.
 
-TODO Insert table of structural features
-- Feature: CT, GM.....
-- Structural Imaging modality:T1, T2...
-- Explanation
 
-Insert image of axial slice of t1, t2, and FLAIR brain scan
-
-% The images emphasise different aspects of the MRI scan a. For the dataset used in this dissertation, the combination of the two types of images to derive the structural features 
-
-\subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use the latter approach.
+TODO Insert image of axial slice of t1, t2, and FLAIR brain scan
 
 \subsection{Functional features}
 \label{fmri}
 
-The resting state functional MRI (rs-fMRI) represents brain activity over time when the subject is not performing any specific cognitive task. This is measured through \textit{blood oxygenation level dependent} (BOLD) time-series, which represent the changes in blood oxygenation of brain vessels as neural activity regulates the oxygen demand. In particular, a surge in oxygenation level indicates a higher activation level of neurons in the corresponding brain area. The time-series are reported at parcel level as an average of all time series of voxels belonging to the same parcel. 
+\textit{Functional} MRI (fMRI) data is an indirect measure of brain activity over time. It is a time-series showing the change in oxygenation of the blood vessels (\textit{blood oxygenation level dependent}, or BOLD time-series), with sudden increases in oxygen demand indicating higher brain activity in the corresponding brain region.
 
-TODO Simplfy this section. What is fMRI? State the two types. State that you used rs-FMRI. It is an indrect measure of brain activity!
+The two types of an fMRI image is \textit{task fMRI}, when the subject is asked to perform a specific cognitive task, and \textit{resting state fMRI} (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
 % well, you really have to think if [BOLD timeseries] are useful at all for understanding. If you just say it's timeseries, maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like (I mean, it's useful in the sense that people see how the timeseries is/behaves in a few regions). But if you don't use them, then there's no point, and maybe is better to show how the correlation matrix looks like for one person
 
@@ -176,6 +163,9 @@ of which (due to symmetry and the non-informative diagonal) only the flattened l
 
 TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated brain.
 
+
+\subsection{Euler indices}
+Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use the latter approach.
 
 
 \subsection{Phenotype features}
