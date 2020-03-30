@@ -173,28 +173,12 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 
 \subsection{Phenotype features}
 
-In this dissertation, the phenotype data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, among others.
+In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, among others.
 
 TODO Link phenotype data to literature on confounding!
-The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph. This is further discussed in the next section. The full list of features that were used to define similarity metrics is provided in the Appendix.
+The purpose of phenotype data is to compute the inter-subject similarity score, which will determine the edges of the population graph.
 
 TODO Insert table of pheotype data
-
-
-
-
-\subsection{Training task}
-\label{training-task}
-% Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
-
-% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian~\cite{kipf2017semi}, predicting the labels for the remaining nodes
-
-For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance on a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
-
-
-TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
-
-TODO consider moving training task to after architecture description so that the illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically: Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
 
 
 \section{Graph convolutional networks}
@@ -361,8 +345,21 @@ or averaged if GAT is the final ($L$-th) layer of the network:
     \mathbf{h}_i^{(L)} = \sigma\left(\frac{1}{M}\sum\limits_{m=1}^M\sum\limits_{j: (i,j)\in E} \alpha_{ij, m}\mathbf{W}^{(L)}_m\mathbf{h}_j^{(L-1)}\right).
 \end{equation}
 
+\section{Training task}
+\label{training-task}
+% Train/validation/test split, cross-validation, patient selection and exclusion from results, stratification, graph representation (edge lists, node features, edge features,...)
 
-TODO (consider combining with the \ref{training-task}) add a section about the architecture as a whole (but maybe in the implementation?) which describes how many layers the architectures will have and that I add fully connected MLP layers at the end.
+% Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian~\cite{kipf2017semi}, predicting the labels for the remaining nodes
+
+For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance on a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
+
+
+TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
+
+% TODO illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically: Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
+
+
+% TODO add a section about the architecture as a whole (but maybe in the implementation?) which describes how many layers the architectures will have and that I add fully connected MLP layers at the end.
 
 \section{Requirements analysis}
 
