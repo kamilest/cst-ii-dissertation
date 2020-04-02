@@ -11,7 +11,7 @@ Current state-of-the-art machine learning approaches for brain age estimation us
 
 This dissertation proposes a customisable end-to-end framework of graph neural network architectures – including graph convolutional~\cite{kipf2017semi} and graph attention~\cite{velickovic2018graph} networks – as one way to combine the richness of structural, functional MRI and non-imaging modalities when predicting the brain age. Neural networks are trained in a semi-supervised manner on a \textit{population graph} representation of patients, where the nodes of the population graph represent subject-specific neuroimaging data, and edges capture pairwise similarities between the different subjects using non-imaging data. This follows closely the approach presented in the work of Parisot et al.~\cite{parisot2017spectral,parisot2018disease}, where population graphs are used to classify patients as healthy or suffering from Alzheimer's disease or autism spectrum disorder. This approach is extended further by.... 
 
-Unlike in other state-of-the-art models, graph neural networks trained on population graphs have the potential to learn from the entire cohort of healthy and affected patients of both sexes at once, capturing a wide range of confounding effects and detecting the variation in brain age trends of different sub-populations of subjects. 
+Unlike in other state-of-the-art models, graph neural networks trained on population graphs have the potential to learn from the entire cohort of healthy and affected patients of both sexes at once, capturing a wide range of confounding effects~\cite{ruigrok2014meta} and detecting the variation in brain age trends of different sub-populations of subjects. 
 
 
 % \section{Related work}
