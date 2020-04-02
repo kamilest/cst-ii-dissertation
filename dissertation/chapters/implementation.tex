@@ -8,7 +8,7 @@
 
 % Tangent works better than correlation or partial correlation.
 \section{Overview}
-
+\flushbottom
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{pipeline_overview.pdf}
@@ -25,6 +25,9 @@ This project can be divided into five key components (Figure~\ref{pipeline-overv
 \end{enumerate}
 
 This chapter will explain in detail the steps behind each of the stages.
+TODO fill the page (can make a bigger diagram!)
+
+\newpage
 
 \section{UKB preprocessing component}
 \begin{figure}[]
@@ -33,6 +36,14 @@ This chapter will explain in detail the steps behind each of the stages.
     \caption{UKB preprocessing component.}\label{preprocessing-component}
 \end{figure}
 
+The main function of the UKB preprocessing component is to prepare the raw or partially preprocessed UKB data for population graph construction. In particular, to improve the computational efficiency of most of the operations later in the pipeline, this component precomputes some of the data in the convenient form. In particular, this involves cleaning the dataset, precomputing similarity matrices and functional connectivity matrices. The overview of what is precomputed in this preprocessing component is given in Figure~\ref{preprocessing-component}.
+
+\subsection{Cleaning the dataset}
+While the United Kingdom Biobank is very well maintained and the data is nicely structured, the different modalities (functional MRI, structural MRI, phenotype data, Euler indices—as shown by different components in Figure~\ref{preprocessing-component}) were provided separately. The functional data contains scans for 17,550 patients, but 233 of them had missing data in other modalities (it was retracted from the biobank but the scans remained available). Three more patients have had corrupted brain scans (did not have a matching number of brain regions) which did not allow to create a meaningful functional connectivity matrix of the same dimension as all the others and were therefore discarded. The 17314 patients that had the data available for all modalities hve been collected into a \textit{subject index} (Figure). Explain what does filtered data mean.
+
+\subsection{Precomputing connectivity matrices}
+
+\subsection{Precomputing similarity matrices}
 
 \section{Graph construction component}
 
