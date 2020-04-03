@@ -8,7 +8,7 @@
 
 % Tangent works better than correlation or partial correlation.
 \section{Overview}
-\flushbottom
+
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{pipeline_overview.pdf}
@@ -28,10 +28,10 @@ This chapter will explain in detail the steps behind each of the stages.
 
 TODO fill the page (can make a bigger diagram!)
 
-\newpage
 
 \section{UKB preprocessing component}
-\begin{figure}[]
+
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=\textwidth]{preprocessing_component.pdf}
     \caption{UKB preprocessing component.}\label{preprocessing-component}
@@ -40,13 +40,12 @@ TODO fill the page (can make a bigger diagram!)
 The main function of the UKB preprocessing component is to prepare the raw or partially preprocessed UKB data for population graph construction (Figure~\ref{preprocessing-component}). In particular, to improve the computational efficiency of most of the operations later in the pipeline, this component precomputes some of the data in the convenient form. This involves cleaning the dataset, precomputing similarity matrices and functional connectivity matrices.
 
 \subsection{Cleaning the dataset}
-While the United Kingdom Biobank is very well maintained and the data is nicely structured, the different modalities (functional MRI, structural MRI, phenotype data, Euler indices—as shown by different components in Figure~\ref{preprocessing-component}) were provided separately. The functional data contains scans for 17,550 patients, but 233 of them had missing data in other modalities (it was retracted from the biobank but the scans remained available). Three more patients have had corrupted brain scans (did not have a matching number of brain regions) which did not allow to create a meaningful functional connectivity matrix of the same dimension as all the others and were therefore discarded. The 17314 patients that had the data available for all modalities hve been collected into a \textit{subject index} (Figure). 
-TODO Explain what does filtered data mean.
+While the United Kingdom Biobank is very well maintained and the data is nicely structured, the different modalities (functional MRI, structural MRI, phenotype data, Euler indices—as shown by different components in Figure~\ref{preprocessing-component}) were provided separately. The functional data contains scans for 17,550 patients, but 233 of them had missing data in other modalities (it was retracted from the biobank but the scans remained available). Three more patients have had corrupted brain scans (did not have a matching number of brain regions) which did not allow to create a meaningful functional connectivity matrix of the same dimension as all the others and were therefore discarded. The 17314 patients that had the data available for all modalities have been collected into a subject index. The data from all modalities are filtered using this subject index before being selected for population graph construction.
 
 \subsection{Precomputing connectivity matrices}
-The connectivity matrices involve computing the pairwise correlations of 376 time-series for every subject, a $O(N^2)$ computation for the dataset of  $N$ subjects. With 20 GB of raw timeseries data across 17,000 subjects, this introduces a high computational overhead (a few hours) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed (which might be frequent when different graph parameterisations are explored). To avoid the inefficiency, the matrices are computed once for each subject, flattened and their lower triangles stored as NumPy arrays before the graph is constructed.
+The connectivity matrices involve computing the pairwise correlations of 376 time-series for every subject, a $O(N^2)$ computation for the dataset of  $N$ subjects. With 20 GB of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed (which might be frequent when different graph parameterisations are explored). To avoid the inefficiency, the matrices are computed once for each subject, flattened and their lower triangles stored as NumPy arrays as part of the preprocessing component.
 
-TODO \textit{could include the maths here?}
+TODO could include the maths here?
 
 \subsection{Precomputing similarity matrices}
 While the non-imaging modalities used for similarity computation are much smaller in file size, the computation of the similarity function is also pairwise. The $O(N^2)$ computation that involves pairwise comparison, addition and averaging of values for each non-imaging metric might take hours or even days for the full dataset to be processed, depending on the exact similarity definition. This computation is also repeated whenever a graph is constructed, since the similarities per non-imaging metric do not change over different graphs: the variation comes from different selections of metrics, their relative weighting, and similarity thresholds.
