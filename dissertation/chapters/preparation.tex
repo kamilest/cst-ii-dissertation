@@ -119,7 +119,7 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
     \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
 \end{table}
 
-\textit{Structural} MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the HCP Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
+Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
 
 
 % TODO Insert image of axial slice of t1, t2, and FLAIR brain scan
@@ -127,11 +127,11 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 \subsection{Functional features}
 \label{fmri}
 
-\textit{Functional} MRI (fMRI) data is an indirect measure of brain activity over time. It is a time-series showing the change in oxygenation of the blood vessels (\textit{blood oxygenation level dependent}, or BOLD time-series), with sudden increases in oxygen demand indicating higher brain activity in the corresponding brain region.
+Functional MRI (fMRI) data is an indirect measure of brain activity over time. It is represented by \textit{blood oxygenation level dependent} (BOLD) time-series that show changes in oxygenation of the blood vessels. Sudden increases in oxygen demand are related to higher brain activity in the corresponding brain region.
 
 The two types of an fMRI image are \textit{task} fMRI, when the subject is asked to perform a specific cognitive task, and \textit{resting state} fMRI (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
-For training, this project will use the \textit{functional connectivity matrix} which is derived from rs-fMRI. Functional connectivity is estimated by correlating the time-series of different parcels together under the assumption that parts of the brain that have related functions would also have similar activity patterns. 
+For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is estimated by correlating the time-series of every pair of parcels together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). 
 
 % TODO maybe include the maths as this is something that I have to do myself anyway, so I have to explain it (and it's more maths).
 % As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
@@ -173,11 +173,24 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 
 \subsection{Phenotype features}
 
-In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age.
+In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{clp{7.5cm}}
+        \hline
+    \textbf{Code} & \textbf{Non-imaging feature } & \textbf{Description} \\ \hline
+    \texttt{AGE} & Chronological age &  Used as the training label. \\
+    \texttt{FI} & Fluid intelligence score &  Measures cognitive performance, related to increased brain activity~\cite{gray2003neural}. \\
+    \texttt{FTE} & Full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
+    \texttt{ICD10} & General mental and brain health & Patient mental health and nervous system disease diagnoses that might affect the structure and function of the brain. \\
+    \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed} \\
+    \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\
+    \end{tabular}
+    \caption{Summary of the non-imaging features.}\label{table:phenotype-features}
+\end{table}
 
 The non-imaging data is used to compute the inter-subject similarity score, which will determine the edges of the population graph.
-
-TODO Insert table of pheotype data
 
 
 \section{Graph convolutional networks}
