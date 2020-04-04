@@ -178,6 +178,7 @@ Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim
 
 \begin{equation}
     \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
+    \label{eq:similarity}
 \end{equation}
 
 Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
@@ -186,6 +187,7 @@ To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neigh
 
 \begin{equation}
     (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
+    \label{eq:similarity-threshold}
 \end{equation}
 
 

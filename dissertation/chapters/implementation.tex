@@ -50,9 +50,8 @@ TODO could include the maths here?
 \subsection{Precomputing similarity matrices}
 While the non-imaging modalities used for similarity computation are much smaller in file size, the computation of the similarity function is also pairwise. The $O(N^2)$ computation that involves pairwise comparison, addition and averaging of values for each non-imaging metric might take hours or even days for the full dataset to be processed, depending on the exact similarity definition. This computation is also repeated whenever a graph is constructed, since the similarities per non-imaging metric do not change over different graphs: the variation comes from different selections of metrics, their relative weighting, and similarity thresholds.
 
-The similarity matrices have therefore been computed in advance. Unlike the functional connectivity data used directly as node features, the metric-wise similarities need to be looked up quickly when computing the score for a given similarity function, so the full matrix is stored.
+The similarity matrices for the non-imaging features in Table~\ref{table:phenotype-features} have therefore been computed in advance. Unlike the functional connectivity data used directly as node features, the metric-wise similarities need to be looked up quickly when computing the score for a given similarity function, so the full matrix is stored.
 
-TODO reference phenotype table
 
 For the \texttt{ICD10} metric, the subjects were considered to be \texttt{ICD10}-similar whenever they had at least one shared mental health or nervous system diagnosis, while two patients without any mental health or nervous system diagnoses were \textit{not} considered to be similar, as this would create too many edges and make the model run out of memory. The computation can be vectorised: for the boolean \texttt{ICD10}-lookup matrix $\mathbf{F}_{\text{icd10}}$ with rows indexed by subjects and columns by relevant \texttt{ICD10} diagnoses, the pairwise similarity matrix $\mathbf{M}_{\text{icd10}}$ computation corresponds to 
 
@@ -83,14 +82,6 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 %  \]
 
 
-
-
-
-
-
-
-
-
 \section{Graph construction component}
 
 \begin{figure}[h]
@@ -98,7 +89,26 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
     \caption{Graph construction component.}\label{graph-construction-component}
 \end{figure}
 
+The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph, which contains the graph topology and node features but is not prepared for training (is not split into training, validation and test sets, and the features are not normalised). The two stages are separate because the same intermediate representation can be reused many times for different dataset split and other evaluation parameters without having to reconstruct the topology in $O(N^2)$ time. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
 
+The inputs to the graph construction component can be categorised into four main types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}. These are subject specification, modality specification, similarity feature set and similarity threshold parameters.
+
+\subsection{Inputs}
+\textit{Subject specification} takes in the number of (randomly selected) subjects that should be used in creating the graph, or UKB identifiers for the list of specific subjects. If no parameter is provided, then all available data is used for population graph construction.
+
+\textit{Modality specification} describes which of the neuroimaging modalities should be used as node features, which could be a combination of functional, structural and quality control data.
+
+\textit{Similarity feature set}. 
+TODO maybe rename similarity specification (because it can either be a feature set or function)
+
+In its default implementation, the similarity metric is computed as the average score across a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}). 
+
+TODO extension: arbitrary similarity functions.
+
+\textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
+
+\subsection{Imaging data collection}
+The input parameters are used for
 \section{Graph transformation component}
 
 \begin{figure}[h]
