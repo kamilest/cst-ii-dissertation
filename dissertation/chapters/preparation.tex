@@ -7,7 +7,7 @@
 
 %  ~2,500 words
 
-TODO update
+
 This chapter presents in more depth the brain age estimation problem (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing (Sections~\ref{training-gcn} and~\ref{training-gat}).
 
 \section{Brain age estimation}
@@ -15,7 +15,7 @@ This chapter presents in more depth the brain age estimation problem (Section~\r
 
 The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to a normal brain ageing process. 
 
-Following the formal framework of Niu et al.~\cite{niu2019improved}, the brain age $y_b$ can be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that defined as the discrepancy between the chronological and the brain age:
+Following the formal framework of Niu et al.~\cite{niu2019improved}, the brain age $y_b$ can be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that is defined as the discrepancy between the chronological and the brain age:
 
 \begin{equation}
     \label{brainage:eq1}
@@ -29,15 +29,14 @@ It is generally assumed~\cite{franke2019ten} that a typical healthy person has a
     y_b \approx y_c.
 \end{equation}
 
-Our goal is to estimate brain age $y_b$ as a function $f$ of brain imaging features $X$ such that
+Our goal is to estimate brain age $y_b$ as a function $f$ of brain imaging features $X$:
 
 \begin{equation}
     \label{brainage:eq2}
     y_b = f(X) + \varepsilon_e,
 \end{equation}
-where $\varepsilon_e$ is the prediction error.
 
-From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of chronological age is defined as
+where $\varepsilon_e$ is the prediction error, while the estimate of \textit{chronological} age is instead (from Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}):
 
 \begin{align}
     y_c &= f(X) + \varepsilon
@@ -46,7 +45,7 @@ From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of ch
 
 where $\varepsilon \coloneqq \varepsilon_e - \varepsilon_g$ is the error term consisting of both the brain age gap and the model prediction error.
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as labels, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy patients only, $f(\cdot)$ can still tell how much of chronological \textit{and} brain age can be explained by $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error. When the same model is applied to non healthy patients, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap.
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as predicted variable, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy patients only, $f(\cdot)$ can still tell how much of chronological \textit{and} brain age can be explained by $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error. When the same model is applied to non healthy patients, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap.
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
 
