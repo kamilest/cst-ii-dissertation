@@ -118,22 +118,24 @@ This component uses the subject set and the similarity specification provided to
 
 \subsection{Brain health mask computation}
 
-Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10} metric (Table~\ref{table:phenotype-features}).
+Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10} metric (see Table~\ref{table:phenotype-features}).
 
-\subsection{Intermediate population graph representation}
-The intermediate population graph is extended from the base Pytorch Geometric \texttt{Data} object. 
-
+\subsection{Population graph representation}
 
 \begin{table}[]
-    \caption{The population graph data structure.}\label{table:structural-features}
+    \caption{The population graph data structure (excludes helper or utility fields).}\label{table:population-graph}
     \centering
-    \begin{tabular}{lp{2.75cm}p{8cm}}
+    \begin{tabular}{lp{0.2\textwidth}p{0.5\textwidth}}
         \hline
-    \textbf{Member name} & \textbf{Type} & \textbf{Description} \\ \hline
+% \begin{longtable}{p{0.2\textwidth}p{0.3\textwidth}p{0.5\textwidth}}
+    % \caption{The population graph data structure.}\label{table:population-graph}
+    % \hline
+    \centering
+    \textbf{Field name} & \textbf{Type} & \textbf{Description} \\ \hline
     \texttt{num\_nodes} & long & Number of nodes (subjects) in the population graph. \\
     \texttt{subject\_index} & string vector & UKB identifiers of the subjects. Stored in the order of mask, feature and label vector indices; corresponds to the edge start and end values. \\
     \texttt{brain\_health\_mask} & boolean vector & \texttt{True} indicates that the subject can be used for training, and \texttt{False} otherwise. \\
-    \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. For an undirected edge\hfill \newline $(s_v, s_w) \in E$, another edge $s_w \leadsto s_v$ is added. \\
+    \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. To represent the undirected edge $(s_v, s_w) \in E$, the second directed edge $s_w \leadsto s_v$ is added. \\
     \texttt{y} & $N \times 1$ \hfill \newline float tensor & Contains the labels of training data, in this case chronological age. \\
     \texttt{functional\_data} & dataframe & Row-indexed by subject with columns containing the flattened functional connectivity matrix entries. Empty if no functional data is used in the population graph. \\
     \texttt{structural\_data} & dictionary of \hfill \newline dataframes & Dictionary is indexed by the structural data modality, in this case cortical thickness, surface area, and grey matter volume. The corresponding dataframes are row-indexed by subject with columns containing the features of the relevant structural data modality. The dataframes are empty if no structural data is used. \\
@@ -146,8 +148,11 @@ The intermediate population graph is extended from the base Pytorch Geometric \t
     \end{tabular}
 \end{table}
 
+The population graph is extended from the base Pytorch Geometric \texttt{Data} object, with its main fields listed in Table~\ref{table:population-graph}. The intermediate version has all entries defined except the feature vector \texttt{X} and the training, validation and test masks.
 
-Could here mention the \textit{extension} of having weighted edges where edge features would store raw similarity thresholds.
+TODO ordering of members based on their use order in the pipeline, meaning (training vs data etc.)
+
+TODO Could here mention the \textit{extension} of having weighted edges where edge features would store raw similarities as long as they exceed the threshold (to avoid $O(N^2)$ entries).
 
 
 \section{Graph transformation component}
