@@ -7,16 +7,15 @@
 
 %  ~2,500 words
 
-TODO update
+
 This chapter presents in more depth the brain age estimation problem (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing (Sections~\ref{training-gcn} and~\ref{training-gat}).
 
-\section{Background}
-\subsection{Brain age estimation}
+\section{Brain age estimation}
 \label{brain-age-estimation}
 
 The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to a normal brain ageing process. 
 
-Following the formal framework of Niu et al.~\cite{niu2019improved}, the brain age $y_b$ can be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that defined as the discrepancy between the chronological and the brain age:
+Following the formal framework of Niu et al.~\cite{niu2019improved}, the brain age $y_b$ can be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that is defined as the discrepancy between the chronological and the brain age:
 
 \begin{equation}
     \label{brainage:eq1}
@@ -30,15 +29,14 @@ It is generally assumed~\cite{franke2019ten} that a typical healthy person has a
     y_b \approx y_c.
 \end{equation}
 
-Our goal is to estimate brain age $y_b$ as a function $f$ of brain imaging features $X$ such that
+Our goal is to estimate brain age $y_b$ as a function $f$ of brain imaging features $X$:
 
 \begin{equation}
     \label{brainage:eq2}
     y_b = f(X) + \varepsilon_e,
 \end{equation}
-where $\varepsilon_e$ is the prediction error.
 
-From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of chronological age is defined as
+where $\varepsilon_e$ is the prediction error, while the estimate of \textit{chronological} age is instead (from Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}):
 
 \begin{align}
     y_c &= f(X) + \varepsilon
@@ -47,35 +45,9 @@ From Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}, the estimate of ch
 
 where $\varepsilon \coloneqq \varepsilon_e - \varepsilon_g$ is the error term consisting of both the brain age gap and the model prediction error.
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as labels, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy patients only, $f(\cdot)$ can still tell how much of chronological \textit{and} brain age can be explained by $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error. When the same model is applied to non healthy patients, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap.
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as predicted variable, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy patients only, $f(\cdot)$ can still tell how much of chronological \textit{and} brain age can be explained by $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error. When the same model is applied to non healthy patients, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap.
 
 An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
-
-\subsection{Population graphs}
-\label{population-graphs}
-
-One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects is a \textit{population graph} data structure as it is presented in Parisot et al.~\cite{parisot2018disease}.
-
-The set of $N$ subjects $S$ is connected into a undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
-
-Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. 
-
-Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
-
-Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
-
-\begin{equation}
-    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
-\end{equation}
-
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
-
-To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
-
-\begin{equation}
-    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
-\end{equation}
-
 
 \section{Dataset}
 \label{dataset}
@@ -107,15 +79,15 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 \subsection{Structural features}
 
 \begin{table}[]
+    \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
     \centering
     \begin{tabular}{lp{11cm}}
         \hline
     \textbf{Structural feature}            & \textbf{Description} \\ \hline
-    Cortical thickness &  Average thickness of the cerebral cortex in the parcel \\
-    Surface area       &  Cortical surface area of cortex in the parcel \\
-    Grey matter volume &  Total volume of the grey matter (the inner component) in a parcel
+    Cortical thickness &  Average thickness of the cerebral cortex in the parcel. \\
+    Surface area       &  Cortical surface area of cortex in the parcel. \\
+    Grey matter volume &  Total volume of the grey matter (the inner component) in a parcel.
     \end{tabular}
-    \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
 \end{table}
 
 Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
@@ -175,21 +147,48 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
 
 \begin{table}[]
+    \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
     \centering
-    \begin{tabular}{clp{7.5cm}}
+    \begin{tabular}{cp{6cm}p{7.5cm}}
         \hline
-    \textbf{Code} & \textbf{Non-imaging feature } & \textbf{Description} \\ \hline
+    \textbf{Code} & \textbf{Non-imaging feature } & \textbf{Explanation} \\ \hline
     \texttt{AGE} & Chronological age &  Used as the training label. \\
     \texttt{FI} & Fluid intelligence score &  Measures cognitive performance, related to increased brain activity~\cite{gray2003neural}. \\
-    \texttt{FTE} & Full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
-    \texttt{ICD10} & General mental and brain health & Patient mental health and nervous system disease diagnoses that might affect the structure and function of the brain. \\
-    \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed} \\
+    \texttt{FTE} & Years of full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
+    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system. \\
+    \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed}. \\
     \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\
     \end{tabular}
-    \caption{Summary of the non-imaging features.}\label{table:phenotype-features}
 \end{table}
 
 The non-imaging data is used to compute the inter-subject similarity score, which will determine the edges of the population graph.
+
+\section{Population graphs}
+\label{population-graphs}
+
+One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects for downstream machine learning tasks is a \textit{population graph} data structure, as it is presented in Parisot et al.~\cite{parisot2018disease}.
+
+The set of $N$ subjects $S$ is connected into a undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+
+Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. 
+
+Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
+
+Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
+
+\begin{equation}
+    \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
+    \label{eq:similarity}
+\end{equation}
+
+Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
+
+To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
+
+\begin{equation}
+    (v, w) \in E \iff \mathrm{sim}(s_v, s_w) \geq \mu.
+    \label{eq:similarity-threshold}
+\end{equation}
 
 
 \section{Graph convolutional networks}
