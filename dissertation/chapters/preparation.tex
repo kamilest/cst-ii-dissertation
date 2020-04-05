@@ -79,15 +79,15 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 \subsection{Structural features}
 
 \begin{table}[]
+    \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
     \centering
     \begin{tabular}{lp{11cm}}
         \hline
     \textbf{Structural feature}            & \textbf{Description} \\ \hline
-    Cortical thickness &  Average thickness of the cerebral cortex in the parcel \\
-    Surface area       &  Cortical surface area of cortex in the parcel \\
-    Grey matter volume &  Total volume of the grey matter (the inner component) in a parcel
+    Cortical thickness &  Average thickness of the cerebral cortex in the parcel. \\
+    Surface area       &  Cortical surface area of cortex in the parcel. \\
+    Grey matter volume &  Total volume of the grey matter (the inner component) in a parcel.
     \end{tabular}
-    \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
 \end{table}
 
 Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
@@ -147,18 +147,18 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
 
 \begin{table}[]
+    \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
     \centering
-    \begin{tabular}{clp{7.5cm}}
+    \begin{tabular}{cp{6cm}p{7.5cm}}
         \hline
-    \textbf{Code} & \textbf{Non-imaging feature } & \textbf{Description} \\ \hline
+    \textbf{Code} & \textbf{Non-imaging feature } & \textbf{Explanation} \\ \hline
     \texttt{AGE} & Chronological age &  Used as the training label. \\
     \texttt{FI} & Fluid intelligence score &  Measures cognitive performance, related to increased brain activity~\cite{gray2003neural}. \\
-    \texttt{FTE} & Full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
-    \texttt{ICD10} & General mental and brain health & Patient mental health and nervous system disease diagnoses that might affect the structure and function of the brain. \\
-    \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed} \\
+    \texttt{FTE} & Years of full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
+    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system. \\
+    \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed}. \\
     \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\
     \end{tabular}
-    \caption{Summary of the non-imaging features.}\label{table:phenotype-features}
 \end{table}
 
 The non-imaging data is used to compute the inter-subject similarity score, which will determine the edges of the population graph.

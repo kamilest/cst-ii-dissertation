@@ -61,7 +61,7 @@ For the \texttt{ICD10} metric, the subjects were considered to be \texttt{ICD10}
 
 where the indicator function $\mathbf{1}[\cdot]$ is applied element-wise.
 
-For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The operation is vectorised by exploiting NumPy's broadcasting operation that copies rows and columns as necessary for the matrix dimensions to match: for the \texttt{FTE} lookup vector $\mathbf{f}_{\text{fte}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{fte}} = [\mathbf{f}_{\text{fte}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{fte}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
+For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The operation is vectorised by exploiting NumPy's broadcasting operation that copies rows and columns as necessary for the matrix dimensions to match: for the vector of subject \texttt{FTE}s $\mathbf{f}_{\text{fte}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{fte}} = [\mathbf{f}_{\text{fte}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{fte}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
 
 \begin{equation}
     \mathbf{M}_{\text{fte}} = \mathbf{1}\left[\mathbf{F}_{\text{fte}}^{\ } = \mathbf{F}_{\text{fte}}^{\mathrm{T}} \right].
@@ -91,9 +91,9 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 
 The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph, which contains the graph topology and node features but is not prepared for training (is not split into training, validation and test sets, and the features are not normalised). The two stages are separate because the same intermediate representation can be reused many times for different dataset split and other evaluation parameters without having to reconstruct the topology in $O(N^2)$ time. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
 
+\subsection{Inputs}
 The inputs to the graph construction component can be categorised into four main types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}. These are subject specification, modality specification, similarity feature set and similarity threshold parameters.
 
-\subsection{Inputs}
 \textit{Subject specification} takes in the number of (randomly selected) subjects that should be used in creating the graph, or UKB identifiers for the list of specific subjects. If no parameter is provided, then all available data is used for population graph construction.
 
 \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features, which could be a combination of functional, structural and quality control data.
@@ -108,7 +108,23 @@ TODO extension: arbitrary similarity functions.
 \textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
 
 \subsection{Imaging data collection}
-The input parameters are used for
+
+Based on the number of subjects and modalities provided, the relevant imaging data is collected from the raw UKB files (first filtered by subject index as discussed before) and stored in the intermediate representation in its original form as a dataframe indexed by subject. If the modality is unused, an empty dataframe is stored.
+
+
+\subsection{Edge construction}
+
+This component uses the subject set and the similarity specification provided to combine the individual similarity metrics into an overall similarity score for each pair of subjects, then comparing it to the similarity threshold and adding an edge if the score exceeds the threshold.
+
+\subsection{Brain health mask computation}
+
+Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10} metric (Table~\ref{table:phenotype-features}).
+
+\subsection{Intermediate population graph representation}
+The intermediate population graph is built on the base Pytorch Geometric \texttt{Data} object. 
+
+
+
 \section{Graph transformation component}
 
 \begin{figure}[h]
