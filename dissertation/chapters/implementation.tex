@@ -122,16 +122,29 @@ Due to the nature of the brain age problem, the population graph can only be tra
 
 \subsection{Population graph representation}
 
-\begin{table}[]
-    \caption{The population graph data structure (excludes helper or utility fields).}\label{table:population-graph}
-    \centering
-    \begin{tabular}{lp{0.2\textwidth}p{0.5\textwidth}}
-        \hline
-% \begin{longtable}{p{0.2\textwidth}p{0.3\textwidth}p{0.5\textwidth}}
-    % \caption{The population graph data structure.}\label{table:population-graph}
-    % \hline
-    \centering
-    \textbf{Field name} & \textbf{Type} & \textbf{Description} \\ \hline
+\renewcommand{\arraystretch}{1.25}
+% \begin{table}[]
+%     \caption{The population graph data structure (excludes helper or utility fields).}\label{table:population-graph}
+%     \centering
+%     \begin{tabular}{lp{0.2\textwidth}p{0.5\textwidth}}
+%         \hline
+\begin{center}
+\begin{longtable}{lp{0.175\textwidth}p{0.475\textwidth}}
+    \caption{The population graph data structure.}\label{table:population-graph}\\
+    \hline \textbf{Field name} & \textbf{Type} & \textbf{Description} \\
+    \hline
+    \endfirsthead
+    \multicolumn{3}{c}%
+    {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+    \hline
+    \textbf{Field name} & \textbf{Type} & \textbf{Description} \\
+    \hline
+    \endhead
+    \hline \multicolumn{3}{r}{\textit{Continued on next page}} \\
+    \endfoot
+    \hline
+    \endlastfoot
+    
     \texttt{num\_nodes} & long & Number of nodes (subjects) in the population graph. \\
     \texttt{subject\_index} & string vector & UKB identifiers of the subjects. Stored in the order of mask, feature and label vector indices; corresponds to the edge start and end values. \\
     \texttt{brain\_health\_mask} & boolean vector & \texttt{True} indicates that the subject can be used for training, and \texttt{False} otherwise. \\
@@ -145,8 +158,9 @@ Due to the nature of the brain age problem, the population graph can only be tra
     \texttt{train\_mask} & boolean tensor & \textit{Unused at the intermediate stage.} \texttt{True} if the subject belongs to the training set, and \texttt{False} otherwise. \\
     \texttt{validation\_mask} & boolean tensor & \textit{Unused at the intermediate stage.} \texttt{True} if the subject belongs to the validation set, and \texttt{False} otherwise. \\
     \texttt{test\_mask} & boolean tensor & \textit{Unused at the intermediate stage.} \texttt{True} if the subject belongs to the test set, and \texttt{False} otherwise.
-    \end{tabular}
-\end{table}
+    % \end{tabular}
+\end{longtable}
+\end{center}
 
 The population graph is extended from the base Pytorch Geometric \texttt{Data} object, with its main fields listed in Table~\ref{table:population-graph}. The intermediate version has all entries defined except the feature vector \texttt{X} and the training, validation and test masks.
 
@@ -163,9 +177,7 @@ TODO Could here mention the \textit{extension} of having weighted edges where ed
     \caption{Graph transformation component.}\label{graph-transformation-component}
 \end{figure}
 
-The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised and combined feature vector as well as training, validation and test masks.
-
-
+The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised and combined feature vector as well as training, validation and test masks. The schematic diagram representing the steps in this component is shown in Figure~\ref{graph-transformation-component}.
 
 Describe how the graph intermediate representation is changed based on the training transformation parameters (training fold, train/validation/test set split). The intermediate graph is prepared for training by normalising the features based on the train subset, adding train/validation/test set masks to ignore subjects that should not be used for feedback in training, concatenating the multiple modalities into a single feature set.
 
