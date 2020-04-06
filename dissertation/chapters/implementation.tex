@@ -182,22 +182,24 @@ The graph transformation component is responsible for preparing the intermediate
 \subsection{Setting the training masks}
 The intermediate version is first changed by setting the training, validation and test masks provided by the graph neural network training and evaluation component. This involves setting the \texttt{train\_mask}, \texttt{validation\_mask} and \texttt{test\_mask} fields of the intermediate population graph data structure (see Table~\ref{table:population-graph}). 
 
-TODO Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}, so that during training the outputs for unhealthy subjects are ignored. 
+Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}, so that during training the outputs for unhealthy subjects are ignored. 
 
 \subsection{Functional connectivity matrix dimensionality reduction}
-To avoid the memory issues that the graph neural networks encounter due to the very high number of functional imaging data features (75,000) for a high number of subjects (more than 17,000), the dimensionality of flattened functional connectivity matrices may be reduced at this stage. This project used principal component analysis (PCA) as the dimensionality reduction technique. 
+To avoid the memory issues that the graph neural networks encounter due to the very high number of functional imaging data features (75,000) for a high number of subjects (more than 17,000), the dimensionality of flattened functional connectivity matrices may be reduced at this stage. This project used principal component analysis (PCA) as the dimensionality reduction technique, where PCA transformation is fitted to the training set as specified by the training mask, and the same parameters are applied to the subjects belonging to the validation and test sets.
 TODO (in PCA say how many components are kept)
+
+
 Since functional connectivity matrices are already normalised, no additional normalisation needs to be carried out at this stage. (?)
 
 \subsection{Structural MRI and quality control data normalisation}
-Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised 
+Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, standard scaler is fitted to the training set and applied to the validation and test sets. A separate transformation is applied to each structural data modality and the quality control modality.
 
+\subsection{Setting the transformed feature tensor}
+The transformed functional, structural and quality control modalities are concatenated together into a single tensor, which is assigned to \texttt{X} in the population graph data structure (Table~\ref{table:population-graph}). This makes it a prepared graph for training.
 
+Since the original neuroimaging dataframes and brain health masks are kept in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
 
-Describe how the graph intermediate representation is changed based on the training transformation parameters (training fold, train/validation/test set split). The intermediate graph is prepared for training by normalising the features based on the train subset, adding train/validation/test set masks to ignore subjects that should not be used for feedback in training, concatenating the multiple modalities into a single feature set.
-
-Subject stratification, removing subjects with too few age occurrences because the data cannot be correctly stratified otherwise.
-
+TODO maybe visualise this with some sort of a dashed arrow going from `prepared population graph' to `set train/validation/test masks' showing it also works as an alternative input.
 
 \section{Graph neural network component}
 Description of architecture: number and size of layers etc.
