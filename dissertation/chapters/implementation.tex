@@ -26,12 +26,10 @@ This project can be divided into five key components (Figure~\ref{pipeline-overv
 
 This chapter will explain in detail the steps behind each of the stages.
 
-TODO fill the page (can make a bigger diagram!)
-
 
 \section{UKB preprocessing component}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{preprocessing_component.pdf}
     \caption{UKB preprocessing component.}\label{preprocessing-component}
@@ -206,10 +204,41 @@ Since the original neuroimaging dataframes and brain health masks are kept in th
 TODO maybe visualise this with some sort of a dashed arrow going from `prepared population graph' to `set train/validation/test masks' showing it also works as an alternative input.
 
 \section{Graph neural network component}
-Description of architecture: number and size of layers etc.
+% TODO not sure what exactly to write in this section. Past dissertations I've read seem to consider the hyperparameter tuning strategy, regularisation and in general description of hyperparameters that will be tuned. Another possiblity would be to explain in detail the implementation of the layers, but I'm not sure whether it's worth doing it because 1) it's a lot of words 2) it's in the library, not \textit{my} implementation 3) I already explain what the layers do in preparation. Maybe instead explain how the data is sent to wandb and how the training is performed.
 
-Could have a diagram.
+% gcn_train(graph, device, n_conv_layers=0, layer_sizes=None, epochs=3500, lr=0.005, dropout_p=0, weight_decay=1e-5,
+% log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
+% min_epochs=1000):
 
+\begin{center}
+    \begin{longtable}[]{p{0.275\textwidth}p{0.175\textwidth}p{0.475\textwidth}}
+        \caption{The parameters for the \texttt{BrainGNN} module.}\label{table:braingnn}\\
+        \hline \textbf{Parameter} & \textbf{Type} & \textbf{Description} \\
+        \hline
+        \endfirsthead
+        \multicolumn{3}{c}%
+        {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+        \hline
+        \textbf{Parameter} & \textbf{Type} & \textbf{Description} \\
+        \hline
+        \endhead
+        \hline \multicolumn{3}{r}{\textit{Continued on next page}} \\
+        \endfoot
+        \hline
+        \endlastfoot
+        
+        \texttt{conv\_type} & string & Indicates the type of graph convolutional layer to be used (graph convolution or graph attentional layer). \\
+        \texttt{layer\_sizes} & integer array & Lists the number of units in every hidden layer. The length of the array corresponds to the total number of hidden layers. \\
+        \texttt{n\_conv\_layers} & integer & Number of convolutional layers. Must be in range $[0, \text{\texttt{layer\_sizes}}]$. The sizes of those layers are determined by the first \texttt{n\_conv\_layers} values of the \texttt{layer\_sizes} and \texttt{num\_node\_features} parameters. \\
+        \texttt{num\_node\_features} & integer & Indicates the number of input features. \\ 
+        \texttt{dropout\_p} & float & The probability of ignoring the node in a hidden layer. Used as a regularisation technique to reduce overfitting.
+
+    \end{longtable}
+    \end{center}
+
+The graph neural network component simply contains the implementations for the graph neural network architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{gcn} and \texttt{gat} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
+
+TODO add example diagram how the layer sizes, n conv layers, conv type and n node features translate to the graph neural network architecture, showing the dropout layers and tanh activation functions in between.
 
 \section{Evaluation component}
 The standard performance metrics $r$ and $r^2$ tracked and logged with training.
@@ -222,7 +251,6 @@ Describe the additional graph transformation stages which add noise to node feat
 
 
 \newpage
-
 
 \subsection{Hyperparameter tuning}
 Describe which hyperparameters were tuned using Bayesian optimisation strategy, early stopping, cross-validation etc.
