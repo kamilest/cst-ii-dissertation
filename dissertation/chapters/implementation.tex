@@ -188,6 +188,10 @@ Following the brain age estimation method (Section~\ref{brain-age-estimation}), 
 To avoid the memory issues that the graph neural networks encounter due to the very high number of functional imaging data features (75,000) for a high number of subjects (more than 17,000), the dimensionality of flattened functional connectivity matrices may be reduced at this stage. This project used principal component analysis (PCA) as the dimensionality reduction technique, where PCA transformation is fitted to the training set as specified by the training mask, and the same parameters are applied to the subjects belonging to the validation and test sets.
 TODO (in PCA say how many components are kept)
 
+TODO The full flattened functional connectivity matrix has over 75,000 features per patient, which, considering pairwise similarities and a large number of subjects, makes the graph (and the training on it) very large: the number of resulting training parameters runs out of memory even for small architectures.
+
+TODO The easiest solution mitigating this is running a PCA on the matrix, assuming that the first few principal components (how many?) would give a good representation of functional data features. Preliminary runs on small datasets of a few thousand subjects give similar performance.
+
 
 Since functional connectivity matrices are already normalised, no additional normalisation needs to be carried out at this stage. (?)
 
@@ -217,18 +221,7 @@ Describe the additional graph transformation stages which add noise to node feat
 % The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
 
 
-\newpage
-
-
-
-
-\subsection{Functional connectivity matrix precomputation}
-
-\subsubsection{Dimensionality reduction for neural networks}
-The full flattened functional connectivity matrix has over 75,000 features per patient, which, considering pairwise similarities and a large number of subjects, makes the graph (and the training on it) very large: the number of resulting training parameters runs out of memory even for small architectures.
-
-The easiest solution mitigating this is running a PCA on the matrix, assuming that the first few principal components (how many?) would give a good representation of functional data features. Preliminary runs on small datasets of a few thousand subjects give similar performance.
-
+\newpag
 
 
 \subsection{Hyperparameter tuning}
