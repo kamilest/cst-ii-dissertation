@@ -238,6 +238,8 @@ TODO maybe visualise this with some sort of a dashed arrow going from `prepared 
 
 The graph neural network component simply contains the implementations for the graph neural network architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{gcn} and \texttt{gat} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
 
+TODO add example diagram how the layer sizes, n conv layers, conv type and n node features translate to the graph neural network architecture, showing the dropout layers and tanh activation functions in between.
+
 \section{Evaluation component}
 The standard performance metrics $r$ and $r^2$ tracked and logged with training.
 
