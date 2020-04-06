@@ -129,8 +129,8 @@ Due to the nature of the brain age problem, the population graph can only be tra
 %     \begin{tabular}{lp{0.2\textwidth}p{0.5\textwidth}}
 %         \hline
 \begin{center}
-\begin{longtable}{lp{0.175\textwidth}p{0.475\textwidth}}
-    \caption{The population graph data structure.}\label{table:population-graph}\\
+\begin{longtable}[]{lp{0.175\textwidth}p{0.475\textwidth}}
+    \caption{The population graph data structure (excludes helper or utility fields).}\label{table:population-graph}\\
     \hline \textbf{Field name} & \textbf{Type} & \textbf{Description} \\
     \hline
     \endfirsthead
@@ -177,7 +177,22 @@ TODO Could here mention the \textit{extension} of having weighted edges where ed
     \caption{Graph transformation component.}\label{graph-transformation-component}
 \end{figure}
 
-The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised and combined feature vector as well as training, validation and test masks. The schematic diagram representing the steps in this component is shown in Figure~\ref{graph-transformation-component}.
+The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised and combined feature vector as well as training, validation and test masks. The schematic diagram representing the transformations to the graph by this component is shown in Figure~\ref{graph-transformation-component}.
+
+\subsection{Setting the training masks}
+The intermediate version is first changed by setting the training, validation and test masks provided by the graph neural network training and evaluation component. This involves setting the \texttt{train\_mask}, \texttt{validation\_mask} and \texttt{test\_mask} fields of the intermediate population graph data structure (see Table~\ref{table:population-graph}). 
+
+TODO Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}, so that during training the outputs for unhealthy subjects are ignored. 
+
+\subsection{Functional connectivity matrix dimensionality reduction}
+To avoid the memory issues that the graph neural networks encounter due to the very high number of functional imaging data features (75,000) for a high number of subjects (more than 17,000), the dimensionality of flattened functional connectivity matrices may be reduced at this stage. This project used principal component analysis (PCA) as the dimensionality reduction technique. 
+TODO (in PCA say how many components are kept)
+Since functional connectivity matrices are already normalised, no additional normalisation needs to be carried out at this stage. (?)
+
+\subsection{Structural MRI and quality control data normalisation}
+Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised 
+
+
 
 Describe how the graph intermediate representation is changed based on the training transformation parameters (training fold, train/validation/test set split). The intermediate graph is prepared for training by normalising the features based on the train subset, adding train/validation/test set masks to ignore subjects that should not be used for feedback in training, concatenating the multiple modalities into a single feature set.
 
