@@ -210,10 +210,33 @@ TODO maybe visualise this with some sort of a dashed arrow going from `prepared 
 % log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
 % min_epochs=1000):
 
-The graph neural network component simply contains the implementations for the graph neural network architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module.
+\begin{center}
+    \begin{longtable}[]{p{0.275\textwidth}p{0.175\textwidth}p{0.475\textwidth}}
+        \caption{The parameters for the \texttt{BrainGNN} module.}\label{table:braingnn}\\
+        \hline \textbf{Parameter} & \textbf{Type} & \textbf{Description} \\
+        \hline
+        \endfirsthead
+        \multicolumn{3}{c}%
+        {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+        \hline
+        \textbf{Parameter} & \textbf{Type} & \textbf{Description} \\
+        \hline
+        \endhead
+        \hline \multicolumn{3}{r}{\textit{Continued on next page}} \\
+        \endfoot
+        \hline
+        \endlastfoot
+        
+        \texttt{conv\_type} & string & Indicates the type of graph convolutional layer to be used (graph convolution or graph attentional layer). \\
+        \texttt{layer\_sizes} & integer array & Lists the number of units in every hidden layer. The length of the array corresponds to the total number of hidden layers. \\
+        \texttt{n\_conv\_layers} & integer & Number of convolutional layers. Must be in range $[0, \text{\texttt{layer\_sizes}}]$. The sizes of those layers are determined by the first \texttt{n\_conv\_layers} values of the \texttt{layer\_sizes} and \texttt{num\_node\_features} parameters. \\
+        \texttt{num\_node\_features} & integer & Indicates the number of input features. \\ 
+        \texttt{dropout\_p} & float & The probability of ignoring the node in a hidden layer. Used as a regularisation technique to reduce overfitting.
 
+    \end{longtable}
+    \end{center}
 
- 
+The graph neural network component simply contains the implementations for the graph neural network architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{gcn} and \texttt{gat} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
 
 \section{Evaluation component}
 The standard performance metrics $r$ and $r^2$ tracked and logged with training.
