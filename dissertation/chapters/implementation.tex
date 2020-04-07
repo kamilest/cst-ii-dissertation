@@ -233,7 +233,7 @@ Since the original neuroimaging dataframes and brain health masks are kept in th
     \end{longtable}
     \end{center}
 
-The graph neural network component simply contains the implementations for the graph neural network architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{GCN} and \texttt{GAT} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
+The graph neural network component simply contains the implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{GCN} and \texttt{GAT} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
 
 TODO perhaps simplify this? I don't know which parts to cut out of this for it to be clearer – what's unnecessary? I could also write pseudocode but not sure where it falls in the clarity vs professional spectrum. I could also delete the initialisation as I still plan to make a diagram for it – just not sure how to visualise how the \textit{array of parameters} is used.
 
@@ -248,7 +248,7 @@ TODO perhaps simplify this? I don't know which parts to cut out of this for it t
 Listing~\ref{listing:braingnn} shows how the order in which the layers are combined in the \texttt{BrainGNN} architecture, given the parameters in Table~\ref{table:braingnn}. I chose the hyperbolic tangent $\tanh(\cdot)$)as the non-linearity (activation function) between each layer because the inputs and values in neurons may be negative, in which case the other popular activation functions such as $\mathrm{ReLU}(\cdot)$ would have an undesirable asymmetric response. The \textit{dropout} layers have been added between the every fully connected layer as a regularisation technique: with probability \texttt{dropout\_p}, a unit in the layer is ignored (its weight is zeroed) with the hope that the neural network will not rely on any particular node when predicting age, learning more robust features.
 
 
-\section{Graph neural network training and evaluation component}
+\section{GNN training and evaluation component}
 
 \subsection{Model selection}
 Hyperparameter tuning, weights and biases
