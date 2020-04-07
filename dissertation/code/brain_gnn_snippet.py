@@ -21,7 +21,7 @@ class BrainGNN(torch.nn.Module):
                 self.conv.append(torch.nn.Linear(size, layer_sizes[i]))
             size = layer_sizes[i]
         
-        # Add remaining fully connected layers.
+        # Add remaining fully connected and dropout layers.
         for i in range(len(layer_sizes) - n_conv_layers):
             self.fc.append(torch.nn.Linear(size, layer_sizes[n_conv_layers+i]))
             size = layer_sizes[n_conv_layers+i]
