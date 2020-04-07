@@ -201,7 +201,7 @@ The transformed functional, structural and quality control modalities are concat
 
 Since the original neuroimaging dataframes and brain health masks are kept in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
 
-\section{Graph neural network component}
+\section{GNN architecture component}
 % TODO not sure what exactly to write in this section. Past dissertations I've read seem to consider the hyperparameter tuning strategy, regularisation and in general description of hyperparameters that will be tuned. Another possiblity would be to explain in detail the implementation of the layers, but I'm not sure whether it's worth doing it because 1) it's a lot of words 2) it's in the library, not \textit{my} implementation 3) I already explain what the layers do in preparation. Maybe instead explain how the data is sent to wandb and how the training is performed.
 
 % gcn_train(graph, device, n_conv_layers=0, layer_sizes=None, epochs=3500, lr=0.005, dropout_p=0, weight_decay=1e-5,
