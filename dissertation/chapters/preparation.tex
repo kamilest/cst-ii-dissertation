@@ -8,7 +8,7 @@
 %  ~2,500 words
 
 
-This chapter presents in more depth the brain age estimation problem (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing (Sections~\ref{training-gcn} and~\ref{training-gat}).
+This chapter presents in more depth the brain age estimation problem (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing them(Sections~\ref{training-gcn} and~\ref{training-gat}).
 
 \section{Brain age estimation}
 \label{brain-age-estimation}
@@ -52,14 +52,14 @@ An alternative method, which does not restrict training data only to healthy sub
 \section{Dataset}
 \label{dataset}
 
-For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional MRI data, a total of 17,550 subjects. 
+For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional MRI data, a total of 17,550 subjects, which will be explained in more detail in this section. 
 % The training features, discussed below, are extracted from the structural and functional MRI images as well as the non-imaging data.
 
 % TODO Insert image of MRI and fMRI single axial slice
 
 \subsection{Preprocessing}
 
-All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines,\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan.\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
+All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
 
 A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
@@ -98,7 +98,7 @@ Structural MRI is used to analyse the anatomy of the brain. Its two main modalit
 \subsection{Functional features}
 \label{fmri}
 
-Functional MRI (fMRI) data is an indirect measure of brain activity over time. It is represented by \textit{blood oxygenation level dependent} (BOLD) time-series that show changes in oxygenation of the blood vessels. Sudden increases in oxygen demand are related to higher brain activity in the corresponding brain region.
+Functional MRI (fMRI) data indirectly measures brain activity over time. It is represented by \textit{blood oxygenation level dependent} (BOLD) time-series that show changes in oxygenation of the blood vessels. Sudden increases in oxygen demand are related to higher brain activity in the corresponding brain region.
 
 The two types of an fMRI image are \textit{task} fMRI, when the subject is asked to perform a specific cognitive task, and \textit{resting state} fMRI (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
