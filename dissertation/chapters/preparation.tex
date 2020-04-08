@@ -191,24 +191,25 @@ To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neigh
     \label{eq:similarity-threshold}
 \end{equation}
 
+The population graphs can only be effectively accepted as input to machine learning models that are capable of operating on graph-structured data. The two following sections will discuss two types of \textit{graph neural networks} (GNNs) that will be implemented in this dissertation for this purpose, namely graph convolutional and graph attention networks.
 
 \section{Graph convolutional networks}
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-To make the local computation independent of irregularities in node neighbourhoods, the graph is first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
+One of the strategies how the graphs can be represented in neural networks is based on spectral graph theory~\cite{hammond2011wavelets}. The main advantage of this approach that it makes the operations applied to every node independent of the local graph topology (the number of neighbours for a particular node), which makes it easier to optimise as the same operation can be applied to all nodes. The graph is therefore first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
 
 \subsection{Graph spectral decomposition}
 
-In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normalised Laplacian} matrix~\cite{defferrard2016convolutional}: 
+In spectral analysis, a graph $G = (V, E)$ is represented by its \textit{normalised graph Laplacian} matrix~\cite{defferrard2016convolutional}: 
 
 \begin{equation}
     \mathbf{L} = \mathbf{I} - \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2},
 \end{equation}
 
-where $\mathbf{I}$ is the identity matrix, $\mathbf{D} \in \mathbb{N}^{N \times N}$ is the diagonal degree matrix of the graph nodes, and $\mathbf{A} \in \{0, 1\}^{N \times N}$ is the adjacency matrix such that $a_{ij} = \mathbf{1}[(i, j) \in E]$. The Laplacian uniquely represents the graph as it is based on the graph's topology.
+where $\mathbf{I}$ is the identity matrix, $\mathbf{D} \in \mathbb{N}^{N \times N}$ is the diagonal degree matrix of the graph nodes, and $\mathbf{A} \in \{0, 1\}^{N \times N}$ is the adjacency matrix such that $a_{ij} = \mathbf{1}[(i, j) \in E]$. The graph Laplacian uniquely represents the graph as it is based on the graph's topology.
 
-The positive semidefinite Laplacian matrix is decomposed as
+The positive semidefinite graph Laplacian matrix is decomposed as
 
 \begin{equation}
     \mathbf{L} = \mathbf{U\Lambda U}^\mathrm{T},
