@@ -305,14 +305,14 @@ I ran the sweeps for both GCN and GAT models for at least 100 runs (most of them
 
 TODO The hyperparameters tuned, their distributions and value ranges tuned can be found in Appendix ?.
 
+TODO where to include this??? The models are trained using early stopping with patience of 100 and delta 0.005. This means that the training stops if the validation set MSE does not decrease by at least 0.005 in 100 consecutive epochs, at which point the model is reverted back to the state that gave the best validation set score). Otherwise, the models are trained for at least 1000 epochs and for a maximum of 7500 epochs.
+
 \subsubsection{Cross-validation}
+The subjects are first split into the 90\% training and 10\% hold-out test set, stratifying by subject age and sex. The test set will be used to evaluate a single selected model. 
 
+The remaining data was used for model selection (hyperparameter tuning). The models were trained with five-fold cross-validation, so that the training data split into five folds with 90\% true training and 10\% validation subjects. Therefore for a given set of hyperparameters five models are trained, and the model's overall performance is estimated using the average mean squared error across the folds as well as the variation in performance. 
 
-
-
-
-
-
+As the hyperparameter tuning converges, the most promising model is selected to be tested on the hold-out test set. The metrics usually used to evaluate the models performing a regression task are Pearson's correlation $r$ and coefficient of determination $r^2$.
 
 \subsection{Robustness measurement}
 
