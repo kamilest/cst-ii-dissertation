@@ -373,7 +373,7 @@ TODO \textit{an illustration of the graph with marked training and validation no
 
 % TODO add a section about the architecture as a whole (but maybe in the implementation?) which describes how many layers the architectures will have and that I add fully connected MLP layers at the end.
 
-\section{Requirements analysis}
+\section{Requirements analysis and software engineering practice}
 
 The project has three main stages that directly correspond to the Success Criteria of the Project Proposal (Appendix ?):
 
@@ -392,18 +392,14 @@ Since every stage depends on the implementation of the previous one, the straigh
 
 I also expect the first stage to be the most complex for the following reasons.
 \begin{enumerate}
-    \item Care must be taken to make sure that the data is handled \textit{correctly};
-    \item The pipeline must be \textit{flexible} enough to support the various combinations of modalities, subjects, and similarity metrics;
-    \item The pipeline has to be \textit{modular} enough to be easily extended to more datasets and their modalities in the future.
+    \item Care must be taken to make sure that the data is handled \textit{correctly}. This will require testing of the components which transform the data to the population graph data structure.
+    \item The pipeline must be \textit{flexible} enough to support the various combinations of modalities, subjects, and similarity metrics, which will be ensured by independent support of every modality and the \textit{extension} of the project to support custom similarity functions.
+    \item The pipeline has to be \textit{modular} enough to be easily extended to more datasets, modalities and processing options in the future. To achieve this, the pipeline will be split into independent components with their own designated function, so that they are easier to build upon independently.
 \end{enumerate} 
 
 This requirement in itself largely fulfils the proposed \textit{extension} of implementing the pipeline that can handle raw data at the one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Part II project. 
 
 The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in the Implementation chapter.
-
-\section{Software engineering practice}
-
-As mentioned in the previous section, this project requires particular care in pipeline design to fulfil the requirements for \textit{correctness}, \textit{flexibility} and \textit{modularity}. This design, carefully thought through in advance of the implementation, will be discussed in the Implementation chapter.
 
 To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of consistent code style, comprehensive documentation, unit testing, version control and code reuse will be applied.
 
