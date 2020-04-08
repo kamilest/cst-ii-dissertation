@@ -120,6 +120,8 @@ Due to the nature of the brain age problem, the population graph can only be tra
 
 \subsection{Population graph representation}
 
+
+\setlength{\LTpost}{0pt}
 \renewcommand{\arraystretch}{1.25}
 % \begin{table}[]
 %     \caption{The population graph data structure (excludes helper or utility fields).}\label{table:population-graph}
@@ -197,7 +199,7 @@ Since functional connectivity matrices are already normalised, no additional nor
 Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, standard scaler is fitted to the training set and applied to the validation and test sets. A separate transformation is applied to each structural data modality and the quality control modality.
 
 \subsection{Setting the transformed feature tensor}
-The transformed functional, structural and quality control modalities are concatenated together into a single tensor, which is assigned to \texttt{X} in the population graph data structure (Table~\ref{table:population-graph}). This makes it a prepared graph for training.
+The transformed functional, structural and quality control modalities are concatenated together into a single tensor, which is assigned to \texttt{x} in the population graph data structure (Table~\ref{table:population-graph}). This makes it a prepared graph for training.
 
 Since the original neuroimaging dataframes and brain health masks are kept in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
 
@@ -250,15 +252,54 @@ Listing~\ref{listing:braingnn} shows how the order in which the layers are combi
 
 \section{GNN training and evaluation component}
 
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
     \caption{Graph neural network training and evaluation component.}\label{gnn-training-eval-component}
 \end{figure}
 
+The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures and report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop as noise is added to the population graph nodes or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
+
 
 \subsection{Model selection}
-Hyperparameter tuning, weights and biases
+% Hyperparameter tuning, weights and biases
+
+With a high range of population graph modality (functional, structural, quality control data), similarity metric (Table~\ref{table:phenotype-features}), similarity threshold, as well as the GNN construction (Table~\ref{table:braingnn}) and training parameter (such as learning rate and number of epochs) choices, the search space for the best performing model is vast and it may be out of scope of this project to find the best fitting model.
+
+The search space might be even bigger considering that I do not use all the possible phenotype features in Table~\ref{table:phenotype-features} and there might be more confounders. There could be more similarity functions and the relative weights for each similarity feature – the subject's sex is probably more important than how many years they had of full-time education, for example. The UK Biobank has 768 non-imaging features per patient – it's out of scope to select the best ones and their relative weights and thresholds, especially having no neuroscience expertise etc\dots
+
+
+Nonetheless I selected the set of features that I felt were the most important and carried out the hyperparameter tuning over the selected ranges of features.
+
+\subsubsection{Mitigating memory constraints}
+The biggest constraint in training the population graphs was GPU memory (which accounting for intensive GPU usage in the laboratory was up to 5-8 gigabyte models, and often even 1-3 gigabyte models). This especially affects the population graph training since in this case, to train on the full dataset, the entire graph of more than 17,000 subjects must be in memory at once due to subject similarity connections, and unlike in most models that have individual independent examples, the population graph cannot be trivially split into smaller batches. At the same time, GCN and GAT are known to be memory-intensive models.
+TODO reference
+I wanted to use the entire dataset (
+TODO why? – because the (quality of) data is often more important than the model, reference?),
+which meant that I had to constrain my model and population graph structure selection instead. I constrained it as follows:
+\begin{enumerate}
+    \item Having referred to the literature on brain age estimation, I decided that high-dimensional functional imaging data modality is less promising than structural imaging data modality, while adding a lot of extra features per patient (over 78,000). Functional imaging data is never used alone (especially because it's already very much an estimate of how the brain works and includes a lot of oversimplified assumptions to how the brain is connected, and if used, it is generally to only complement structural data). Dimensionality reduction is possible, but from experience from the practical work of my Data Science Unit of Assessment, PCA, for example, cutting out half of the low-variance principle components can even worsen the predictive power and training time of the model instead of improving it. While the support for those techniques is implemented – which indeed was the goal of this project to support it if it is needed – it was not used in training.
+    \item The model size was fixed to a fairly shallow network with a small number of units (
+        TODO give the actual architecture). 
+        The learning rates were decreased and epochs increased to compensate for the smaller number of training parameters.
+    \item I fixed the set of possible population graph types and the similarity thresholds (
+    TODO see full list in Appendix ?). 
+    From running some initial models I found that feasible similarity thresholds are all above 0.6, and even 0.7 or 0.8 often cause problems. 
+\end{enumerate}
+
+
+Hyperparameter search was restricted to only use the default similarity metrics for a more consistent training and because it is not clear how each metric should be weighted. The intent behind supporting this is the capability for a neuroscientist or another professional with domain knowledge to design their own good similarity metric – which has been implemented as an \textit{extension} to my original success criteria. Otherwise the weighting would be very arbitrary and increase the search space even more. As someone without much neuroscience domain knowledge I went for the simplest way of combining the metrics for this training procedure.
+
+TODO in general lessons learnt and things for the future is that the memory issues and uninformed similarity metric and GNN architecture decisions severely restricted my hyperparameter search space, and very likely missed out on promising models with good test set performance. When I have time I would love to explore more hyperparameter options, consulting Dr Bethlehem and other experts on what other non-imaging features to include, how to combine them, how to adjust the architecture, and test new models on new data, for example on the recent UKB update which I did not have access to before, or some entirely new dataset. Alternatively, I could try training higher range of model hyperparameters on subsets of the UKB dataset, e.g. on 2,000-brain graphs which would decrease the parameters but allow for better exploration of the similarity matrix and GNN architecture possibilities.
+
+
+\subsubsection{Hyperparameter tuning}
+The hyperparameters and their ranges tuned can be found in Apppendix.
+
+
+
+
+
 
 \subsection{Robustness measurement}
 
@@ -270,13 +311,4 @@ Describe the additional graph transformation stages which add noise to node feat
 
 \section{Repository overview}
 % The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
-
-
-\newpage
-
-\subsection{Hyperparameter tuning}
-Describe which hyperparameters were tuned using Bayesian optimisation strategy, early stopping, cross-validation etc.
-
-
-
 
