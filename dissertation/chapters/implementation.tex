@@ -197,7 +197,7 @@ Since functional connectivity matrices are already normalised, no additional nor
 Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, standard scaler is fitted to the training set and applied to the validation and test sets. A separate transformation is applied to each structural data modality and the quality control modality.
 
 \subsection{Setting the transformed feature tensor}
-The transformed functional, structural and quality control modalities are concatenated together into a single tensor, which is assigned to \texttt{X} in the population graph data structure (Table~\ref{table:population-graph}). This makes it a prepared graph for training.
+The transformed functional, structural and quality control modalities are concatenated together into a single tensor, which is assigned to \texttt{x} in the population graph data structure (Table~\ref{table:population-graph}). This makes it a prepared graph for training.
 
 Since the original neuroimaging dataframes and brain health masks are kept in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
 
@@ -250,11 +250,13 @@ Listing~\ref{listing:braingnn} shows how the order in which the layers are combi
 
 \section{GNN training and evaluation component}
 
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
     \caption{Graph neural network training and evaluation component.}\label{gnn-training-eval-component}
 \end{figure}
+
+The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures and report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop as noise is added to the population graph nodes or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
 
 \subsection{Model selection}
