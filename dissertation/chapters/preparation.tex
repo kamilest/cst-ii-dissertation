@@ -57,13 +57,6 @@ For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow201
 
 % TODO Insert image of MRI and fMRI single axial slice
 
-\subsection{Preprocessing}
-
-All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
-
-A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
-
-% When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
 % TODO Insert diagram flow diagram of preprocessing steps here
 
@@ -78,19 +71,19 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 
 \subsection{Structural features}
 
+Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
+
 \begin{table}[]
-    \caption{Summary of the features derived from structural MRI.}\label{table:structural-features}
+    \caption{Summary of the features derived from structural MRI, reported as an average in a particular brain region.}\label{table:structural-features}
     \centering
     \begin{tabular}{lp{11cm}}
         \hline
     \textbf{Structural feature}            & \textbf{Description} \\ \hline
-    Cortical thickness &  Average thickness of the cerebral cortex in the parcel. \\
-    Surface area       &  Cortical surface area of cortex in the parcel. \\
-    Grey matter volume &  Total volume of the grey matter (the inner component) in a parcel.
+    Cortical thickness &  Average thickness of the cerebral cortex. \\
+    Surface area       &  Surface area of the cortex. \\
+    Grey matter volume &  Total volume of the grey matter component in the brain region.
     \end{tabular}
 \end{table}
-
-Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline.\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/23668970}} 
 
 
 % TODO Insert image of axial slice of t1, t2, and FLAIR brain scan
@@ -102,7 +95,7 @@ Functional MRI (fMRI) data indirectly measures brain activity over time. It is r
 
 The two types of an fMRI image are \textit{task} fMRI, when the subject is asked to perform a specific cognitive task, and \textit{resting state} fMRI (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
-For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is estimated by correlating the time-series of every pair of parcels together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). 
+For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is estimated by correlating the time-series of every pair of brain regions together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). 
 
 % TODO maybe include the maths as this is something that I have to do myself anyway, so I have to explain it (and it's more maths).
 % As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
@@ -142,16 +135,24 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use Euler indices as node features.
 
 
-\subsection{Phenotype features}
+\subsection{Neuroimaging data preprocessing}
 
-In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
+All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
+
+A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+
+% When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
+
+\subsection{Non-imaging features}
+
+In this dissertation, the non-imaging data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
 
 \begin{table}[]
     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
     \centering
     \begin{tabular}{cp{6cm}p{7.5cm}}
         \hline
-    \textbf{Code} & \textbf{Non-imaging feature } & \textbf{Explanation} \\ \hline
+    \textbf{Code} & \textbf{Non-imaging feature} & \textbf{Explanation} \\ \hline
     \texttt{AGE} & Chronological age &  Used as the training label. \\
     \texttt{FI} & Fluid intelligence score &  Measures cognitive performance, related to increased brain activity~\cite{gray2003neural}. \\
     \texttt{FTE} & Years of full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
