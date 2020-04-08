@@ -8,7 +8,7 @@
 %  ~2,500 words
 
 
-This chapter presents in more depth the brain age estimation problem (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing them(Sections~\ref{training-gcn} and~\ref{training-gat}).
+This chapter presents in more depth the brain age estimation problem (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing them (Sections~\ref{training-gcn} and~\ref{training-gat}).
 
 \section{Brain age estimation}
 \label{brain-age-estimation}
@@ -52,7 +52,7 @@ An alternative method, which does not restrict training data only to healthy sub
 \section{Dataset}
 \label{dataset}
 
-For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional MRI data, a total of 17,550 subjects, which will be explained in more detail in this section. 
+For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional magnetic resonance imaging (MRI) data, a total of 17,550 subjects, which will be explained in more detail in this section. 
 % The training features, discussed below, are extracted from the structural and functional MRI images as well as the non-imaging data.
 
 % TODO Insert image of MRI and fMRI single axial slice
@@ -139,12 +139,12 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 % TODO maybe is better to show how the correlation matrix looks like for one person
 
 \subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use the latter approach.
+Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use Euler indices as node features.
 
 
 \subsection{Phenotype features}
 
-In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
+In this dissertation, the phenotype (non-imaging) data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
 
 \begin{table}[]
     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
@@ -166,7 +166,7 @@ The non-imaging data is used to compute the inter-subject similarity score, whic
 \section{Population graphs}
 \label{population-graphs}
 
-One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects for downstream machine learning tasks is a \textit{population graph} data structure, as it is presented in Parisot et al.~\cite{parisot2018disease}.
+One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects for downstream machine learning tasks is a \textit{population graph} data structure, as it is presented by Parisot et al.~\cite{parisot2018disease}.
 
 The set of $N$ subjects $S$ is connected into a undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 

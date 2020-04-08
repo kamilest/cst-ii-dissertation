@@ -15,7 +15,7 @@
     \caption{Overview of the key project components.}\label{pipeline-overview}
 \end{figure}
 
-This project can be divided into five key components (Figure~\ref{pipeline-overview}):
+This project can be divided into five key components, as illustrated in Figure~\ref{pipeline-overview}:
 \begin{enumerate}
     \item Preparation of the United Kingdom Biobank (UKB) dataset;
     \item Intermediate population graph construction;
@@ -24,8 +24,9 @@ This project can be divided into five key components (Figure~\ref{pipeline-overv
     \item Evaluation of the graph neural network performance.
 \end{enumerate}
 
-This chapter will explain in detail the steps behind each of the stages.
+The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program, other than the clearly defined input/output communication. This makes the overall project easier to implement, understand and extend in the future. 
 
+This chapter will explain in detail the implementation behind each of the components.
 
 \section{UKB preprocessing component}
 
@@ -38,10 +39,10 @@ This chapter will explain in detail the steps behind each of the stages.
 The main function of the UKB preprocessing component is to prepare the raw or partially preprocessed UKB data for population graph construction (Figure~\ref{preprocessing-component}). In particular, to improve the computational efficiency of most of the operations later in the pipeline, this component precomputes some of the data in the convenient form. This involves cleaning the dataset, precomputing similarity matrices and functional connectivity matrices.
 
 \subsection{Cleaning the dataset}
-While the United Kingdom Biobank is very well maintained and the data is nicely structured, the different modalities (functional MRI, structural MRI, phenotype data, Euler indices—as shown by different components in Figure~\ref{preprocessing-component}) were provided separately. The functional data contains scans for 17,550 patients, but 233 of them had missing data in other modalities (it was retracted from the Biobank but the scans remained available). Three more patients have had corrupted brain scans (did not have a matching number of brain regions), which resulted in functional connectivity matrices being different from all the others (and consequently a different number of features) and were therefore discarded. The 17314 patients that had the data available for all modalities have been collected into a subject index. The data from all modalities are filtered using this subject index before being selected for population graph construction.
+While the UKB is very well maintained and the data is nicely structured, the different modalities (functional MRI, structural MRI, phenotype data, Euler indices—as shown by different components in Figure~\ref{preprocessing-component}) were provided separately. The functional data contains scans for 17,550 patients, but 233 of them had missing data in other modalities (it was retracted from the Biobank but the scans remained available). Three more patients have had corrupted brain scans (did not have a matching number of brain regions), which resulted in functional connectivity matrices being different from all the others (and consequently a different number of features) and were therefore discarded. The 17,314 patients that had the data available for all modalities have been collected into a subject index. The data from all modalities are filtered using this subject index before being selected for population graph construction.
 
 \subsection{Precomputing connectivity matrices}
-The connectivity matrices involve computing the pairwise correlations of 376 time-series for every subject, a $O(N^2)$ computation for the dataset of  $N$ subjects. With 20 GB of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed (which might be frequent when different graph parameterisations are explored). To avoid the inefficiency, the matrices are computed once for each subject, flattened and their lower triangles stored as NumPy arrays as part of the preprocessing component.
+The connectivity matrices involve computing the pairwise correlations of 376 time-series for every subject, a computation of $O(N^2)$ complexity in both space and time for the dataset of $N$ subjects. With 20 GB of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed (which might be frequent when different graph parameterisations are explored). To avoid the inefficiency, the matrices are computed once for each subject, flattened and their lower triangles stored as NumPy arrays as part of the preprocessing component.
 
 TODO could include the maths here?
 
@@ -51,18 +52,18 @@ While the non-imaging modalities used for similarity computation are much smalle
 The similarity matrices for the non-imaging features in Table~\ref{table:phenotype-features} have therefore been computed in advance. Unlike the functional connectivity data used directly as node features, the metric-wise similarities need to be looked up quickly when computing the score for a given similarity function, so the full matrix is stored.
 
 
-For the \texttt{ICD10} metric, the subjects were considered to be \texttt{ICD10}-similar whenever they had at least one shared mental health or nervous system diagnosis, while two patients without any mental health or nervous system diagnoses were \textit{not} considered to be similar, as this would create too many edges and make the model run out of memory. The computation can be vectorised: for the boolean \texttt{ICD10}-lookup matrix $\mathbf{F}_{\text{icd10}}$ with rows indexed by subjects and columns by relevant \texttt{ICD10} diagnoses, the pairwise similarity matrix $\mathbf{M}_{\text{icd10}}$ computation corresponds to 
+For the \texttt{ICD10} metric, the subjects were considered to be \texttt{ICD10}-similar whenever they had at least one shared mental health or nervous system diagnosis, while two patients without any mental health or nervous system diagnoses were \textit{not} considered to be similar, as this would create too many edges and make the model run out of memory. The computation can be vectorised: for the boolean \texttt{ICD10}-lookup matrix $\mathbf{F}_{\text{ICD10}}$ with rows indexed by subjects and columns by relevant \texttt{ICD10} diagnoses, the pairwise similarity matrix $\mathbf{M}_{\text{ICD10}}$ computation corresponds to 
 
 \begin{equation}
-    \mathbf{M}_{\text{icd10}} = \mathbf{1}\left[\mathbf{F}_{\text{icd10}}^{\ }\mathbf{F}_{\text{icd10}}^{\mathrm{T}} \geq 1\right]
+    \mathbf{M}_{\text{ICD10}} = \mathbf{1}\left[\mathbf{F}_{\text{ICD10}}^{\ }\mathbf{F}_{\text{ICD10}}^{\mathrm{T}} \geq 1\right]
 \end{equation}
 
 where the indicator function $\mathbf{1}[\cdot]$ is applied element-wise.
 
-For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The operation is vectorised by exploiting NumPy's broadcasting operation that copies rows and columns as necessary for the matrix dimensions to match: for the vector of subject \texttt{FTE}s $\mathbf{f}_{\text{fte}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{fte}} = [\mathbf{f}_{\text{fte}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{fte}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
+For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The operation is vectorised by exploiting NumPy's broadcasting operation that copies rows and columns as necessary for the matrix dimensions to match: for the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
 
 \begin{equation}
-    \mathbf{M}_{\text{fte}} = \mathbf{1}\left[\mathbf{F}_{\text{fte}}^{\ } = \mathbf{F}_{\text{fte}}^{\mathrm{T}} \right].
+    \mathbf{M}_{\text{FTE}} = \mathbf{1}\left[\mathbf{F}_{\text{FTE}}^{\ } = \mathbf{F}_{\text{FTE}}^{\mathrm{T}} \right].
 \end{equation}
 
 
@@ -121,6 +122,9 @@ Due to the nature of the brain age problem, the population graph can only be tra
 \subsection{Population graph representation}
 
 
+The population graph is extended from the base Pytorch Geometric \texttt{Data} object, with its main fields listed in Table~\ref{table:population-graph}. The intermediate version has all entries defined except the feature vector \texttt{x} and the training, validation and test masks.
+
+
 \setlength{\LTpost}{0pt}
 \renewcommand{\arraystretch}{1.25}
 % \begin{table}[]
@@ -161,8 +165,6 @@ Due to the nature of the brain age problem, the population graph can only be tra
     % \end{tabular}
 \end{longtable}
 \end{center}
-
-The population graph is extended from the base Pytorch Geometric \texttt{Data} object, with its main fields listed in Table~\ref{table:population-graph}. The intermediate version has all entries defined except the feature vector \texttt{X} and the training, validation and test masks.
 
 TODO ordering of members based on their use order in the pipeline, meaning (training vs data etc.)
 
@@ -247,7 +249,7 @@ TODO perhaps simplify this? I don't know which parts to cut out of this for it t
 \inputminted[frame=bottomline, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
 \end{code}
 
-Listing~\ref{listing:braingnn} shows how the order in which the layers are combined in the \texttt{BrainGNN} architecture, given the parameters in Table~\ref{table:braingnn}. I chose the hyperbolic tangent $\tanh(\cdot)$)as the non-linearity (activation function) between each layer because the inputs and values in neurons may be negative, in which case the other popular activation functions such as $\mathrm{ReLU}(\cdot)$ would have an undesirable asymmetric response. The \textit{dropout} layers have been added between the every fully connected layer as a regularisation technique: with probability \texttt{dropout\_p}, a unit in the layer is ignored (its weight is zeroed) with the hope that the neural network will not rely on any particular node when predicting age, learning more robust features.
+Listing~\ref{listing:braingnn} shows how the order in which the layers are combined in the \texttt{BrainGNN} architecture, given the parameters in Table~\ref{table:braingnn}. I chose the hyperbolic tangent $\tanh(\cdot)$)as the non-linearity (activation function) between each layer because the inputs and values in neurons may be negative, in which case the other popular activation functions such as $\mathrm{ReLU}(\cdot)$ would have an undesirable asymmetric response. The \textit{dropout} layers have been added between the every fully connected layer as a regularisation technique: with probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the hope that the neural network will not rely on any particular node when predicting age, learning more robust features.
 
 
 \section{GNN training and evaluation component}
