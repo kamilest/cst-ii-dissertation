@@ -294,7 +294,20 @@ TODO in general lessons learnt and things for the future is that the memory issu
 
 
 \subsubsection{Hyperparameter tuning}
-The hyperparameters and their ranges tuned can be found in Apppendix.
+TODO is this implementation or evaluation? I feel like I could move it to evaluation so that I can show the results over each fold and how I selected them, not sure.
+
+With the above GNN hyperparameter and population graph parameter restrictions due to memory constraints, I optimised the remaining hyperparameters using Bayesian optimisation strategy using the \textit{Sweeps} tool provided by the \textit{Weights~\& Biases}~\cite{wandb} (\texttt{wandb}) machine learning tracking and optimisation framework. 
+
+TODO this is simplified – not sure how much do I want to explain the Gaussian processes etc.
+Having integrated the training with the \texttt{wandb}, the framework would automatically suggest and test the best hyperparameter combinations it believes are the most likely to optimise the performance metric of choice, which in my case was to minimise the average cross-validation mean squared error (MSE). 
+
+I ran the sweeps for both GCN and GAT models for at least 100 runs (most of them still unsuccessful due to the memory constraints) until the models started to converge to similar performance that could not be improved with new hyperparameters, and selected the best one for each architecture based on the lowest MSE.
+
+TODO The hyperparameters tuned, their distributions and value ranges tuned can be found in Appendix ?.
+
+\subsubsection{Cross-validation}
+
+
 
 
 
