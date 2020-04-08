@@ -171,7 +171,7 @@ One useful way to combine the multiple types of neuroimaging data and represent 
 
 The set of $N$ subjects $S$ is connected into a undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
-Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging (phenotypic) information of the subjects to create edges between the nodes. 
+Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging information of the subjects to create edges between the nodes. 
 
 Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
 
@@ -182,7 +182,7 @@ Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim
     \label{eq:similarity}
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of phenotypic metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given phenotypic feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of phenotypic features being within some constant $\epsilon$. 
+Here $\{M_1, \dots, M_n\}$ is a set of non-imaging metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given non-imaging feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of non-imaging features being within some constant $\epsilon$. 
 
 To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
 
@@ -378,7 +378,7 @@ The project has three main stages that directly correspond to the Success Criter
 
 \begin{enumerate}
     \item Implementation of the population graph data structure, with nodes containing the individual neuroimaging data and edges representing associations between them based on pairwise similarity. This involves: \begin{enumerate}
-        \item Preprocessing of the functional, structural imaging and phenotypic (non-imaging) data of the UKB subjects.
+        \item Preprocessing of the functional, structural imaging and non-imaging data of the UKB subjects.
         \item Implementation of the customisable similarity metric that would compare two subjects and return the similarity score.
         \item A pipeline that would generate the population graph for a given set of subjects, their modalities, similarity metric and similarity threshold.
         \item An \textit{extension} for supporting higher flexibility in similarity metrics by including the similarity score as an edge feature rather than having a 1-weighted edge whenever the similarity score exceeds a given threshold.
