@@ -24,22 +24,24 @@ This project can be divided into five key components, as illustrated in Figure~\
     \item Evaluation of the graph neural network performance.
 \end{enumerate}
 
-The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program, other than the clearly defined input/output communication. This makes the overall project easier to implement, understand and extend in the future, generalising it to other datasets and preprocessing methods. 
+The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program, (other than the clearly defined input/output communication). This makes the overall project easier to implement, understand and extend in the future, generalising it to other datasets and preprocessing methods. 
 
 This chapter will explain in detail the implementation behind each of the components.
 
 \section{UKB preprocessing component}
 
+The main function of the UKB preprocessing component is to prepare the raw or partially preprocessed UKB data for population graph construction. In particular, to improve the computational efficiency of operations later in the pipeline (potentially saving hours or days of computation time), this component preprocesses the data in a convenient form. This involves filtering the dataset, precomputing similarity matrices and functional connectivity matrices. The schematic diagram of these steps is shown in Figure~\ref{preprocessing-component}.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{preprocessing_component.pdf}
-    \caption{UKB preprocessing component.}\label{preprocessing-component}
+    \caption{Overview of the UKB preprocessing component.}\label{preprocessing-component}
 \end{figure}
-
-The main function of the UKB preprocessing component is to prepare the raw or partially preprocessed UKB data for population graph construction (Figure~\ref{preprocessing-component}). In particular, to improve the computational efficiency of most of the operations later in the pipeline, this component precomputes some of the data in the convenient form. This involves cleaning the dataset, precomputing similarity matrices and functional connectivity matrices.
 
 \subsection{Cleaning the dataset}
 While the UKB is very well maintained and the data is nicely structured, the different modalities (functional MRI, structural MRI, non-imaging data, Euler indices—as shown by different components in Figure~\ref{preprocessing-component}) were provided separately. The functional data contains scans for 17,550 patients, but 233 of them had missing data in other modalities (it was retracted from the Biobank but the scans remained available). Three more patients have had corrupted brain scans (did not have a matching number of brain regions), which resulted in functional connectivity matrices being different from all the others (and consequently a different number of features) and were therefore discarded. The 17,314 patients that had the data available for all modalities have been collected into a subject index. The data from all modalities are filtered using this subject index before being selected for population graph construction.
+
+
 
 \subsection{Precomputing connectivity matrices}
 The connectivity matrices involve computing the pairwise correlations of 376 time-series for every subject, a computation of $O(N^2)$ complexity in both space and time for the dataset of $N$ subjects. With 20 GB of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed (which might be frequent when different graph parameterisations are explored). To avoid the inefficiency, the matrices are computed once for each subject, flattened and their lower triangles stored as NumPy arrays as part of the preprocessing component.
@@ -83,12 +85,12 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 
 \section{Graph construction component}
 
+The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph, which contains the graph topology and node features but is not prepared for training (is not split into training, validation and test sets, and the features are not normalised). The two stages are separate because the same intermediate representation can be reused many times for different dataset split and other evaluation parameters without having to reconstruct the topology in $O(N^2)$ time. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
+
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{graph_construction_component.pdf}
     \caption{Graph construction component.}\label{graph-construction-component}
 \end{figure}
-
-The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph, which contains the graph topology and node features but is not prepared for training (is not split into training, validation and test sets, and the features are not normalised). The two stages are separate because the same intermediate representation can be reused many times for different dataset split and other evaluation parameters without having to reconstruct the topology in $O(N^2)$ time. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
 
 \subsection{Inputs}
 The inputs to the graph construction component can be categorised into four main types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}. These are subject specification, modality specification, similarity feature set and similarity threshold parameters.
