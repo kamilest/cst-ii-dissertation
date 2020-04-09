@@ -15,6 +15,8 @@
     \caption{Overview of the key project components.}\label{pipeline-overview}
 \end{figure}
 
+TODO I just thought, one good point towards modularity is what pietro once said about one of your contributions: that you are building a generic pipeline for analysis, thus easy to extend each component in separate, etc. Even if you don't mention modularity specifically, you can mention this contribution and important feature of your project (I think it was in some extension idea)
+
 This project can be divided into five key components, as illustrated in Figure~\ref{pipeline-overview}:
 \begin{enumerate}
     \item Preparation of the United Kingdom Biobank (UKB) dataset;
@@ -24,6 +26,7 @@ This project can be divided into five key components, as illustrated in Figure~\
     \item Evaluation of the graph neural network performance.
 \end{enumerate}
 
+TODO you mention somewhere in the preparationg section tht in Implementation you will show the good software pratices. One or 2 sentences here with a general overview would probably help in giving a general idea of your implementtion as not only a bunch of components put together, but a thoughtful, modular, etc etc project
 The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program, other than the clearly defined input/output communication. This makes the overall project easier to implement, understand and extend in the future. 
 
 This chapter will explain in detail the implementation behind each of the components.
@@ -117,6 +120,8 @@ This component uses the subject set and the similarity specification provided to
 
 \subsection{Brain health mask computation}
 
+TODO given this is an implementation chapter, maybe you can be a bit more specific here in what it means, like gradients are calculated for only healthy (loss function only calculated, etc)
+
 Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10} metric (see Table~\ref{table:phenotype-features}).
 
 \subsection{Population graph representation}
@@ -179,11 +184,13 @@ TODO Could here mention the \textit{extension} of having weighted edges where ed
     \caption{Graph transformation component.}\label{graph-transformation-component}
 \end{figure}
 
+TODO maybe saying somewhere in the document that normalisation needs to be done fit in training set, and from that "learned" transformation, apply in the remaining sets to avoid data leakage.
 The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised and combined feature vector as well as training, validation and test masks. The schematic diagram representing the transformations to the graph by this component is shown in Figure~\ref{graph-transformation-component}.
 
 \subsection{Setting the training masks}
 The intermediate version is first changed by setting the training, validation and test masks provided by the graph neural network training and evaluation component. This involves setting the \texttt{train\_mask}, \texttt{validation\_mask} and \texttt{test\_mask} fields of the intermediate population graph data structure (see Table~\ref{table:population-graph}). 
 
+TODO are ignored when calculating the loss? You might need to be a bit more specific in the implementtion chapter about how you actually ignore in the training procedure those unhealthy people (given they are in the population graph)
 Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}, so that during training the outputs for unhealthy subjects are ignored. 
 
 \subsection{Functional connectivity matrix dimensionality reduction}
@@ -268,6 +275,7 @@ The main function of the GNN training and evaluation component is to select the 
 
 With a high range of population graph modality (functional, structural, quality control data), similarity metric (Table~\ref{table:phenotype-features}), similarity threshold, as well as the GNN construction (Table~\ref{table:braingnn}) and training parameter (such as learning rate and number of epochs) choices, the search space for the best performing model is vast and it may be out of scope of this project to find the best fitting model.
 
+TODO  I don't know whether the department likes something written in the first person. But I think is the first time you use this, so maybe doublecheck or think about it
 The search space might be even bigger considering that I do not use all the possible non-imaging features in Table~\ref{table:phenotype-features} and there might be more confounders. There could be more similarity functions and the relative weights for each similarity feature – the subject's sex is probably more important than how many years they had of full-time education, for example. The UK Biobank has 768 non-imaging features per patient – it's out of scope to select the best ones and their relative weights and thresholds, especially having no neuroscience expertise etc\dots
 
 
@@ -279,6 +287,8 @@ TODO reference
 I wanted to use the entire dataset (
 TODO why? – because the (quality of) data is often more important than the model, reference?),
 which meant that I had to constrain my model and population graph structure selection instead. I constrained it as follows:
+
+TODO "I decided" is def not a good wording here... try to make it just a normal, direct consequence from what you've read in the literature
 \begin{enumerate}
     \item Having referred to the literature on brain age estimation, I decided that high-dimensional functional imaging data modality is less promising than structural imaging data modality, while adding a lot of extra features per patient (over 78,000). Functional imaging data is never used alone (especially because it's already very much an estimate of how the brain works and includes a lot of oversimplified assumptions to how the brain is connected, and if used, it is generally to only complement structural data). Dimensionality reduction is possible, but from experience from the practical work of my Data Science Unit of Assessment, PCA, for example, cutting out half of the low-variance principle components can even worsen the predictive power and training time of the model instead of improving it. While the support for those techniques is implemented – which indeed was the goal of this project to support it if it is needed – it was not used in training.
     \item The model size was fixed to a fairly shallow network with a small number of units (
