@@ -110,10 +110,9 @@ Based on the subject and modality specification, the relevant imaging data is co
 
 If a particular modality is unused, \texttt{DataFrame} stored is empty.
 
-
 \subsection{Edge construction}
 
-This component uses the subject set and the similarity specification provided to combine the individual similarity metrics into an overall similarity score for each pair of subjects, then comparing it to the similarity threshold and adding an edge if the score exceeds the threshold.
+The edge construction component uses the subject specification, similarity specification, similarity threshold and the filtered similarity matrix data to find the similarity scores for each pair of subjects. Whenever the similarity score between two subjects exceeds the threshold, an undirected edge is added to the population graph. The edges are stored in a \textit{tensor}\footnote{\url{https://pytorch.org/docs/stable/tensors.html}}, which is a PyTorch datatype for storing multi-dimensional matrices.
 
 \subsection{Brain health mask computation}
 
