@@ -49,20 +49,21 @@ The connectivity matrices involve computing pairwise correlations of 376 time-se
 \subsection{Precomputing similarity matrices}
 The computation of pairwise similarity scores is quadratic in both time and space with respect to the number of subjects. Depending on the exact method how the similarity function is computed, a general-purpose (non-accelerated) processor might take hours or even days to process the entire dataset. This computation is also repeated whenever a graph is constructed, since the similarities per non-imaging metric do not change over different population graphs: the variation comes from different selections of subjects, non-imaging features, their relative weighting, and similarity thresholds.
 
-The similarity matrices – one for each non-imaging feature in Table~\ref{table:phenotype-features} – have therefore been computed in advance. Unlike the functional connectivity data that is used directly for population graph node features (and therefore should avoid redundancy), the feature-wise similarity matrices are sliced and filtered depending on the selection of subjects. In this case it is more practical to store the full matrix, so that the indices into the similarity matrix directly correspond to the subject representation in other components of the population graph data structure (see Section~\ref{section:population-graph-representation})
+The similarity matrices – one for each non-imaging feature in Table~\ref{table:phenotype-features} – have therefore been computed in advance. Unlike the functional connectivity data that is used directly for population graph node features (and therefore should avoid redundancy), the feature-wise similarity matrices are sliced and filtered depending on the selection of subjects. In this case it is more practical to store the full matrix, so that the indices into the similarity matrix directly correspond to the subject representation in other components of the population graph data structure (see Section~\ref{section:population-graph-representation}).
 
 Having computed the feature-wise similarity matrices, their linear combination for a full similarity score (by default adding matrices together and dividing the result by a constant) can efficiently make use of vectorised matrix operations.
 
+For the \texttt{ICD10} metric, the subjects were considered to be \texttt{ICD10}-similar whenever they had at least one shared mental health or nervous system diagnosis, while two patients without any mental health or nervous system diagnoses were \textit{not} considered to be similar in order to avoid memory issues caused by a high number of edges (see Section~\ref{section:memory}). 
 
-For the \texttt{ICD10} metric, the subjects were considered to be \texttt{ICD10}-similar whenever they had at least one shared mental health or nervous system diagnosis, while two patients without any mental health or nervous system diagnoses were \textit{not} considered to be similar, as this would create too many edges and make the model run out of memory. The computation can be vectorised: for the boolean \texttt{ICD10}-lookup matrix $\mathbf{F}_{\text{ICD10}}$ with rows indexed by subjects and columns by relevant \texttt{ICD10} diagnoses, the pairwise similarity matrix $\mathbf{M}_{\text{ICD10}}$ computation corresponds to 
+The similarity computation was vectorised in order to make use of accelerating hardware and reduce the compute time: for the boolean \texttt{ICD10}-lookup matrix $\mathbf{F}_{\text{ICD10}}$ with rows indexed by subjects and columns by relevant \texttt{ICD10} diagnoses, the pairwise similarity matrix $\mathbf{M}_{\text{ICD10}}$ computation corresponds to 
 
 \begin{equation}
     \mathbf{M}_{\text{ICD10}} = \mathbf{1}\left[\mathbf{F}_{\text{ICD10}}^{\ }\mathbf{F}_{\text{ICD10}}^{\mathrm{T}} \geq 1\right]
 \end{equation}
 
-where the indicator function $\mathbf{1}[\cdot]$ is applied element-wise.
+with the indicator function $\mathbf{1}[\cdot]$ applied element-wise.
 
-For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The operation is vectorised by exploiting NumPy's broadcasting operation that copies rows and columns as necessary for the matrix dimensions to match: for the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
+For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The computation is vectorised by exploiting NumPy's broadcasting operation\footnote{\url{https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html}} that copies rows and columns as necessary for the matrix dimensions to match. For the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
 
 \begin{equation}
     \mathbf{M}_{\text{FTE}} = \mathbf{1}\left[\mathbf{F}_{\text{FTE}}^{\ } = \mathbf{F}_{\text{FTE}}^{\mathrm{T}} \right].
@@ -85,7 +86,7 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 
 \section{Graph construction component}
 
-The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph, which contains the graph topology and node features but is not prepared for training (is not split into training, validation and test sets, and the features are not normalised). The two stages are separate because the same intermediate representation can be reused many times for different dataset split and other evaluation parameters without having to reconstruct the topology in $O(N^2)$ time. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
+The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features but is not prepared for training as it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because the same intermediate representation can be reused many times for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{graph_construction_component.pdf}
@@ -93,20 +94,15 @@ The next stage of the pipeline involves constructing the ``intermediate represen
 \end{figure}
 
 \subsection{Inputs}
-The inputs to the graph construction component can be categorised into four main types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}. These are subject specification, modality specification, similarity feature set and similarity threshold parameters.
+The inputs to the graph construction component can be categorised into four types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}:
+\begin{enumerate}
+    \item \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features. This could be any combination of functional, structural and quality control data.
+    \item \textit{Subject specification} takes in the number of (randomly selected) subjects that should be used to create the graph, or a list UKB identifiers for a graph containing a particular set of subjects. If no such parameter is provided, then all available data (filtered by the subject index described in the previous component) is used for population graph construction.
+    \item \textit{Similarity specification}. 
+    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An \textit{extension} to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics. 
+    \item \textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
+\end{enumerate}
 
-\textit{Subject specification} takes in the number of (randomly selected) subjects that should be used in creating the graph, or UKB identifiers for the list of specific subjects. If no parameter is provided, then all available data is used for population graph construction.
-
-\textit{Modality specification} describes which of the neuroimaging modalities should be used as node features, which could be a combination of functional, structural and quality control data.
-
-\textit{Similarity feature set}. 
-TODO maybe rename similarity specification (because it can either be a feature set or function)
-
-In its default implementation, the similarity metric is computed as the average score across a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}). 
-
-TODO extension: arbitrary similarity functions.
-
-\textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
 
 \subsection{Imaging data collection}
 
@@ -282,6 +278,7 @@ The search space might be even bigger considering that I do not use all the poss
 Nonetheless I selected the set of features that I felt were the most important and carried out the hyperparameter tuning over the selected ranges of features.
 
 \subsubsection{Mitigating memory constraints}
+\label{section:memory}
 The biggest constraint in training the population graphs was GPU memory (which accounting for intensive GPU usage in the laboratory was up to 5-8 gigabyte models, and often even 1-3 gigabyte models). This especially affects the population graph training since in this case, to train on the full dataset, the entire graph of more than 17,000 subjects must be in memory at once due to subject similarity connections, and unlike in most models that have individual independent examples, the population graph cannot be trivially split into smaller batches. At the same time, GCN and GAT are known to be memory-intensive models.
 TODO reference
 I wanted to use the entire dataset (
