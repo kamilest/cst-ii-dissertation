@@ -116,9 +116,9 @@ The edge construction component uses the subject specification, similarity speci
 
 \subsection{Brain health mask computation}
 
-Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In particular, non-healthy subjects are not included in loss function computation, so that the \textit{direction} of parameter update depends on healthy subjects only while the entire graph is updated. As a result, the predicted labels are available for both healthy and non-healthy subjects, but because of the brain health mask the prediction corresponds to the brain age rather than chronological age, as discussed in Section~\ref{brain-age-estimation}.
+Due to the nature of the brain age problem, the machine learning model can only be trained on subjects with healthy brains, although the population graph may contain both healthy and non-healthy subjects. The \textit{brain health mask} is therefore computed to determine which subjects can be used to train the model and which cannot. In particular, non-healthy subjects are not included in loss function computation, so that the direction of parameter update depends on healthy subjects only (though the parameters are updated for the entire graph). As a result, the predicted labels are available for both healthy and non-healthy subjects, but the use of a brain health mask ensures that the prediction corresponds to the brain age rather than chronological age, as discussed in Section~\ref{brain-age-estimation}.
 
-In this project, the \textit{brain health} is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10}-similarity metric (see Table~\ref{table:phenotype-features}).
+In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10}-similarity metric (see Table~\ref{table:phenotype-features}).
 
 \subsection{Population graph representation}
 \label{section:population-graph-representation}
@@ -195,6 +195,9 @@ Since the original neuroimaging dataframes and brain health masks are kept uncha
 % log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
 % min_epochs=1000):
 
+The graph neural network component contains the implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the base \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{GCN} and \texttt{GAT} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
+
+
 \begin{center}
     \begin{longtable}[]{p{0.275\textwidth}p{0.175\textwidth}p{0.475\textwidth}}
         \caption{The parameters for the \texttt{BrainGNN} module.}\label{table:braingnn}\\
@@ -219,8 +222,6 @@ Since the original neuroimaging dataframes and brain health masks are kept uncha
         \texttt{dropout\_p} & float & The probability of ignoring the node in a hidden layer. Used as a regularisation technique to reduce overfitting.
     \end{longtable}
     \end{center}
-
-The graph neural network component simply contains the implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{GCN} and \texttt{GAT} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
 
 TODO perhaps simplify this? I don't know which parts to cut out of this for it to be clearer – what's unnecessary? I could also write pseudocode but not sure where it falls in the clarity vs professional spectrum. I could also delete the initialisation as I still plan to make a diagram for it – just not sure how to visualise how the \textit{array of parameters} is used.
 
