@@ -181,7 +181,7 @@ The population graphs can only be effectively accepted as input to machine learn
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-One of the strategies how the graphs can be represented in neural networks is based on spectral graph theory~\cite{hammond2011wavelets}. The main advantage of this approach that it makes the operations applied to every node independent of the local graph topology (the number of neighbours for a particular node), which makes it easier to optimise as the same operation can be applied to all nodes. The graph is therefore first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
+One of the strategies how the graphs can be represented in neural networks is based on spectral graph theory~\cite{hammond2011wavelets}. The main advantage of this approach that it makes the operations applied to every node independent of the local graph topology (the number of neighbours of a particular node), which is easier to optimise as the same operation can be applied to all nodes. The graph is therefore first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
 
 \subsection{Graph spectral decomposition}
 
