@@ -116,13 +116,12 @@ The edge construction component uses the subject specification, similarity speci
 
 \subsection{Brain health mask computation}
 
-TODO given this is an implementation chapter, maybe you can be a bit more specific here in what it means, like gradients are calculated for only healthy (loss function only calculated, etc)
+Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In particular, non-healthy subjects are not included in loss function computation, so that the \textit{direction} of parameter update depends on healthy subjects only while the entire graph is updated. As a result, the predicted labels are available for both healthy and non-healthy subjects, but because of the brain health mask the prediction corresponds to the brain age rather than chronological age, as discussed in Section~\ref{brain-age-estimation}.
 
-Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10} metric (see Table~\ref{table:phenotype-features}).
+In this project, the \textit{brain health} is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10}-similarity metric (see Table~\ref{table:phenotype-features}).
 
 \subsection{Population graph representation}
 \label{section:population-graph-representation}
-
 
 The population graph is extended from the base Pytorch Geometric \texttt{Data} object, with its main fields listed in Table~\ref{table:population-graph}. The intermediate version has all entries defined except the feature vector \texttt{x} and the training, validation and test masks.
 
