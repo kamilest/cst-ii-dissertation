@@ -42,14 +42,14 @@ The main function of the UKB preprocessing component is to prepare the raw or pa
 The different modalities of the UKB data, shown in the white box in Figure~\ref{preprocessing-component}, have been provided separately from each other, with a small minority of subjects having the data available for some of the modalities but not others (for example due to data corruption or its retraction by the participant). To ensure consistent and smooth processing, the subjects with partially missing data (236 in total) have been excluded from further processing. The remaining 17,314 subjects with well-defined modalities have been collected into a \textit{subject index} (purple box on the bottom left), which was used to filter the data before its collection to the population graph construction component.
 
 \subsection{Precomputing connectivity matrices}
-The connectivity matrices involve computing pairwise correlations of 376 time-series (for 360 cortical and 16 subcortical regions) for every subject. With 20 gigabytes of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours on a CPU) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed. To avoid this, the matrices are computed once for each subject, flattened and their lower triangles stored as NumPy arrays as part of the preprocessing component.
+The connectivity matrices involve computing pairwise correlations of 376 time-series (for 360 cortical and 16 subcortical regions) for every subject. With 20 gigabytes of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours on a CPU) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed. To avoid this, the matrices are computed once for each subject, flattened and their lower triangles stored as \texttt{numpy} arrays as part of the preprocessing component.
 
 % TODO could include the maths here?
 
 \subsection{Precomputing similarity matrices}
 The computation of pairwise similarity scores is quadratic in both time and space with respect to the number of subjects. Depending on the exact method how the similarity function is computed, a general-purpose (non-accelerated) processor might take hours or even days to process the entire dataset. This computation is also repeated whenever a graph is constructed, since the similarities per non-imaging metric do not change over different population graphs: the variation comes from different selections of subjects, non-imaging features, their relative weighting, and similarity thresholds.
 
-The similarity matrices – one for each non-imaging feature in Table~\ref{table:phenotype-features} – have therefore been computed in advance. Unlike the functional connectivity data that is used directly for population graph node features (and therefore should avoid redundancy), the feature-wise similarity matrices are sliced and filtered depending on the selection of subjects. In this case it is more practical to store the full matrix, so that the indices into the similarity matrix directly correspond to the subject representation in other components of the population graph data structure (see Section~\ref{section:population-graph-representation}).
+The similarity matrices – one for each non-imaging feature in Table~\ref{table:phenotype-features} – have therefore been computed in advance. Unlike the functional connectivity data that is used directly for population graph node features (and therefore should avoid redundancy), the feature-wise similarity matrices are sliced and filtered depending on the selection of subjects. In this case it is more practical to store the full matrix, so that the integer indices into the similarity matrix directly correspond to the subject index in other components of the population graph data structure (see Section~\ref{section:population-graph-representation}).
 
 Having computed the feature-wise similarity matrices, their linear combination for a full similarity score (by default adding matrices together and dividing the result by a constant) can efficiently make use of vectorised matrix operations.
 
@@ -63,7 +63,7 @@ The similarity computation was vectorised in order to make use of accelerating h
 
 with the indicator function $\mathbf{1}[\cdot]$ applied element-wise.
 
-For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The computation is vectorised by exploiting NumPy's broadcasting operation\footnote{\url{https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html}} that copies rows and columns as necessary for the matrix dimensions to match. For the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
+For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The computation is vectorised by exploiting \texttt{numpy}'s broadcasting operation\footnote{\url{https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html}} that copies rows and columns as necessary for the matrix dimensions to match. For the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
 
 \begin{equation}
     \mathbf{M}_{\text{FTE}} = \mathbf{1}\left[\mathbf{F}_{\text{FTE}}^{\ } = \mathbf{F}_{\text{FTE}}^{\mathrm{T}} \right].
@@ -106,22 +106,22 @@ The inputs to the graph construction component can be categorised into four type
 
 \subsection{Imaging data collection}
 
-Based on the number of subjects and modalities provided, the relevant imaging data is collected from the raw UKB files (first filtered by subject index as discussed before) and stored in the intermediate representation in its original form as a dataframe indexed by subject. If the modality is unused, an empty dataframe is stored.
+Based on the subject and modality specification, the relevant imaging data is collected from the raw UKB files (first filtered by subject index) and stored in the intermediate representation as a \texttt{pandas} \texttt{DataFrame} indexed by UKB subject identifier. This is represented by the connections between UKB preprocessing component, graph specification and the blue imaging data collection box in Figure~\ref{graph-construction-component}. 
 
+If a particular modality is unused, the \texttt{DataFrame} stored is empty.
 
 \subsection{Edge construction}
 
-This component uses the subject set and the similarity specification provided to combine the individual similarity metrics into an overall similarity score for each pair of subjects, then comparing it to the similarity threshold and adding an edge if the score exceeds the threshold.
+The edge construction component uses the subject specification, similarity specification, similarity threshold and the filtered similarity matrix data to find the similarity scores for each pair of subjects. Whenever the similarity score between two subjects exceeds the threshold, an undirected edge is added to the population graph. The edges are stored in a \textit{tensor}, which is a PyTorch datatype for multi-dimensional matrices\footnote{\url{https://pytorch.org/docs/stable/tensors.html}}.
 
 \subsection{Brain health mask computation}
 
-TODO given this is an implementation chapter, maybe you can be a bit more specific here in what it means, like gradients are calculated for only healthy (loss function only calculated, etc)
+Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In particular, non-healthy subjects are not included in loss function computation, so that the \textit{direction} of parameter update depends on healthy subjects only while the entire graph is updated. As a result, the predicted labels are available for both healthy and non-healthy subjects, but because of the brain health mask the prediction corresponds to the brain age rather than chronological age, as discussed in Section~\ref{brain-age-estimation}.
 
-Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10} metric (see Table~\ref{table:phenotype-features}).
+In this project, the \textit{brain health} is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10}-similarity metric (see Table~\ref{table:phenotype-features}).
 
 \subsection{Population graph representation}
 \label{section:population-graph-representation}
-
 
 The population graph is extended from the base Pytorch Geometric \texttt{Data} object, with its main fields listed in Table~\ref{table:population-graph}. The intermediate version has all entries defined except the feature vector \texttt{x} and the training, validation and test masks.
 
