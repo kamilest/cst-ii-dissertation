@@ -108,11 +108,11 @@ The inputs to the graph construction component can be categorised into four type
 
 Based on the subject and modality specification, the relevant imaging data is collected from the raw UKB files (first filtered by subject index) and stored in the intermediate representation as a \texttt{pandas} \texttt{DataFrame} indexed by UKB subject identifier. This is represented by the connections between UKB preprocessing component, graph specification and the blue imaging data collection box in Figure~\ref{graph-construction-component}. 
 
-If a particular modality is unused, \texttt{DataFrame} stored is empty.
+If a particular modality is unused, the \texttt{DataFrame} stored is empty.
 
 \subsection{Edge construction}
 
-The edge construction component uses the subject specification, similarity specification, similarity threshold and the filtered similarity matrix data to find the similarity scores for each pair of subjects. Whenever the similarity score between two subjects exceeds the threshold, an undirected edge is added to the population graph. The edges are stored in a \textit{tensor}\footnote{\url{https://pytorch.org/docs/stable/tensors.html}}, which is a PyTorch datatype for storing multi-dimensional matrices.
+The edge construction component uses the subject specification, similarity specification, similarity threshold and the filtered similarity matrix data to find the similarity scores for each pair of subjects. Whenever the similarity score between two subjects exceeds the threshold, an undirected edge is added to the population graph. The edges are stored in a \textit{tensor}, which is a PyTorch datatype for multi-dimensional matrices\footnote{\url{https://pytorch.org/docs/stable/tensors.html}}.
 
 \subsection{Brain health mask computation}
 
