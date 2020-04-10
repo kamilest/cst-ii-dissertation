@@ -60,14 +60,15 @@ For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow201
 Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
 
 \begin{table}[]
+\centering
     \caption{Summary of the features derived from structural MRI, reported as an average in a particular brain region.}\label{table:structural-features}
-    \centering
+    
     \begin{tabular}{lp{11cm}}
         \hline
     \textbf{Structural feature}            & \textbf{Description} \\ \hline
     Cortical thickness &  Average thickness of the cerebral cortex. \\
     Surface area       &  Surface area of the cortex. \\
-    Grey matter volume &  Total volume of the grey matter component in the brain region.
+    Grey matter volume &  Total volume of the grey matter component in the brain region. \\ \hline
     \end{tabular}
 \end{table}
 
@@ -142,7 +143,7 @@ In this dissertation, the non-imaging data refers to all subject data that does 
     \texttt{FTE} & Years of full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
     \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system. \\
     \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed}. \\
-    \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\
+    \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\ \hline
     \end{tabular}
 \end{table}
 
