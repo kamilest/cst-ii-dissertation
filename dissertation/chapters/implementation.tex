@@ -116,9 +116,9 @@ The edge construction component uses the subject specification, similarity speci
 
 \subsection{Brain health mask computation}
 
-Due to the nature of the brain age problem, the population graph can only be trained on subjects with healthy brains, although it may contain both healthy and non-healthy subjects. The \textit{brain health mask} is computed to determine which subjects can be included in training and which cannot. In particular, non-healthy subjects are not included in loss function computation, so that the \textit{direction} of parameter update depends on healthy subjects only while the entire graph is updated. As a result, the predicted labels are available for both healthy and non-healthy subjects, but because of the brain health mask the prediction corresponds to the brain age rather than chronological age, as discussed in Section~\ref{brain-age-estimation}.
+Due to the nature of the brain age problem, the machine learning model can only be trained on subjects with healthy brains, although the population graph may contain both healthy and non-healthy subjects. The \textit{brain health mask} is therefore computed to determine which subjects can be used to train the model and which cannot. In particular, non-healthy subjects are not included in loss function computation, so that the direction of parameter update depends on healthy subjects only (though the parameters are updated for the entire graph). As a result, the predicted labels are available for both healthy and non-healthy subjects, but the use of a brain health mask ensures that the prediction corresponds to the brain age rather than chronological age, as discussed in Section~\ref{brain-age-estimation}.
 
-In this project, the \textit{brain health} is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10}-similarity metric (see Table~\ref{table:phenotype-features}).
+In this project, the brain health is approximated by the absence of diagnoses related to mental health or nervous system disorders, defined by the \texttt{ICD10}-similarity metric (see Table~\ref{table:phenotype-features}).
 
 \subsection{Population graph representation}
 \label{section:population-graph-representation}
@@ -180,33 +180,23 @@ The first operation for preparing the population graph for training involves set
 Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}. Similarly to the reasoning behind the brain health masks, the three training masks are used to determine which nodes should be used to compute the loss function during various stages of training. For example, the model parameters are only updated based on the loss function for the subjects filtered with the \texttt{training\_mask}, and validation loss is computed only for the subjects filtered with the \texttt{validation\_mask}.
 
 \subsection{Functional connectivity matrix dimensionality reduction}
-To avoid the memory issues that the graph neural networks encounter due to the very high number of functional imaging data features (75,000) for a high number of subjects (more than 17,000), the dimensionality of flattened functional connectivity matrices may be reduced at this stage. This project used principal component analysis (PCA) as the dimensionality reduction technique, where PCA transformation is fitted to the training set as specified by the training mask, and the same parameters are applied to the subjects belonging to the validation and test sets.
-
-% TODO maybe saying somewhere in the document that normalisation needs to be done fit in training set, and from that "learned" transformation, apply in the remaining sets to avoid data leakage.
-
-TODO (in PCA say how many components are kept)
-
-TODO The full flattened functional connectivity matrix has over 75,000 features per patient, which, considering pairwise similarities and a large number of subjects, makes the graph (and the training on it) very large: the number of resulting training parameters runs out of memory even for small architectures.
-
-TODO The easiest solution mitigating this is running a PCA on the matrix, assuming that the first few principal components (how many?) would give a good representation of functional data features. Preliminary runs on small datasets of a few thousand subjects give similar performance.
-
-
-Since functional connectivity matrices are already normalised, no additional normalisation needs to be carried out at this stage. (?)
+The flattened functional connectivity matrix results in over 75,000 features per patient. Since the population graph cannot be split into parts and during training must be kept entirely in memory, along with all model parameters, this quickly runs into memory issues when the entire dataset is used. To mitigate this issue, some techniques may be applied to reduce the dimensionality of functional data. This project uses principal component analysis (PCA) as the dimensionality reduction technique of choice as it is one the simplest to implement. When the functional data is used to construct the population graph, PCA transformation is fitted to the training set as specified by the \texttt{training\_mask}, and the same transformation is applied to the remaining subjects. This dimensionality reduction technique is optional, and it is possible to define how many principal components should be kept after the transformation, to control the information loss.
 
 \subsection{Structural MRI and quality control data normalisation}
-Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, standard scaler is fitted to the training set and applied to the validation and test sets. A separate transformation is applied to each structural data modality and the quality control modality.
+Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, to avoid data leakage standard scaler is fitted to the training set only (as specified by the \texttt{training\_mask}) and then applied to the validation and test sets. A separate transformation is applied to each structural data modality (cortical thickness, surface area, grey matter volume) and the quality control modality.
 
 \subsection{Setting the transformed feature tensor}
-The transformed functional, structural and quality control modalities are concatenated together into a single tensor, which is assigned to \texttt{x} in the population graph data structure (Table~\ref{table:population-graph}). This makes it a prepared graph for training.
+The transformed functional, structural and quality control features are concatenated together into a single tensor, which is assigned to \texttt{x} in the population graph data structure (Table~\ref{table:population-graph}). This completes graph transformation for training.
 
-Since the original neuroimaging dataframes and brain health masks are kept in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
+Since the original neuroimaging dataframes and brain health masks are kept unchanged in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
 
 \section{GNN architecture component}
-% TODO not sure what exactly to write in this section. Past dissertations I've read seem to consider the hyperparameter tuning strategy, regularisation and in general description of hyperparameters that will be tuned. Another possiblity would be to explain in detail the implementation of the layers, but I'm not sure whether it's worth doing it because 1) it's a lot of words 2) it's in the library, not \textit{my} implementation 3) I already explain what the layers do in preparation. Maybe instead explain how the data is sent to wandb and how the training is performed.
-
 % gcn_train(graph, device, n_conv_layers=0, layer_sizes=None, epochs=3500, lr=0.005, dropout_p=0, weight_decay=1e-5,
 % log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
 % min_epochs=1000):
+
+The graph neural network component contains implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, extending a shared \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. Then instantiating \texttt{BrainGCN} and \texttt{BrainGAT} simply amounts to setting the \texttt{conv\_type} parameter to either \texttt{GCN} or \texttt{GAT}, and setting the convolutional layers to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} respectively. Both \texttt{GCNConv} and \texttt{GATConv} are implemented in PyTorch Geometric library.
+
 
 \begin{center}
     \begin{longtable}[]{p{0.275\textwidth}p{0.175\textwidth}p{0.475\textwidth}}
@@ -233,9 +223,9 @@ Since the original neuroimaging dataframes and brain health masks are kept in th
     \end{longtable}
     \end{center}
 
-The graph neural network component simply contains the implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, which extend the more generic \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. \texttt{BrainGCN} and \texttt{BrainGAT}  have identical structure except that the \texttt{conv\_type} parameter is instantiated to \texttt{GCN} and \texttt{GAT} respectively, and the convolutional layers are set to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} layers, both implemented in PyTorch Geometric library.
+Listing~\ref{listing:braingnn} shows how the layers are combined in the \texttt{BrainGNN} architecture for a given set of parameters in Table~\ref{table:braingnn}. Hyperbolic tangent ($\tanh(\cdot)$) was chosen as the non-linearity (activation function) between each layer. This is because the population graph features and weights in neurons may be negative, in which case other popular activation functions such as $\mathrm{ReLU}(\cdot)$ may have an undesirable asymmetric response.
 
-TODO perhaps simplify this? I don't know which parts to cut out of this for it to be clearer – what's unnecessary? I could also write pseudocode but not sure where it falls in the clarity vs professional spectrum. I could also delete the initialisation as I still plan to make a diagram for it – just not sure how to visualise how the \textit{array of parameters} is used.
+The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in lines 25 and 35 as a regularisation technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
 
 \bigskip
 \begin{code}
@@ -245,19 +235,15 @@ TODO perhaps simplify this? I don't know which parts to cut out of this for it t
 \inputminted[frame=bottomline, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
 \end{code}
 
-Listing~\ref{listing:braingnn} shows how the order in which the layers are combined in the \texttt{BrainGNN} architecture, given the parameters in Table~\ref{table:braingnn}. I chose the hyperbolic tangent $\tanh(\cdot)$)as the non-linearity (activation function) between each layer because the inputs and values in neurons may be negative, in which case the other popular activation functions such as $\mathrm{ReLU}(\cdot)$ would have an undesirable asymmetric response. The \textit{dropout} layers have been added between the every fully connected layer as a regularisation technique: with probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the hope that the neural network will not rely on any particular node when predicting age, learning more robust features.
-
-
 \section{GNN training and evaluation component}
+
+The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures and report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop as noise is added to the population graph nodes or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
     \caption{Graph neural network training and evaluation component.}\label{gnn-training-eval-component}
 \end{figure}
-
-The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures and report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop as noise is added to the population graph nodes or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
-
 
 \subsection{Model selection}
 % Hyperparameter tuning, weights and biases

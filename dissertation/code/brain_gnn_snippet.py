@@ -4,9 +4,9 @@ class BrainGNN(torch.nn.Module):
         # ...
 
         # Refer to the layers of the same type through a list.
-        self.conv = torch.nn.ModuleList()
-        self.fc = torch.nn.ModuleList()
-        self.dropout = torch.nn.ModuleList()
+        self.conv = torch.nn.ModuleList() # Convolutional layers.
+        self.fc = torch.nn.ModuleList() # Fully connected layers.
+        self.dropout = torch.nn.ModuleList() # Dropout layers.
 
         # ...
 
