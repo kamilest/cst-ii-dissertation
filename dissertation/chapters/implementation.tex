@@ -39,7 +39,7 @@ The main function of the UKB preprocessing component is to prepare the raw or pa
 \end{figure}
 
 \subsection{Cleaning the dataset}
-The different modalities of the UKB data, shown in the white box in Figure~\ref{preprocessing-component}, have been provided separately from each other, with a small minority of subjects having the data available for some of the modalities but not others (for example due to data corruption or its retraction by the participant). To ensure consistent and smooth processing, the subjects with partially missing data (236 in total) have been excluded from further processing. The remaining 17,314 subjects with well-defined modalities have been collected into a \textit{subject index} (purple box on the bottom left), which was used to filter the data before its collection to the population graph construction component.
+The different modalities of the UKB data, shown in the white box in Figure~\ref{preprocessing-component}, have been provided separately from each other, with a small minority of subjects having the data available for some of the modalities but not others (for example due to data corruption or its retraction by the participant). To ensure consistent and smooth processing, the subjects with partially missing data (236 in total) have been excluded from further processing. The remaining 17,314 subjects with well-defined modalities have been collected into a \textit{subject index} (purple box at the bottom left), which was used to filter the data before its collection to the population graph construction component.
 
 \subsection{Precomputing connectivity matrices}
 The connectivity matrices involve computing pairwise correlations of 376 time-series (for 360 cortical and 16 subcortical regions) for every subject. With 20 gigabytes of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours on a CPU) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed. To avoid this, the matrices are computed once for each subject, flattened and their lower triangles stored as \texttt{numpy} arrays as part of the preprocessing component.
@@ -237,12 +237,12 @@ The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between 
 
 \section{GNN training and evaluation component}
 
-The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
+The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and to report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
-    \caption{Graph neural network training and evaluation component.}\label{gnn-training-eval-component}
+    \caption{GNN training and evaluation component.}\label{gnn-training-eval-component}
 \end{figure}
 
 \subsection{Model selection}
@@ -265,6 +265,7 @@ TODO why? – because the (quality of) data is often more important than the mod
 which meant that I had to constrain my model and population graph structure selection instead. I constrained it as follows:
 
 TODO "I decided" is def not a good wording here... try to make it just a normal, direct consequence from what you've read in the literature
+\begin{enumerate}
     \item Having referred to the literature on brain age estimation, I decided that high-dimensional functional imaging data modality is less promising than structural imaging data modality, while adding a lot of extra features per patient (over 78,000). Functional imaging data is never used alone (especially because it's already very much an estimate of how the brain works and includes a lot of oversimplified assumptions to how the brain is connected, and if used, it is generally to only complement structural data). Dimensionality reduction is possible, but from experience from the practical work of my Data Science Unit of Assessment, PCA, for example, cutting out half of the low-variance principle components can even worsen the predictive power and training time of the model instead of improving it. While the support for those techniques is implemented – which indeed was the goal of this project to support it if it is needed – it was not used in training.
     \item The model size was fixed to a fairly shallow network with a small number of units (
         TODO give the actual architecture). 
