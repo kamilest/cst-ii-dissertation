@@ -106,7 +106,7 @@ The inputs to the graph construction component can be categorised into four type
 
 \subsection{Imaging data collection}
 
-Based on the number of subjects and modalities provided, the relevant imaging data is collected from the raw UKB files (first filtered by subject index as discussed before) and stored in the intermediate representation in its original form as a dataframe indexed by subject. If the modality is unused, an empty dataframe is stored.
+Based on the subject and modality specification, the relevant imaging data is collected from the raw UKB files (first filtered by subject index) and stored in the intermediate representation as a \texttt{pandas} \texttt{DataFrame} indexed by UKB subject identifier. If the modality is unused, an empty \texttt{DataFrame} is stored.
 
 
 \subsection{Edge construction}
