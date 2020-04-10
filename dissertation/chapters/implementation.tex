@@ -248,13 +248,9 @@ The main function of the GNN training and evaluation component is to select the 
 \subsection{Model selection}
 % Hyperparameter tuning, weights and biases
 
-With a high range of population graph modality (functional, structural, quality control data), similarity metric (Table~\ref{table:phenotype-features}), similarity threshold, as well as the GNN construction (Table~\ref{table:braingnn}) and training parameter (such as learning rate and number of epochs) choices, the search space for the best performing model is vast and it may be out of scope of this project to find the best fitting model.
+The model selection is challenging because of a vast combination of possible hyperparameter choices. First, there is a choice of a neuroimaging modality combination for node features (from functional, structural, and quality control data). Second, there are at least 32 combinations of possible non-imaging features used for similarity metrics (see Table~\ref{table:phenotype-features}), and each combination could have a range of possible similarity thresholds. This does not account for the extension of using arbitrary linear combinations of non-imaging features for a similarity metric, and the fact that the UKB has over 760 more features that could potentially be included in similarity computation. Third, having fixed the population graph parameters, the graph neural network architectures have an unbounded number of parameter combinations (Table~\ref{table:braingnn}). Fourth, having fixed population graph and GNN hyperparameters, there are additional hyperparameters related to GNN training, such as the number of epochs and learning rate.
 
-TODO  I don't know whether the department likes something written in the first person. But I think is the first time you use this, so maybe doublecheck or think about it
-The search space might be even bigger considering that I do not use all the possible non-imaging features in Table~\ref{table:phenotype-features} and there might be more confounders. There could be more similarity functions and the relative weights for each similarity feature – the subject's sex is probably more important than how many years they had of full-time education, for example. The UK Biobank has 768 non-imaging features per patient – it's out of scope to select the best ones and their relative weights and thresholds, especially having no neuroscience expertise etc\dots
-
-
-Nonetheless I selected the set of features that I felt were the most important and carried out the hyperparameter tuning over the selected ranges of features.
+Having considered this, the following explains the choices behind some of the hyperparameter combinations. The full list of hyperparameters used is included in the Appendix ?. 
 
 \subsubsection{Mitigating memory constraints}
 \label{section:memory}
@@ -277,9 +273,6 @@ TODO "I decided" is def not a good wording here... try to make it just a normal,
 
 
 Hyperparameter search was restricted to only use the default similarity metrics for a more consistent training and because it is not clear how each metric should be weighted. The intent behind supporting this is the capability for a neuroscientist or another professional with domain knowledge to design their own good similarity metric – which has been implemented as an \textit{extension} to my original success criteria. Otherwise the weighting would be very arbitrary and increase the search space even more. As someone without much neuroscience domain knowledge I went for the simplest way of combining the metrics for this training procedure.
-
-TODO in general lessons learnt and things for the future is that the memory issues and uninformed similarity metric and GNN architecture decisions severely restricted my hyperparameter search space, and very likely missed out on promising models with good test set performance. When I have time I would love to explore more hyperparameter options, consulting Dr Bethlehem and other experts on what other non-imaging features to include, how to combine them, how to adjust the architecture, and test new models on new data, for example on the recent UKB update which I did not have access to before, or some entirely new dataset. Alternatively, I could try training higher range of model hyperparameters on subsets of the UKB dataset, e.g. on 2,000-brain graphs which would decrease the parameters but allow for better exploration of the similarity matrix and GNN architecture possibilities.
-
 
 \subsubsection{Hyperparameter tuning}
 TODO is this implementation or evaluation? I feel like I could move it to evaluation so that I can show the results over each fold and how I selected them, not sure.
