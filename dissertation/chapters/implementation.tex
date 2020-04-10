@@ -61,7 +61,7 @@ The similarity computation was vectorised in order to make use of accelerating h
     \mathbf{M}_{\text{ICD10}} = \mathbf{1}\left[\mathbf{F}_{\text{ICD10}}^{\ }\mathbf{F}_{\text{ICD10}}^{\mathrm{T}} \geq 1\right]
 \end{equation}
 
-where the indicator function $\mathbf{1}[\cdot]$ is applied element-wise.
+with the indicator function $\mathbf{1}[\cdot]$ applied element-wise.
 
 For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The computation is vectorised by exploiting NumPy's broadcasting operation\footnote{\url{https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html}} that copies rows and columns as necessary for the matrix dimensions to match. For the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
 
@@ -86,7 +86,7 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 
 \section{Graph construction component}
 
-The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph, which contains the graph topology and node features but is not prepared for training (is not split into training, validation and test sets, and the features are not normalised). The two stages are separate because the same intermediate representation can be reused many times for different dataset split and other evaluation parameters without having to reconstruct the topology in $O(N^2)$ time. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
+The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features but is not prepared for training as it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because the same intermediate representation can be reused many times for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{graph_construction_component.pdf}
@@ -94,20 +94,15 @@ The next stage of the pipeline involves constructing the ``intermediate represen
 \end{figure}
 
 \subsection{Inputs}
-The inputs to the graph construction component can be categorised into four main types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}. These are subject specification, modality specification, similarity feature set and similarity threshold parameters.
+The inputs to the graph construction component can be categorised into four types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}:
+\begin{enumerate}
+    \item \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features. This could be any combination of functional, structural and quality control data.
+    \item \textit{Subject specification} takes in the number of (randomly selected) subjects that should be used to create the graph, or a list UKB identifiers for a graph containing a particular set of subjects. If no such parameter is provided, then all available data (filtered by the subject index described in the previous component) is used for population graph construction.
+    \item \textit{Similarity specification}. 
+    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An \textit{extension} to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics. 
+    \item \textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
+\end{enumerate}
 
-\textit{Subject specification} takes in the number of (randomly selected) subjects that should be used in creating the graph, or UKB identifiers for the list of specific subjects. If no parameter is provided, then all available data is used for population graph construction.
-
-\textit{Modality specification} describes which of the neuroimaging modalities should be used as node features, which could be a combination of functional, structural and quality control data.
-
-\textit{Similarity feature set}. 
-TODO maybe rename similarity specification (because it can either be a feature set or function)
-
-In its default implementation, the similarity metric is computed as the average score across a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}). 
-
-TODO extension: arbitrary similarity functions.
-
-\textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
 
 \subsection{Imaging data collection}
 
