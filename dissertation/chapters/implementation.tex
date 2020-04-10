@@ -180,18 +180,7 @@ The first operation for preparing the population graph for training involves set
 Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}. Similarly to the reasoning behind the brain health masks, the three training masks are used to determine which nodes should be used to compute the loss function during various stages of training. For example, the model parameters are only updated based on the loss function for the subjects filtered with the \texttt{training\_mask}, and validation loss is computed only for the subjects filtered with the \texttt{validation\_mask}.
 
 \subsection{Functional connectivity matrix dimensionality reduction}
-To avoid the memory issues that the graph neural networks encounter due to the very high number of functional imaging data features (75,000) for a high number of subjects (more than 17,000), the dimensionality of flattened functional connectivity matrices may be reduced at this stage. This project used principal component analysis (PCA) as the dimensionality reduction technique, where PCA transformation is fitted to the training set as specified by the training mask, and the same parameters are applied to the subjects belonging to the validation and test sets.
-
-% TODO maybe saying somewhere in the document that normalisation needs to be done fit in training set, and from that "learned" transformation, apply in the remaining sets to avoid data leakage.
-
-TODO (in PCA say how many components are kept)
-
-TODO The full flattened functional connectivity matrix has over 75,000 features per patient, which, considering pairwise similarities and a large number of subjects, makes the graph (and the training on it) very large: the number of resulting training parameters runs out of memory even for small architectures.
-
-TODO The easiest solution mitigating this is running a PCA on the matrix, assuming that the first few principal components (how many?) would give a good representation of functional data features. Preliminary runs on small datasets of a few thousand subjects give similar performance.
-
-
-Since functional connectivity matrices are already normalised, no additional normalisation needs to be carried out at this stage. (?)
+The flattened functional connectivity matrix results in over 75,000 features per patient. Since the population graph cannot be split into parts and during training must be kept entirely in memory, along with all model parameters, this quickly runs into memory issues when the entire dataset is used. To mitigate this issue, some techniques may be applied to reduce the dimensionality of functional data. This project uses principal component analysis (PCA) as the dimensionality reduction technique of choice as it is one the simplest to implement. When the functional data is used to construct the population graph, PCA transformation is fitted to the training set as specified by the \texttt{training\_mask}, and the same transformation is applied to the remaining subjects. This dimensionality reduction technique is optional, and it is possible to define how many principal components should be kept after the transformation to control the amount of dimensionality reduction.
 
 \subsection{Structural MRI and quality control data normalisation}
 Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, standard scaler is fitted to the training set and applied to the validation and test sets. A separate transformation is applied to each structural data modality and the quality control modality.
