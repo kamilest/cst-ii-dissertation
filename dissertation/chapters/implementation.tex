@@ -186,13 +186,11 @@ The flattened functional connectivity matrix results in over 75,000 features per
 Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, to avoid data leakage standard scaler is fitted to the training set only (as specified by the \texttt{training\_mask}) and then applied to the validation and test sets. A separate transformation is applied to each structural data modality (cortical thickness, surface area, grey matter volume) and the quality control modality.
 
 \subsection{Setting the transformed feature tensor}
-The transformed functional, structural and quality control modalities are concatenated together into a single tensor, which is assigned to \texttt{x} in the population graph data structure (Table~\ref{table:population-graph}). This makes it a prepared graph for training.
+The transformed functional, structural and quality control features are concatenated together into a single tensor, which is assigned to \texttt{x} in the population graph data structure (Table~\ref{table:population-graph}). This completes graph transformation for training.
 
-Since the original neuroimaging dataframes and brain health masks are kept in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
+Since the original neuroimaging dataframes and brain health masks are kept unchanged in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
 
 \section{GNN architecture component}
-% TODO not sure what exactly to write in this section. Past dissertations I've read seem to consider the hyperparameter tuning strategy, regularisation and in general description of hyperparameters that will be tuned. Another possiblity would be to explain in detail the implementation of the layers, but I'm not sure whether it's worth doing it because 1) it's a lot of words 2) it's in the library, not \textit{my} implementation 3) I already explain what the layers do in preparation. Maybe instead explain how the data is sent to wandb and how the training is performed.
-
 % gcn_train(graph, device, n_conv_layers=0, layer_sizes=None, epochs=3500, lr=0.005, dropout_p=0, weight_decay=1e-5,
 % log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
 % min_epochs=1000):
