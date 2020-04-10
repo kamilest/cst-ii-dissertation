@@ -55,20 +55,6 @@ An alternative method, which does not restrict training data only to healthy sub
 For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional magnetic resonance imaging (MRI) data, a total of 17,550 subjects, which will be explained in more detail in this section. 
 % The training features, discussed below, are extracted from the structural and functional MRI images as well as the non-imaging data.
 
-% TODO Insert image of MRI and fMRI single axial slice
-
-
-% TODO Insert diagram flow diagram of preprocessing steps here
-
-% TODO Insert image of a parcellated brain image
-
-
-% TODO Insert feature table here.
-
-% TODO - Feature
-% - Type - fMRI, MRI, pheo.
-% -Expalanation
-
 \subsection{Structural features}
 
 Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
@@ -97,7 +83,7 @@ The two types of an fMRI image are \textit{task} fMRI, when the subject is asked
 
 For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is estimated by correlating the time-series of every pair of brain regions together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). 
 
-% TODO maybe include the maths as this is something that I have to do myself anyway, so I have to explain it (and it's more maths).
+
 % As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
 
 % \begin{equation}
@@ -127,10 +113,6 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 
 % TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated brain.
 
-% TODO maybe a picture with timeseries of 3 brain regions could just illustrate how the timeseries look like
-
-% TODO maybe is better to show how the correlation matrix looks like for one person
-
 \subsection{Euler indices}
 Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use Euler indices as node features.
 
@@ -140,6 +122,8 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
 
 A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+
+% TODO Insert a parcellated brain image
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
@@ -363,15 +347,15 @@ or averaged if GAT is the final ($L$-th) layer of the network:
 
 % Labels are available for a small subset of nodes and are spread across neighbourhoods through a regularisation term such as Laplacian~\cite{kipf2017semi}, predicting the labels for the remaining nodes
 
-For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, the labels are available only for a subset of nodes~\cite{kipf2017semi}. At each training step, the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. The predictive power of a model can be evaluated based on its performance on a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
+For node label prediction tasks such as brain age prediction, population graphs are trained in a \textit{semi-supervised} manner: while the entire dataset (every node and edge) is included in the graph, only a subset of the nodes is labelled, and the goal is to learn the labels for the remaining nodes~\cite{kipf2017semi}. At each training step (epoch), the feedback from nodes with available labels is used to update the parameters for the entire graph, which could be seen as information being ``propagated'' from a labelled node to the neighbours that are similar to it (as defined by the similarity metric). After the model is trained, every node in the population graph has a prediction for its label. 
+
+The predictive power of a model can be evaluated based on its performance on a set of test nodes, for which the labels had been known but invisible to the model at the training stage.
 
 
-TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
+% TODO \textit{an illustration of the graph with marked training and validation nodes with visible labels and how the training happens on those followed by how the graph is evaluated on the test nodes where the parameters were updated but the labels never seen} – maybe include in GCN/GAT sections instead?
 
 % TODO illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically: Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
 
-
-% TODO add a section about the architecture as a whole (but maybe in the implementation?) which describes how many layers the architectures will have and that I add fully connected MLP layers at the end.
 
 \section{Requirements analysis and software engineering practice}
 
