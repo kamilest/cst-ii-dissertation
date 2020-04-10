@@ -106,13 +106,13 @@ The inputs to the graph construction component can be categorised into four type
 
 \subsection{Imaging data collection}
 
-Based on the subject and modality specification, the relevant imaging data is collected from the raw UKB files (first filtered by subject index) and stored in the intermediate representation as a \texttt{pandas} \texttt{DataFrame} indexed by UKB subject identifier. This is represented by the connections between UKB preprocessing component, graph specification and the blue imaging data collection box in Figure~\ref{graph-construction-component}. 
+Based on the subject and modality specification, the relevant imaging data is collected from the raw UKB files (first filtered by subject index) and stored in the intermediate representation as a \textit{dataframe} (\texttt{pandas.DataFrame} object) indexed by UKB subject identifier. This is represented by the connections between UKB preprocessing component, graph specification and the blue imaging data collection box in Figure~\ref{graph-construction-component}. 
 
-If a particular modality is unused, the \texttt{DataFrame} stored is empty.
+If a particular modality is unused, the dataframe stored is empty.
 
 \subsection{Edge construction}
 
-The edge construction component uses the subject specification, similarity specification, similarity threshold and the filtered similarity matrix data to find the similarity scores for each pair of subjects. Whenever the similarity score between two subjects exceeds the threshold, an undirected edge is added to the population graph. The edges are stored in a \textit{tensor}, which is a PyTorch datatype for multi-dimensional matrices\footnote{\url{https://pytorch.org/docs/stable/tensors.html}}.
+The edge construction component uses the subject specification, similarity specification, and the filtered similarity matrix data to find the similarity scores for each pair of subjects. Whenever the similarity score between two subjects exceeds the threshold, an undirected edge is added to the population graph. The edges are stored in a \textit{tensor} (\texttt{torch.tensor}), which is a PyTorch datatype for multi-dimensional matrices\footnote{\url{https://pytorch.org/docs/stable/tensors.html}}.
 
 \subsection{Brain health mask computation}
 
@@ -123,8 +123,7 @@ In this project, the \textit{brain health} is approximated by the absence of dia
 \subsection{Population graph representation}
 \label{section:population-graph-representation}
 
-The population graph is extended from the base Pytorch Geometric \texttt{Data} object, with its main fields listed in Table~\ref{table:population-graph}. The intermediate version has all entries defined except the feature vector \texttt{x} and the training, validation and test masks.
-
+The population graph is stored in an extended \texttt{torch\_geometric.Data} object\footnote{\url{https://pytorch-geometric.readthedocs.io/en/latest/modules/data.html}}, with its most important fields listed in Table~\ref{table:population-graph}. The intermediate population graph representation has all of its entries defined except for the feature vector \texttt{x} and the training, validation and test masks.
 
 \setlength{\LTpost}{0pt}
 \renewcommand{\arraystretch}{1.25}
@@ -149,17 +148,15 @@ The population graph is extended from the base Pytorch Geometric \texttt{Data} o
     \endfoot
     \hline
     \endlastfoot
-    
-    \texttt{num\_nodes} & long & Number of nodes (subjects) in the population graph. \\
-    \texttt{subject\_index} & string vector & UKB identifiers of the subjects. Stored in the order of mask, feature and label vector indices; corresponds to the edge start and end values. \\
-    \texttt{brain\_health\_mask} & boolean vector & \texttt{True} indicates that the subject can be used for training, and \texttt{False} otherwise. \\
+    % \texttt{num\_nodes} & long & Number of nodes (subjects) in the population graph. \\
+    \texttt{subject\_index} & string array & UKB identifiers of the subjects. Stored in the same subject order as training masks, feature and label tensors; corresponds to the edge start and end values. \\
     \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. To represent the undirected edge $(s_v, s_w) \in E$, the second directed edge $s_w \leadsto s_v$ is added. \\
-    \texttt{y} & $N \times 1$ \hfill \newline float tensor & Contains the labels of training data, in this case chronological age. \\
     \texttt{functional\_data} & dataframe & Row-indexed by subject with columns containing the flattened functional connectivity matrix entries. Empty if no functional data is used in the population graph. \\
     \texttt{structural\_data} & dictionary of \hfill \newline dataframes & Dictionary is indexed by the structural data modality, in this case cortical thickness, surface area, and grey matter volume. The corresponding dataframes are row-indexed by subject with columns containing the features of the relevant structural data modality. The dataframes are empty if no structural data is used. \\
     \texttt{quality\_control\_data} & dataframe & Row-indexed by subject with the columns containing Euler indices for the left and right hemispheres of the brain. Empty if no quality control data is used. \\
-    \texttt{name} & string & The name of the population graph. \\
     \texttt{x} & $N \times F$ \hfill\newline float tensor & \textit{Unused at the intermediate stage.} Contains the full normalised feature vector (of $F$ features) for every graph node (subject). \\
+    \texttt{y} & $N \times 1$ \hfill \newline float tensor & Contains the labels of training data, in this case chronological age. \\
+    \texttt{brain\_health\_mask} & boolean array & \texttt{True} indicates that the subject has a healthy brain and can be used for training, and \texttt{False} otherwise. \\
     \texttt{train\_mask} & boolean tensor & \textit{Unused at the intermediate stage.} \texttt{True} if the subject belongs to the training set, and \texttt{False} otherwise. \\
     \texttt{validation\_mask} & boolean tensor & \textit{Unused at the intermediate stage.} \texttt{True} if the subject belongs to the validation set, and \texttt{False} otherwise. \\
     \texttt{test\_mask} & boolean tensor & \textit{Unused at the intermediate stage.} \texttt{True} if the subject belongs to the test set, and \texttt{False} otherwise.
@@ -167,12 +164,9 @@ The population graph is extended from the base Pytorch Geometric \texttt{Data} o
 \end{longtable}
 \end{center}
 
-TODO ordering of members based on their use order in the pipeline, meaning (training vs data etc.)
-
-TODO Could here mention the \textit{extension} of having weighted edges where edge features would store raw similarities as long as they exceed the threshold (to avoid $O(N^2)$ entries).
-
-
 \section{Graph transformation component}
+
+The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised, concatenated feature vector as well as training, validation and test masks. The schematic diagram representing the population graph transformations in this component is shown in Figure~\ref{graph-transformation-component}.
 
 \begin{figure}[h]
     \centering
@@ -180,17 +174,16 @@ TODO Could here mention the \textit{extension} of having weighted edges where ed
     \caption{Graph transformation component.}\label{graph-transformation-component}
 \end{figure}
 
-TODO maybe saying somewhere in the document that normalisation needs to be done fit in training set, and from that "learned" transformation, apply in the remaining sets to avoid data leakage.
-The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised and combined feature vector as well as training, validation and test masks. The schematic diagram representing the transformations to the graph by this component is shown in Figure~\ref{graph-transformation-component}.
-
 \subsection{Setting the training masks}
-The intermediate version is first changed by setting the training, validation and test masks provided by the graph neural network training and evaluation component. This involves setting the \texttt{train\_mask}, \texttt{validation\_mask} and \texttt{test\_mask} fields of the intermediate population graph data structure (see Table~\ref{table:population-graph}). 
+The first operation for preparing the population graph for training involves setting the \texttt{train\_mask}, \texttt{validation\_mask} and \texttt{test\_mask} fields of the intermediate population graph data structure (see Table~\ref{table:population-graph}). 
 
-TODO are ignored when calculating the loss? You might need to be a bit more specific in the implementtion chapter about how you actually ignore in the training procedure those unhealthy people (given they are in the population graph)
-Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}, so that during training the outputs for unhealthy subjects are ignored. 
+Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}. Similarly to the reasoning behind the brain health masks, the three training masks are used to determine which nodes should be used to compute the loss function during various stages of training. For example, the model parameters are only updated based on the loss function for the subjects filtered with the \texttt{training\_mask}, and validation loss is computed only for the subjects filtered with the \texttt{validation\_mask}.
 
 \subsection{Functional connectivity matrix dimensionality reduction}
 To avoid the memory issues that the graph neural networks encounter due to the very high number of functional imaging data features (75,000) for a high number of subjects (more than 17,000), the dimensionality of flattened functional connectivity matrices may be reduced at this stage. This project used principal component analysis (PCA) as the dimensionality reduction technique, where PCA transformation is fitted to the training set as specified by the training mask, and the same parameters are applied to the subjects belonging to the validation and test sets.
+
+% TODO maybe saying somewhere in the document that normalisation needs to be done fit in training set, and from that "learned" transformation, apply in the remaining sets to avoid data leakage.
+
 TODO (in PCA say how many components are kept)
 
 TODO The full flattened functional connectivity matrix has over 75,000 features per patient, which, considering pairwise similarities and a large number of subjects, makes the graph (and the training on it) very large: the number of resulting training parameters runs out of memory even for small architectures.
