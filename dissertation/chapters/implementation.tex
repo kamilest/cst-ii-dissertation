@@ -252,15 +252,11 @@ The brain age modelling task is challenging because of a vast combination of pos
 
 Having considered this, the following explains the motivation and reasoning behind most of the hyperparameter constraints. The full list of hyperparameter ranges that have been searched is included in the Appendix~?. 
 
-\subsubsection{Mitigating memory constraints}
+\subsubsection{Memory constraints}
 \label{section:memory}
+When the GNNs are trained on the full dataset, the entire population graph of more than 17,000 subjects, their neuroimaging features and edges, as well as all the GNN model training parameters and intermediate states must be stored in memory at the same time. In addition, the population graph cannot be split into smaller independent batches since all nodes of the graph must be updated in a single training step, and it would be non-trivial to keep track of the edges between the nodes in different batches.
 
-
-The biggest constraint in training the population graphs was GPU memory (which accounting for intensive GPU usage in the laboratory was up to 5-8 gigabyte models, and often even 1-3 gigabyte models). This especially affects the population graph training since in this case, to train on the full dataset, the entire graph of more than 17,000 subjects must be in memory at once due to subject similarity connections, and unlike in most models that have individual independent examples, the population graph cannot be trivially split into smaller batches. At the same time, GCN and GAT are known to be memory-intensive models.
-TODO reference
-I wanted to use the entire dataset (
-TODO why? – because the (quality of) data is often more important than the model, reference?),
-which meant that I had to constrain my model and population graph structure selection instead. I constrained it as follows:
+As a result, many (if not most) hyperparameter combinations caused the model to run out of GPU memory. In practice, this constrained the models to be in 1-8 gigabyte range. This led to the hyperparameter constraints:
 
 TODO "I decided" is def not a good wording here... try to make it just a normal, direct consequence from what you've read in the literature
 \begin{enumerate}
