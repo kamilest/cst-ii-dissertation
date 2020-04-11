@@ -39,12 +39,12 @@ The main function of the UKB preprocessing component is to prepare the raw or pa
 \end{figure}
 
 \subsection{Cleaning the dataset}
-The different modalities of the UKB data, shown in the white box in Figure~\ref{preprocessing-component}, have been provided separately from each other, with a small minority of subjects having the data available for some of the modalities but not others (for example due to data corruption or its retraction by the participant). To ensure consistent and smooth processing, the subjects with partially missing data (236 in total) have been excluded from further processing. The remaining 17,314 subjects with well-defined modalities have been collected into a \textit{subject index} (purple box on the bottom left), which was used to filter the data before its collection to the population graph construction component.
+The different modalities of the UKB data, shown in the white box in Figure~\ref{preprocessing-component}, have been provided separately from each other, with a small minority of subjects having the data available for some of the modalities but not others (for example due to data corruption or its retraction by the participant). To ensure consistent and smooth processing, the subjects with partially missing data (236 in total) have been excluded from further processing. The remaining 17,314 subjects with well-defined modalities have been collected into a \textit{subject index} (purple box at the bottom left), which was used to filter the data before its collection to the population graph construction component.
 
 \subsection{Precomputing connectivity matrices}
 The connectivity matrices involve computing pairwise correlations of 376 time-series (for 360 cortical and 16 subcortical regions) for every subject. With 20 gigabytes of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours on a CPU) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed. To avoid this, the matrices are computed once for each subject, flattened and their lower triangles stored as \texttt{numpy} arrays as part of the preprocessing component.
 
-% TODO could include the maths here?
+% could include the maths here?
 
 \subsection{Precomputing similarity matrices}
 The computation of pairwise similarity scores is quadratic in both time and space with respect to the number of subjects. Depending on the exact method how the similarity function is computed, a general-purpose (non-accelerated) processor might take hours or even days to process the entire dataset. This computation is also repeated whenever a graph is constructed, since the similarities per non-imaging metric do not change over different population graphs: the variation comes from different selections of subjects, non-imaging features, their relative weighting, and similarity thresholds.
@@ -225,7 +225,7 @@ The graph neural network component contains implementations for the graph neural
 
 Listing~\ref{listing:braingnn} shows how the layers are combined in the \texttt{BrainGNN} architecture for a given set of parameters in Table~\ref{table:braingnn}. Hyperbolic tangent ($\tanh(\cdot)$) was chosen as the non-linearity (activation function) between each layer. This is because the population graph features and weights in neurons may be negative, in which case other popular activation functions such as $\mathrm{ReLU}(\cdot)$ may have an undesirable asymmetric response.
 
-The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in lines 25 and 35 as a regularisation technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
+The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in lines 25 and 35 as a \textit{regularisation} technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
 
 \bigskip
 \begin{code}
@@ -237,49 +237,36 @@ The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between 
 
 \section{GNN training and evaluation component}
 
-The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures and report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop as noise is added to the population graph nodes or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
+The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and to report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
-    \caption{Graph neural network training and evaluation component.}\label{gnn-training-eval-component}
+    \caption{GNN training and evaluation component.}\label{gnn-training-eval-component}
 \end{figure}
 
 \subsection{Model selection}
 % Hyperparameter tuning, weights and biases
 
-With a high range of population graph modality (functional, structural, quality control data), similarity metric (Table~\ref{table:phenotype-features}), similarity threshold, as well as the GNN construction (Table~\ref{table:braingnn}) and training parameter (such as learning rate and number of epochs) choices, the search space for the best performing model is vast and it may be out of scope of this project to find the best fitting model.
+The brain age modelling task is challenging because of a vast combination of possible population graph and GNN hyperparameter choices. First, there is a choice of a neuroimaging modality combination for population graph node features (from functional, structural, and quality control data). Second, there are at least 32 combinations of possible non-imaging features used for similarity metrics (see Table~\ref{table:phenotype-features}), with each feature combination having a range of possible similarity thresholds. This does not account for the extension of using arbitrary linear combinations of non-imaging features for a similarity metric, and the fact that the UKB has over 760 more features that could potentially be included in similarity computation. Third, having fixed the population graph parameters, \texttt{BrainGNN} is in theory unlimited in its design and parameterisation possibilities (Table~\ref{table:braingnn}). Fourth, having fixed population graph and GNN hyperparameters, there are additional hyperparameters related to GNN training, such as the number of epochs and learning rate.
 
-TODO  I don't know whether the department likes something written in the first person. But I think is the first time you use this, so maybe doublecheck or think about it
-The search space might be even bigger considering that I do not use all the possible non-imaging features in Table~\ref{table:phenotype-features} and there might be more confounders. There could be more similarity functions and the relative weights for each similarity feature – the subject's sex is probably more important than how many years they had of full-time education, for example. The UK Biobank has 768 non-imaging features per patient – it's out of scope to select the best ones and their relative weights and thresholds, especially having no neuroscience expertise etc\dots
+Having considered this, this section discusses further the motivation and reasoning behind most of the hyperparameter constraints and the training method. The full list of hyperparameter ranges that have been searched is included in the Appendix~?. 
 
-
-Nonetheless I selected the set of features that I felt were the most important and carried out the hyperparameter tuning over the selected ranges of features.
-
-\subsubsection{Mitigating memory constraints}
+\subsubsection{Memory constraints}
 \label{section:memory}
-The biggest constraint in training the population graphs was GPU memory (which accounting for intensive GPU usage in the laboratory was up to 5-8 gigabyte models, and often even 1-3 gigabyte models). This especially affects the population graph training since in this case, to train on the full dataset, the entire graph of more than 17,000 subjects must be in memory at once due to subject similarity connections, and unlike in most models that have individual independent examples, the population graph cannot be trivially split into smaller batches. At the same time, GCN and GAT are known to be memory-intensive models.
-TODO reference
-I wanted to use the entire dataset (
-TODO why? – because the (quality of) data is often more important than the model, reference?),
-which meant that I had to constrain my model and population graph structure selection instead. I constrained it as follows:
+When the GNNs are trained on the full dataset, the entire population graph of more than 17,000 subjects, their neuroimaging features, similarities, as well as all the GNN model training parameters and intermediate states must be stored in memory at the same time. In addition, the population graph cannot be split into smaller independent batches since all nodes of the graph must be updated in a single training step, and it would be a non-trivial task to keep track of the edges between the nodes and other interactions between different batches.
 
-TODO "I decided" is def not a good wording here... try to make it just a normal, direct consequence from what you've read in the literature
+As a result, many hyperparameter combinations cause the model to run into memory issues. In practice, the models were limited to up to 8 gigabytes of memory. This motivated the hyperparameter constraints:
+
 \begin{enumerate}
-    \item Having referred to the literature on brain age estimation, I decided that high-dimensional functional imaging data modality is less promising than structural imaging data modality, while adding a lot of extra features per patient (over 78,000). Functional imaging data is never used alone (especially because it's already very much an estimate of how the brain works and includes a lot of oversimplified assumptions to how the brain is connected, and if used, it is generally to only complement structural data). Dimensionality reduction is possible, but from experience from the practical work of my Data Science Unit of Assessment, PCA, for example, cutting out half of the low-variance principle components can even worsen the predictive power and training time of the model instead of improving it. While the support for those techniques is implemented – which indeed was the goal of this project to support it if it is needed – it was not used in training.
-    \item The model size was fixed to a fairly shallow network with a small number of units (
-        TODO give the actual architecture). 
-        The learning rates were decreased and epochs increased to compensate for the smaller number of training parameters.
-    \item I fixed the set of possible population graph types and the similarity thresholds (
-    TODO see full list in Appendix ?). 
-    From running some initial models I found that feasible similarity thresholds are all above 0.6, and even 0.7 or 0.8 often cause problems. 
+    \item \textit{Excluding functional data modality}. From preliminary experiments, using only functional and quality control data resulted in a poor graph neural network performance for the brain age estimation task. This is supported by the literature, such as the work of Niu et al.~\cite{niu2019improved}, which concluded that structural features (particularly grey matter volume) were the most useful, while the features derived from functional data were either not useful or even had a negative effect on predictive power. Most importantly, functional data has over 78,000 features (compared to 1,084 features for all remaining modalities combined), which means an explosion in parameters for low estimated gain in performance. 
+    
+    Dimensionality reduction is possible, but from experience in the Data Science unit of assessment, cutting out half of the low-variance principal components can even worsen the predictive power and training time of the model instead of improving it. 
+    
+    While the functional data modality and dimensionality reduction technique were implemented~– indeed the goal of the pipeline was to support \textit{flexibility} to construct any population graph if needed – they were not used in training.
+    \item \textit{Fixing the model size to a shallow network with a small number of units}. The learning rates were decreased and number of epochs increased to compensate for the smaller number of training parameters. The exact architecture is provided in the Appendix ?.
+    \item \textit{Fixing the set of possible similarity feature sets and simlarity thresholds}. The default mode of averaging the feature-wise scores was used instead of arbitrary linear combinations, because, having no domain-specific knowledge of the relative importance of different confounders, this was the most non-informative, unbiased choice. From running some initial models, the feasible similarity thresholds have been all above 0.6, with even 0.7 or 0.8 often causing memory issues. This additionally motivated the use of as many non-imaging features as possible. \texttt{SEX} was always included in the feature sets because it is known to be an important confounder significantly affecting the volume of the brain and sometimes even requiring a separate model for every sex~\cite{kaufmann2019}. The full list of population graphs tested can be found in Appendix ?.
 \end{enumerate}
-
-
-Hyperparameter search was restricted to only use the default similarity metrics for a more consistent training and because it is not clear how each metric should be weighted. The intent behind supporting this is the capability for a neuroscientist or another professional with domain knowledge to design their own good similarity metric – which has been implemented as an \textit{extension} to my original success criteria. Otherwise the weighting would be very arbitrary and increase the search space even more. As someone without much neuroscience domain knowledge I went for the simplest way of combining the metrics for this training procedure.
-
-TODO in general lessons learnt and things for the future is that the memory issues and uninformed similarity metric and GNN architecture decisions severely restricted my hyperparameter search space, and very likely missed out on promising models with good test set performance. When I have time I would love to explore more hyperparameter options, consulting Dr Bethlehem and other experts on what other non-imaging features to include, how to combine them, how to adjust the architecture, and test new models on new data, for example on the recent UKB update which I did not have access to before, or some entirely new dataset. Alternatively, I could try training higher range of model hyperparameters on subsets of the UKB dataset, e.g. on 2,000-brain graphs which would decrease the parameters but allow for better exploration of the similarity matrix and GNN architecture possibilities.
-
 
 \subsubsection{Hyperparameter tuning}
 TODO is this implementation or evaluation? I feel like I could move it to evaluation so that I can show the results over each fold and how I selected them, not sure.
