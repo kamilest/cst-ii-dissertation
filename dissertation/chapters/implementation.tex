@@ -256,7 +256,7 @@ Having considered this, this section discusses further the motivation and reason
 \label{section:memory}
 When the GNNs are trained on the full dataset, the entire population graph of more than 17,000 subjects, their neuroimaging features and edges, as well as all the GNN model training parameters and intermediate states must be stored in memory at the same time. In addition, the population graph cannot be split into smaller independent batches since all nodes of the graph must be updated in a single training step, and it would be non-trivial to keep track of the edges between the nodes in different batches.
 
-As a result, many (if not most) hyperparameter combinations caused the model to run out of GPU memory. In practice, this constrained the models to be in 1-8 gigabyte range. This led to the hyperparameter constraints:
+As a result, many (if not most) hyperparameter combinations caused the model to run out of GPU memory. In practice, the models were limited to up to 8 gigabytes of memory. This led to the hyperparameter constraints:
 
 TODO "I decided" is def not a good wording here... try to make it just a normal, direct consequence from what you've read in the literature
 \begin{enumerate}
