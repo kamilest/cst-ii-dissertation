@@ -86,7 +86,7 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 
 
 \section{Graph construction component}
-
+\label{section:graph-construction}
 The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features but is not prepared for training as it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because the same intermediate representation can be reused many times for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
 
 \begin{figure}[h]
@@ -312,16 +312,17 @@ The repository follows the structure of the five key project components as in Fi
 % \end{table}
 
 \begin{table}[]
-    \begin{tabular}{p{0.25\textwidth}p{0.35\textwidth}p{0.3\textwidth}}
+    \small
+    \begin{tabular}{p{0.25\textwidth}p{0.3\textwidth}p{0.4\textwidth}}
         \hline
     \textbf{Component} & \textbf{Filename} & \textbf{Notes} \\  \hline
     UKB preprocessing 
-            & \texttt{phenotype.py} & Contains mappings of memorable non-imaging feature names to UKB codes, \\
-    &        & \texttt{ukb\_preprocess.py} & Main preprocessing code (see Section~\ref{section:ukb-preprocessing})\\
-    &        & \texttt{ukb\_preprocess\_test.py} &  Tests for similarity matrix code. \\ \hline
-    \multirow{2}{*}{Graph construction} 
-            & \texttt{graph\_construct.py} & \\
-            & \texttt{graph\_construct\_test.py} &  \\ \hline
+            & \texttt{phenotype.py} & Contains enumeration of non-imaging features, mappings of non-imaging feature names to their UKB codes. \\
+            & \texttt{ukb\_preprocess.py} & See Section~\ref{section:ukb-preprocessing}. \\
+            & \texttt{ukb\_preprocess\_test.py} &  Tests for similarity matrix code. \\ \hline
+    Graph construction
+            & \texttt{graph\_construct.py} &See Section~\ref{section:graph-construction}.\\
+            & \texttt{graph\_construct\_test.py} & Tests for correctness of example population graphs. \\ \hline
     Graph transformation
             & \texttt{graph\_transform.py} & \\
             % & \texttt{ukb\_preprocess\_test.py} &  \\   
