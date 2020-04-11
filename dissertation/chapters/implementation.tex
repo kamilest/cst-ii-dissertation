@@ -29,6 +29,7 @@ The work was split into these particular components so that each of them can car
 This chapter will explain in detail the implementation behind each of the components.
 
 \section{UKB preprocessing component}
+\label{section:ukb-preprocessing}
 
 The main function of the UKB preprocessing component is to prepare the raw or partially preprocessed UKB data for population graph construction. In particular, to improve the computational efficiency of operations later in the pipeline (potentially saving hours or days of computation time), this component preprocesses the data in a convenient form. This involves filtering the dataset, precomputing similarity matrices and functional connectivity matrices. The schematic diagram of these steps is shown in Figure~\ref{preprocessing-component}, which will be referred to throughout this section.
 
@@ -297,3 +298,38 @@ The main advantage of using the population graph of all subjects (rather than tr
 \section{Repository overview}
 % The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
 
+The repository follows the structure of the five key project components as in Figure~\ref{pipeline-overview}. 
+
+% \begin{table}[]
+%     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
+%     \centering
+%     \begin{tabular}{lp{0.175\textwidth}p{0.475\textwidth}}
+%         \hline
+%     \textbf{Component} & \textbf{Filename} & \textbf{Description} \\ \hline
+%     \multirow{2}{*}{XXX} & \texttt{ukb\_preprocess.py} & \\\cline{2-3}
+%                      & \texttt{ukb\_preprocess_test.py} & \hline
+%     \end{tabular}
+% \end{table}
+
+\begin{table}[]
+    \begin{tabular}{p{0.25\textwidth}p{0.35\textwidth}p{0.3\textwidth}}
+        \hline
+    \textbf{Component} & \textbf{Filename} & \textbf{Notes} \\  \hline
+    UKB preprocessing 
+            & \texttt{phenotype.py} & Contains mappings of memorable non-imaging feature names to UKB codes, \\
+    &        & \texttt{ukb\_preprocess.py} & Main preprocessing code (see Section~\ref{section:ukb-preprocessing})\\
+    &        & \texttt{ukb\_preprocess\_test.py} &  Tests for similarity matrix code. \\ \hline
+    \multirow{2}{*}{Graph construction} 
+            & \texttt{graph\_construct.py} & \\
+            & \texttt{graph\_construct\_test.py} &  \\ \hline
+    Graph transformation
+            & \texttt{graph\_transform.py} & \\
+            % & \texttt{ukb\_preprocess\_test.py} &  \\   
+    \multirow{2}{*}{GNN architectures} 
+            & \texttt{ukb\_preprocess.py} & \\
+            & \texttt{ukb\_preprocess\_test.py} &  \\   
+    \multirow{2}{*}{GNN training} 
+            & \texttt{ukb\_preprocess.py} & \\
+            & \texttt{ukb\_preprocess\_test.py} &  \\ \hline
+    \end{tabular}
+    \end{table}
