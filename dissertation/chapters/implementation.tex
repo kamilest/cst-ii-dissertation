@@ -29,6 +29,7 @@ The work was split into these particular components so that each of them can car
 This chapter will explain in detail the implementation behind each of the components.
 
 \section{UKB preprocessing component}
+\label{section:ukb-preprocessing}
 
 The main function of the UKB preprocessing component is to prepare the raw or partially preprocessed UKB data for population graph construction. In particular, to improve the computational efficiency of operations later in the pipeline (potentially saving hours or days of computation time), this component preprocesses the data in a convenient form. This involves filtering the dataset, precomputing similarity matrices and functional connectivity matrices. The schematic diagram of these steps is shown in Figure~\ref{preprocessing-component}, which will be referred to throughout this section.
 
@@ -85,7 +86,7 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 
 
 \section{Graph construction component}
-
+\label{section:graph-construction}
 The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features but is not prepared for training as it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because the same intermediate representation can be reused many times for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
 
 \begin{figure}[h]
@@ -297,3 +298,39 @@ The main advantage of using the population graph of all subjects (rather than tr
 \section{Repository overview}
 % The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
 
+The repository follows the structure of the five key project components as in Figure~\ref{pipeline-overview}. 
+
+% \begin{table}[]
+%     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
+%     \centering
+%     \begin{tabular}{lp{0.175\textwidth}p{0.475\textwidth}}
+%         \hline
+%     \textbf{Component} & \textbf{Filename} & \textbf{Description} \\ \hline
+%     \multirow{2}{*}{XXX} & \texttt{ukb\_preprocess.py} & \\\cline{2-3}
+%                      & \texttt{ukb\_preprocess_test.py} & \hline
+%     \end{tabular}
+% \end{table}
+
+\begin{table}[]
+    \small
+    \begin{tabular}{p{0.25\textwidth}p{0.3\textwidth}p{0.4\textwidth}}
+        \hline
+    \textbf{Component} & \textbf{Filename} & \textbf{Notes} \\  \hline
+    UKB preprocessing 
+            & \texttt{phenotype.py} & Contains enumeration of non-imaging features, mappings of non-imaging feature names to their UKB codes. \\
+            & \texttt{ukb\_preprocess.py} & See Section~\ref{section:ukb-preprocessing}. \\
+            & \texttt{ukb\_preprocess\_test.py} &  Tests for similarity matrix code. \\ \hline
+    Graph construction
+            & \texttt{graph\_construct.py} &See Section~\ref{section:graph-construction}.\\
+            & \texttt{graph\_construct\_test.py} & Tests for correctness of example population graphs. \\ \hline
+    Graph transformation
+            & \texttt{graph\_transform.py} & \\
+            % & \texttt{ukb\_preprocess\_test.py} &  \\   
+    \multirow{2}{*}{GNN architectures} 
+            & \texttt{ukb\_preprocess.py} & \\
+            & \texttt{ukb\_preprocess\_test.py} &  \\   
+    \multirow{2}{*}{GNN training} 
+            & \texttt{ukb\_preprocess.py} & \\
+            & \texttt{ukb\_preprocess\_test.py} &  \\ \hline
+    \end{tabular}
+    \end{table}
