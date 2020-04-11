@@ -175,6 +175,7 @@ The graph transformation component is responsible for preparing the intermediate
 \end{figure}
 
 \subsection{Setting the training masks}
+\label{setting-training-masks}
 The first operation for preparing the population graph for training involves setting the \texttt{train\_mask}, \texttt{validation\_mask} and \texttt{test\_mask} fields of the intermediate population graph data structure (see Table~\ref{table:population-graph}). 
 
 Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}. Similarly to the reasoning behind the brain health masks, the three training masks are used to determine which nodes should be used to compute the loss function during various stages of training. For example, the model parameters are only updated based on the loss function for the subjects filtered with the \texttt{training\_mask}, and validation loss is computed only for the subjects filtered with the \texttt{validation\_mask}.
@@ -254,12 +255,12 @@ Having considered this, this section discusses further the motivation and reason
 
 \subsubsection{Memory constraints}
 \label{section:memory}
-When the GNNs are trained on the full dataset, the entire population graph of more than 17,000 subjects, their neuroimaging features, similarities, as well as all the GNN model training parameters and intermediate states must be stored in memory at the same time. In addition, the population graph cannot be split into smaller independent batches since all nodes of the graph must be updated in a single training step, and it would be a non-trivial task to keep track of the edges between the nodes and other interactions between different batches.
+In the brain age estimation task with population graphs, the entire population graph containing node neuroimaging features, edges, GNN model training parameters and intermediate training states must be stored in memory at the same time. In addition, the population graph cannot be split into smaller independent batches since all nodes of the graph must be updated in a single training step, and it would be a non-trivial task to keep track of the edges and other interactions between the batches.
 
-As a result, many hyperparameter combinations cause the model to run into memory issues. In practice, the models were limited to up to 8 gigabytes of memory. This motivated the hyperparameter constraints:
+As a result, many hyperparameter combinations cause the model to run into memory issues. In practice, the models were limited to up to 8 gigabytes of GPU memory. This motivated the following hyperparameter constraints:
 
 \begin{enumerate}
-    \item \textit{Excluding functional data modality}. From preliminary experiments, using only functional and quality control data resulted in a poor graph neural network performance for the brain age estimation task. This is supported by the literature, such as the work of Niu et al.~\cite{niu2019improved}, which concluded that structural features (particularly grey matter volume) were the most useful, while the features derived from functional data were either not useful or even had a negative effect on predictive power. Most importantly, functional data has over 78,000 features (compared to 1,084 features for all remaining modalities combined), which means an explosion in parameters for low estimated gain in performance. 
+    \item \textit{Excluding functional data modality}. From preliminary experiments, using only functional and quality control data resulted in a poor graph neural network performance for the brain age estimation task. This is supported by the literature, such as the work of Niu et al.~\cite{niu2019improved}, which concluded that features derived from functional data were either not useful or even had a negative effect on predictive power, while structural features (particularly grey matter volume) were the most useful. Most importantly, functional data modality has over 78,000 features per subject (compared to 1,084 features for all remaining modalities combined), which results in an explosion in parameters for small estimated gain in performance. 
     
     Dimensionality reduction is possible, but from experience in the Data Science unit of assessment, cutting out half of the low-variance principal components can even worsen the predictive power and training time of the model instead of improving it. 
     
@@ -269,25 +270,22 @@ As a result, many hyperparameter combinations cause the model to run into memory
 \end{enumerate}
 
 \subsubsection{Hyperparameter tuning}
-TODO is this implementation or evaluation? I feel like I could move it to evaluation so that I can show the results over each fold and how I selected them, not sure.
+The hyperparameters were tuned using the Bayesian optimisation strategy provided by the \textit{Weights~\& Biases} (\texttt{wandb})~\cite{wandb} machine learning tracking and optimisation framework. Given the initial distributions of hyperparameters that should be searched (see Appendix~?) and a command-line script that accepts hyperparameter combinations as arguments, \texttt{wandb} automatically selects the next set of hyperparameters that it believes is the most likely to improve a given performance metric. The choice of hyperparameters is based on both the initial hyperparameter distribution and the feedback from previously attempted values.
 
-With the above GNN hyperparameter and population graph parameter restrictions due to memory constraints, I optimised the remaining hyperparameters using Bayesian optimisation strategy using the \textit{Sweeps} tool provided by the \textit{Weights~\& Biases}~\cite{wandb} (\texttt{wandb}) machine learning tracking and optimisation framework. 
+Unlike in other hyperparameter tuning techniques such as grid search, Bayesian optimisation can use hyperparameter distributions defined over all real values in a given range. Consequently, hyperparameter search cannot be exhaustive and there is no obvious stopping point. In this project, hyperparameter tuning was run on each of the architectures until the models seemed to converge to similar performance with only marginal or no improvements as more hyperparameter combinations were tried. In general, this meant at least 100 hyperparameter combinations per GNN architecture, each each hyperparameter combination trained five times for each cross-validation fold (see below), amounting to over a week of total GPU compute time.
 
-TODO this is simplified – not sure how much do I want to explain the Gaussian processes etc.
-Having integrated the training with the \texttt{wandb}, the framework would automatically suggest and test the best hyperparameter combinations it believes are the most likely to optimise the performance metric of choice, which in my case was to minimise the average cross-validation mean squared error (MSE). 
+\subsubsection{Training procedure}
+%  cross-validation and early stopping
 
-I ran the sweeps for both GCN and GAT models for at least 100 runs (most of them still unsuccessful due to the memory constraints) until the models started to converge to similar performance that could not be improved with new hyperparameters, and selected the best one for each architecture based on the lowest MSE.
+Before running the model selection and hyperparameter tuning procedure, the dataset was  split into 90\% training+validation and 10\% hold-out test set, stratifying by subject age and sex. This test set was never used in training and hyperparameter tuning, and was only looked at during the evaluation procedure after the best hyperparameters for each of GCN and GAT have been selected (as indicated by the box at the bottom right in Figure~\ref{gnn-training-eval-component}). The subjects in the test set correspond to the \texttt{test\_mask} field of the population graph data structure as discussed in Table~\ref{table:population-graph} and Section~\ref{setting-training-masks}. 
 
-TODO The hyperparameters tuned, their distributions and value ranges tuned can be found in Appendix ?.
+The remaining data was used for hyperparameter tuning. Each hyperparameter combination was trained using five-fold \textit{cross-validation}: the training+validation dataset was split into five folds with 90\% training and 10\% validation sets, again stratifying by age and sex. These correspond to \texttt{train\_mask} and \texttt{validation\_mask} of the population graph data structure. 
 
-TODO where to include this??? The models are trained using early stopping with patience of 100 and delta 0.005. This means that the training stops if the validation set MSE does not decrease by at least 0.005 in 100 consecutive epochs, at which point the model is reverted back to the state that gave the best validation set score). Otherwise, the models are trained for at least 1000 epochs and for a maximum of 7500 epochs.
+The above steps are concisely shown in Figure~\ref{gnn-training-eval-component}: the data splits are visualised with a set of different training/validation/test masks at the top left box in GNN training and evaluation component (all of them having the same test mask but different training and validation masks). The masks of each fold are used separately to transform the graph (in graph transformation component), and for each fold the prepared population graph is trained on a GNN implementation with a given set of hyperparameters (as suggested by the \texttt{wandb} framework). The optimal GNN model hyperparameters and population graph are determined based on which hyperparameter combination gives the smallest mean squared error (MSE), averaged over the validation sets of each fold.
 
-\subsubsection{Cross-validation}
-The subjects are first split into the 90\% training and 10\% hold-out test set, stratifying by subject age and sex. The test set will be used to evaluate a single selected model. 
+To optimise the training procedure, for every fold the models are trained with \textit{early stopping}: while validation loss itself is not used to update the parameters, the training stops as validation loss begins to increase with decreasing training loss (indicating overfitting on training data). At thickness point the weights are reverted back to when the validation loss was the smallest. In this project, the models are trained for at least 1,000 epochs and stopped early if MSE does not decrease by at least 0.005 over 100 consecutive iterations. 
 
-The remaining data was used for model selection (hyperparameter tuning). The models were trained with five-fold cross-validation, so that the training data split into five folds with 90\% true training and 10\% validation subjects. Therefore for a given set of hyperparameters five models are trained, and the model's overall performance is estimated using the average mean squared error across the folds as well as the variation in performance. 
-
-As the hyperparameter tuning converges, the most promising model is selected to be tested on the hold-out test set. The metrics usually used to evaluate the models performing a regression task are Pearson's correlation $r$ and coefficient of determination $r^2$.
+As the hyperparameter tuning converges, the most promising model is selected to be tested on the hold-out test set. The metrics used in the literature for evaluating a regression task are Pearson's correlation $r$ and coefficient of determination $r^2$.
 
 \subsection{Robustness measurement}
 
