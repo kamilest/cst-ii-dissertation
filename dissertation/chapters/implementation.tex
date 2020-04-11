@@ -44,7 +44,7 @@ The different modalities of the UKB data, shown in the white box in Figure~\ref{
 \subsection{Precomputing connectivity matrices}
 The connectivity matrices involve computing pairwise correlations of 376 time-series (for 360 cortical and 16 subcortical regions) for every subject. With 20 gigabytes of raw timeseries data across over 17,000 subjects, this introduces a high computational overhead (a few hours on a CPU) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed. To avoid this, the matrices are computed once for each subject, flattened and their lower triangles stored as \texttt{numpy} arrays as part of the preprocessing component.
 
-% TODO could include the maths here?
+% could include the maths here?
 
 \subsection{Precomputing similarity matrices}
 The computation of pairwise similarity scores is quadratic in both time and space with respect to the number of subjects. Depending on the exact method how the similarity function is computed, a general-purpose (non-accelerated) processor might take hours or even days to process the entire dataset. This computation is also repeated whenever a graph is constructed, since the similarities per non-imaging metric do not change over different population graphs: the variation comes from different selections of subjects, non-imaging features, their relative weighting, and similarity thresholds.
@@ -248,12 +248,14 @@ The main function of the GNN training and evaluation component is to select the 
 \subsection{Model selection}
 % Hyperparameter tuning, weights and biases
 
-The model selection is challenging because of a vast combination of possible hyperparameter choices. First, there is a choice of a neuroimaging modality combination for node features (from functional, structural, and quality control data). Second, there are at least 32 combinations of possible non-imaging features used for similarity metrics (see Table~\ref{table:phenotype-features}), and each combination could have a range of possible similarity thresholds. This does not account for the extension of using arbitrary linear combinations of non-imaging features for a similarity metric, and the fact that the UKB has over 760 more features that could potentially be included in similarity computation. Third, having fixed the population graph parameters, the graph neural network architectures have an unbounded number of parameter combinations (Table~\ref{table:braingnn}). Fourth, having fixed population graph and GNN hyperparameters, there are additional hyperparameters related to GNN training, such as the number of epochs and learning rate.
+The brain age modelling task is challenging because of a vast combination of possible population graph and GNN hyperparameter choices. First, there is a choice of a neuroimaging modality combination for population graph node features (from functional, structural, and quality control data). Second, there are at least 32 combinations of possible non-imaging features used for similarity metrics (see Table~\ref{table:phenotype-features}), with each feature combination having a range of possible similarity thresholds. This does not account for the extension of using arbitrary linear combinations of non-imaging features for a similarity metric, and the fact that the UKB has over 760 more features that could potentially be included in similarity computation. Third, having fixed the population graph parameters, \textit{BrainGNN} is in theory unlimited in its design and parameterisation possibilities (Table~\ref{table:braingnn}). Fourth, having fixed population graph and GNN hyperparameters, there are additional hyperparameters related to GNN training, such as the number of epochs and learning rate.
 
-Having considered this, the following explains the choices behind some of the hyperparameter combinations. The full list of hyperparameters used is included in the Appendix ?. 
+Having considered this, the following explains the motivation and reasoning behind most of the hyperparameter constraints. The full list of hyperparameter ranges that have been searched is included in the Appendix~?. 
 
 \subsubsection{Mitigating memory constraints}
 \label{section:memory}
+
+
 The biggest constraint in training the population graphs was GPU memory (which accounting for intensive GPU usage in the laboratory was up to 5-8 gigabyte models, and often even 1-3 gigabyte models). This especially affects the population graph training since in this case, to train on the full dataset, the entire graph of more than 17,000 subjects must be in memory at once due to subject similarity connections, and unlike in most models that have individual independent examples, the population graph cannot be trivially split into smaller batches. At the same time, GCN and GAT are known to be memory-intensive models.
 TODO reference
 I wanted to use the entire dataset (
