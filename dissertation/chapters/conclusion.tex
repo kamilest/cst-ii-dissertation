@@ -18,3 +18,6 @@ Mention Niu et al. 2019 raising the issue that there is systematic bias in brain
 \begin{itemize}
     \item Include DNA methylation data as it is widely used in other studies and is claimed to improve the predictive power of the model \cite{cole2018brain}.
 \end{itemize}
+
+
+TODO in general lessons learnt and things for the future is that the memory issues and uninformed similarity metric and GNN architecture decisions severely restricted my hyperparameter search space, and very likely missed out on promising models with good test set performance. When I have time I would love to explore more hyperparameter options, consulting Dr Bethlehem and other experts on what other non-imaging features to include, how to combine them, how to adjust the architecture, and test new models on new data, for example on the recent UKB update which I did not have access to before, or some entirely new dataset. Alternatively, I could try training higher range of model hyperparameters on subsets of the UKB dataset, e.g. on 2,000-brain graphs which would decrease the parameters but allow for better exploration of the similarity matrix and GNN architecture possibilities.
