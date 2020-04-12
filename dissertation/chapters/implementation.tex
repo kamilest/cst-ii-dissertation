@@ -166,6 +166,7 @@ The population graph is stored in an extended \texttt{torch\_geometric.Data} obj
 \end{center}
 
 \section{Graph transformation component}
+\label{section:graph-transformation}
 
 The graph transformation component is responsible for preparing the intermediate population graph representation for training by defining its normalised, concatenated feature vector as well as training, validation and test masks. The schematic diagram representing the population graph transformations in this component is shown in Figure~\ref{graph-transformation-component}.
 
@@ -193,6 +194,7 @@ The transformed functional, structural and quality control features are concaten
 Since the original neuroimaging dataframes and brain health masks are kept unchanged in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields.
 
 \section{GNN architecture component}
+\label{section:gnn-architecture}
 % gcn_train(graph, device, n_conv_layers=0, layer_sizes=None, epochs=3500, lr=0.005, dropout_p=0, weight_decay=1e-5,
 % log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
 % min_epochs=1000):
@@ -238,6 +240,7 @@ The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between 
 \end{code}
 
 \section{GNN training and evaluation component}
+\label{section:gnn-train-evaluate}
 
 The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and to report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
@@ -298,7 +301,7 @@ The main advantage of using the population graph of all subjects (rather than tr
 \section{Repository overview}
 % The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
 
-The repository follows the structure of the five key project components as in Figure~\ref{pipeline-overview}. 
+The repository follows the structure of the five key project components shown in Figure~\ref{pipeline-overview}. Its overview is presented in Table~\ref{table:repository-overview} .
 
 % \begin{table}[]
 %     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
@@ -311,26 +314,48 @@ The repository follows the structure of the five key project components as in Fi
 %     \end{tabular}
 % \end{table}
 
-\begin{table}[]
+
+\begin{center}
     \small
-    \begin{tabular}{p{0.25\textwidth}p{0.3\textwidth}p{0.4\textwidth}}
+    \begin{longtable}[]{p{0.25\textwidth}p{0.3\textwidth}p{0.4\textwidth}}
+        \caption{Repository overview.}\label{table:repository-overview}\\
+        \hline \textbf{Component} & \textbf{Filename} & \textbf{Notes} \\
         \hline
-    \textbf{Component} & \textbf{Filename} & \textbf{Notes} \\  \hline
+        \endfirsthead
+        \multicolumn{3}{c}%
+        {\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+        \hline
+        \textbf{Component} & \textbf{Filename} & \textbf{Notes} \\
+        \hline
+        \endhead
+        \hline \multicolumn{3}{r}{\textit{Continued on next page}} \\
+        \endfoot
+        \hline
+        \endlastfoot
+% \begin{table}[]
+%     \small
+%     \begin{tabular}{p{0.25\textwidth}p{0.3\textwidth}p{0.4\textwidth}}
+%         \hline
+%     \textbf{Component} & \textbf{Filename} & \textbf{Notes} \\  \hline
     UKB preprocessing 
             & \texttt{phenotype.py} & Contains enumeration of non-imaging features, mappings of non-imaging feature names to their UKB codes. \\
-            & \texttt{ukb\_preprocess.py} & See Section~\ref{section:ukb-preprocessing}. \\
+            & \texttt{ukb\_preprocess.py} & Functionality described in Section~\ref{section:ukb-preprocessing}. \\
             & \texttt{ukb\_preprocess\_test.py} &  Tests for similarity matrix code. \\ \hline
     Graph construction
-            & \texttt{graph\_construct.py} &See Section~\ref{section:graph-construction}.\\
-            & \texttt{graph\_construct\_test.py} & Tests for correctness of example population graphs. \\ \hline
+            & \texttt{graph\_construct.py} &Functionality described in Section~\ref{section:graph-construction}.\\
+            & \texttt{graph\_construct\_test.py} & Tests for example population graph correctness. \\ \hline
     Graph transformation
-            & \texttt{graph\_transform.py} & \\
+            & \texttt{graph\_transform.py} & Functionality described in Section~\ref{section:graph-transformation}.\\ \hline
             % & \texttt{ukb\_preprocess\_test.py} &  \\   
-    \multirow{2}{*}{GNN architectures} 
-            & \texttt{ukb\_preprocess.py} & \\
-            & \texttt{ukb\_preprocess\_test.py} &  \\   
-    \multirow{2}{*}{GNN training} 
-            & \texttt{ukb\_preprocess.py} & \\
-            & \texttt{ukb\_preprocess\_test.py} &  \\ \hline
-    \end{tabular}
-    \end{table}
+    GNN architectures
+            & \texttt{brain\_gnn.py} & Implementation of \texttt{BrainGNN} and extending classes \texttt{BrainGAT}, \texttt{BrainGCN} (Section~\ref{section:gnn-architecture}).\\ \hline
+            % & \texttt{ukb\_preprocess\_test.py} &  \\   
+    GNN training
+            & \texttt{brain\_gnn\_evaluate.py} & Population graph noisification and robustness measurement procedure (see Section~\ref{section:gnn-train-evaluate}). \\
+            & \texttt{brain\_gnn\_train.py} & Cross-validation training procedure (Section~\ref{section:gnn-train-evaluate}). \\
+            & \texttt{wandb\_sweep.yaml} & Initial hyperparameter distributions used by \texttt{wandb} (Appendix ?). \\
+            & \texttt{wandb\_train.yaml} & Command line script used by \texttt{wandb} to automatically test new hyperparameters. \\
+    % \end{tabular}
+    % \end{table}
+\end{longtable}
+\end{center}
