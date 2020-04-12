@@ -6,27 +6,18 @@
 
 % ~2,000 words
 
-\section{Overview of the predictive power for the two graph neural network approaches}
-% Or comparative predictive power
-
-Discuss Pearson's $r$, coefficient of determination $r^2$ and other common performance metrics.
-
-\section{Hyperparameters}
-Effects of hyperparameter tuning
-
-\section{Unit testing}
-
-\section{Other quantitative and qualitative results}
-Statistical significance of the results compared to the baseline (e.g. Pearson's $r$ method in Python seems to return some $p$-value of it..?)
-
-\section{Robustness of the graph neural networks to noisy and missing data}
+\begin{itemize}
+    \item What were the best hyperparameters?
+    \item Plot with test set performance of best GCN and best GAT model
+    \item Discussion comparing GCN and GAT performance – compare with literature on brain age estimation? (i.e. this model is quite poor)
+    \item Give possible reasons why (why??)
+    \item Statistical significance of the results compared to the baseline (e.g. Pearson's $r$ method in Python seems to return some $p$-value of it..?)
+    \item Robustness of the graphs
+\end{itemize}
 
 
-\section{Comparison against existing benchmarks}
+% \section{Comparison against existing benchmarks}
 
-Compare to the Kaufmann et al.'s \textit{xgboost} approach \cite{kaufmann2019} ($r \sim 0.93$); and the other package that was cited in the same paper.
+% Compare to the Kaufmann et al.'s \textit{xgboost} approach \cite{kaufmann2019} ($r \sim 0.93$); and the other package that was cited in the same paper.
+% Possibly compare to other non-graph (relatively baseline) (neural network) architectures, e.g. ElasticNet, MLP,...
 
-Possibly compare to other non-graph (relatively baseline) (neural network) architectures, e.g. ElasticNet, MLP,...
-
-\section{Interpretation of the model behaviour}
-One of the advantages of the graphs that they \textit{should} be interpretable I guess.
