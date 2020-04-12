@@ -167,7 +167,7 @@ Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim
     \label{eq:similarity}
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of non-imaging metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given non-imaging feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of non-imaging features being within some constant $\epsilon$. 
+Here $\{M_1, \dots, M_n\}$ is a set of non-imaging metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given non-imaging feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is a real number, ``matching'' could be defined in terms of non-imaging features being within some constant $\epsilon$. 
 
 To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
 
