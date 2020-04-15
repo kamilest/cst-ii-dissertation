@@ -25,7 +25,7 @@ This project can be divided into five key components, as illustrated in Figure~\
     \item Evaluation of the graph neural network performance.
 \end{enumerate}
 
-The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program, (other than the clearly defined input/output communication). This makes the overall project easier to implement, understand and extend in the future, generalising it to other datasets and preprocessing methods. 
+The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program (other than the clearly defined input/output communication), following the requirement R3 (see Section~\ref{section:requirements-analysis}). This makes the overall project easier to implement, understand and extend in the future, generalising it to other datasets and preprocessing methods. 
 
 This chapter will explain in detail the implementation behind each of the components.
 
@@ -85,10 +85,12 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 % \end{blockarray}
 %  \]
 
+\subsection{Testing}
+Following the requirement R1 for this project (see Section~\ref{section:requirements-analysis}), it is important to ensure that the data is preprocessed correctly. This component has an additional unit testing module to ensure that the similarity matrices are computed correctly. Functional connectivity matrices use a well-tested third-party library. 
 
 \section{Graph construction component}
 \label{section:graph-construction}
-The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features but is not prepared for training as it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because the same intermediate representation can be reused many times for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
+The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features, but is not prepared for training – it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because this allows for the reuse of the same intermediate representation for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for the data processing in this component are schematically visualised in Figure~\ref{graph-construction-component}.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{graph_construction_component.pdf}
@@ -98,10 +100,10 @@ The next stage of the pipeline involves constructing the ``intermediate represen
 \subsection{Inputs}
 The inputs to the graph construction component can be categorised into four types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}:
 \begin{enumerate}
-    \item \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features. This could be any combination of functional, structural and quality control data.
+    \item \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features. This could be any combination of functional, structural and quality control data, following the pipeline flexibility requirement R2 (Section~\ref{section:requirements-analysis}).
     \item \textit{Subject specification} takes in the number of (randomly selected) subjects that should be used to create the graph, or a list UKB identifiers for a graph containing a particular set of subjects. If no such parameter is provided, then all available data (filtered by the subject index described in the previous component) is used for population graph construction.
     \item \textit{Similarity specification}. 
-    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An \textit{extension} to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics. 
+    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An \textit{extension} to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics, again increasing the flexibility of the pipeline. 
     \item \textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
 \end{enumerate}
 
@@ -152,7 +154,7 @@ The population graph is stored in an extended \texttt{torch\_geometric.Data} obj
     \endlastfoot
     % \texttt{num\_nodes} & long & Number of nodes (subjects) in the population graph. \\
     \texttt{subject\_index} & string array & UKB identifiers of the subjects. Stored in the same subject order as training masks, feature and label tensors; corresponds to the edge start and end values. \\
-    \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. To represent the undirected edge $(s_v, s_w) \in E$, the second directed edge $s_w \leadsto s_v$ is added. \\
+    \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. To represent the undirected edge $(s_v, s_w) \in E$, another directed edge $s_w \leadsto s_v$ is added. \\
     \texttt{functional\_data} & dataframe & Row-indexed by subject with columns containing the flattened functional connectivity matrix entries. Empty if no functional data is used in the population graph. \\
     \texttt{structural\_data} & dictionary of \hfill \newline dataframes & Dictionary is indexed by the structural data modality, in this case cortical thickness, surface area, and grey matter volume. The corresponding dataframes are row-indexed by subject with columns containing the features of the relevant structural data modality. The dataframes are empty if no structural data is used. \\
     \texttt{quality\_control\_data} & dataframe & Row-indexed by subject with the columns containing Euler indices for the left and right hemispheres of the brain. Empty if no quality control data is used. \\
