@@ -360,7 +360,7 @@ The predictive power of a model can be evaluated based on its performance on a s
 % TODO illustrations could also explain the operation of the networks, perhaps highlighting differences between GCN and GAT graphically: Averaging representations of neighbour features and smoothing labels as a consequence.~\cite{wu2019simplifying}
 
 
-\section{Requirements analysis and software engineering practice}
+\section{Requirements analysis}
 \label{section:requirements-analysis}
 
 The project has three main stages that directly correspond to the Success Criteria of the Project Proposal (Appendix ?):
@@ -376,10 +376,7 @@ The project has three main stages that directly correspond to the Success Criter
     \item Training and evaluation of the two graph neural network architectures on the UKB population graph. This includes the \textit{extension} of implementing the robustness measurement framework.
 \end{enumerate}
 
-Since every stage depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). This fits best with the \textit{waterfall model} of software development because the design of the pipeline directly corresponds to the three project stages, and implementation depends on how the different pipeline stages are designed to interact with each other.
-
-
-I expect stage S1 to be the most complex for the following reasons, which give a set of additional requirements.
+I expect stage S1 to be the most complex for the following additional requirements.
 \begin{enumerate}[label=R\arabic*.]
     \item Care must be taken to make sure that the data is handled \textit{correctly}. This will require testing of the components which transform the data to the population graph data structure.
     \item The pipeline must be \textit{flexible} enough to support the various combinations of modalities, subjects, and similarity metrics, which will be ensured by independent support of every modality and the \textit{extension} of the project to support custom similarity functions.
@@ -388,9 +385,12 @@ I expect stage S1 to be the most complex for the following reasons, which give a
 
 These considerations by themselves largely fulfil the proposed \textit{extension} of implementing the pipeline that can handle raw data at the one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Part II project. 
 
-The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in the Implementation chapter.
+The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in Chapter~\ref{chapter:implementation}.
 
-To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of consistent code style, comprehensive documentation, testing, version control and code reuse will be applied.
+\section{Software engineering practice}
+Since every stage discussed in the previous section depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). This fits best with the \textit{waterfall model} of software development because the project is relatively small and has a straightforward set of requirements, the design of the pipeline directly corresponds to the three project stages, and implementation depends on how the different pipeline stages are designed to interact with each other. Chapter~\ref{chapter:implementation} walks through the schematic design diagrams that were used as foundation for the component implementation.
+
+To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of consistent code style (adhering to PEP8\footnote{\url{https://www.python.org/dev/peps/pep-0008/}} style guide), comprehensive documentation, unit testing, design patterns, version control (through a \texttt{git} repository), backup strategies (regular backups to an external disk, GitHub repository, Google Drive), and code reuse will be applied.
 
 \section{Choice of tools}
 
