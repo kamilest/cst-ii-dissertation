@@ -1,4 +1,5 @@
 \chapter{Implementation}
+\label{chapter:implementation}
 % This chapter should describe what was actually produced: the programs which were written, the hardware which was built or the theory which was developed. Any design strategies that looked ahead to the testing stage might profitably be referred to (the professional approach again).
 % Descriptions of programs may include fragments of high-level code but large chunks of code are usually best left to appendices or omitted altogether. Analogous advice applies to circuit diagrams.
 % Draw attention to the parts of the work which are not your own. The Implementation Chapter should include a section labelled ”Repository Overview”. The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository. It should describe whether the code was written from scratch or if it built on an existing project or tutorial. Making effective use of powerful tools and pre-existing code is often laudable, and will count to your credit if properly reported.
@@ -24,7 +25,7 @@ This project can be divided into five key components, as illustrated in Figure~\
     \item Evaluation of the graph neural network performance.
 \end{enumerate}
 
-The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program, (other than the clearly defined input/output communication). This makes the overall project easier to implement, understand and extend in the future, generalising it to other datasets and preprocessing methods. 
+The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program (other than the clearly defined input/output communication), following the requirement R3 (see Section~\ref{section:requirements-analysis}). This makes the overall project easier to implement, understand and extend in the future, generalising it to other datasets and preprocessing methods. 
 
 This chapter will explain in detail the implementation behind each of the components.
 
@@ -84,10 +85,9 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 % \end{blockarray}
 %  \]
 
-
 \section{Graph construction component}
 \label{section:graph-construction}
-The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features but is not prepared for training as it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because the same intermediate representation can be reused many times for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for how the data is processed in this component is schematically visualised in Figure~\ref{graph-construction-component}.
+The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features, but is not prepared for training – it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because this allows for the reuse of the same intermediate representation for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for the data processing in this component are schematically visualised in Figure~\ref{graph-construction-component}.
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{graph_construction_component.pdf}
@@ -97,10 +97,10 @@ The next stage of the pipeline involves constructing the ``intermediate represen
 \subsection{Inputs}
 The inputs to the graph construction component can be categorised into four types as shown in the white box at the bottom left of Figure~\ref{graph-construction-component}:
 \begin{enumerate}
-    \item \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features. This could be any combination of functional, structural and quality control data.
+    \item \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features. This could be any combination of functional, structural and quality control data, following the pipeline flexibility requirement R2 (Section~\ref{section:requirements-analysis}).
     \item \textit{Subject specification} takes in the number of (randomly selected) subjects that should be used to create the graph, or a list UKB identifiers for a graph containing a particular set of subjects. If no such parameter is provided, then all available data (filtered by the subject index described in the previous component) is used for population graph construction.
     \item \textit{Similarity specification}. 
-    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An \textit{extension} to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics. 
+    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An \textit{extension} to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics, again increasing the flexibility of the pipeline. 
     \item \textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
 \end{enumerate}
 
@@ -151,7 +151,7 @@ The population graph is stored in an extended \texttt{torch\_geometric.Data} obj
     \endlastfoot
     % \texttt{num\_nodes} & long & Number of nodes (subjects) in the population graph. \\
     \texttt{subject\_index} & string array & UKB identifiers of the subjects. Stored in the same subject order as training masks, feature and label tensors; corresponds to the edge start and end values. \\
-    \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. To represent the undirected edge $(s_v, s_w) \in E$, the second directed edge $s_w \leadsto s_v$ is added. \\
+    \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. To represent the undirected edge $(s_v, s_w) \in E$, another directed edge $s_w \leadsto s_v$ is added. \\
     \texttt{functional\_data} & dataframe & Row-indexed by subject with columns containing the flattened functional connectivity matrix entries. Empty if no functional data is used in the population graph. \\
     \texttt{structural\_data} & dictionary of \hfill \newline dataframes & Dictionary is indexed by the structural data modality, in this case cortical thickness, surface area, and grey matter volume. The corresponding dataframes are row-indexed by subject with columns containing the features of the relevant structural data modality. The dataframes are empty if no structural data is used. \\
     \texttt{quality\_control\_data} & dataframe & Row-indexed by subject with the columns containing Euler indices for the left and right hemispheres of the brain. Empty if no quality control data is used. \\
@@ -164,6 +164,9 @@ The population graph is stored in an extended \texttt{torch\_geometric.Data} obj
     % \end{tabular}
 \end{longtable}
 \end{center}
+
+\subsection{Testing}
+Following the requirement R1 for this project (see Section~\ref{section:requirements-analysis}), it is important to ensure that the data is preprocessed and collected into the population graph correctly. To this end, both the UKB preprocessing (Section~\ref{section:ukb-preprocessing}) and the graph construction components have unit test modules asserting the correctness of the similarity matrices and example graph topologies.
 
 \section{Graph transformation component}
 \label{section:graph-transformation}
@@ -199,7 +202,7 @@ Since the original neuroimaging dataframes and brain health masks are kept uncha
 % log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
 % min_epochs=1000):
 
-The graph neural network component contains implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, extending a shared \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. Then instantiating \texttt{BrainGCN} and \texttt{BrainGAT} simply amounts to setting the \texttt{conv\_type} parameter to either \texttt{GCN} or \texttt{GAT}, and setting the convolutional layers to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} respectively. Both \texttt{GCNConv} and \texttt{GATConv} are implemented in PyTorch Geometric library.
+The graph neural network component contains implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, extending a shared \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. Then instantiating \texttt{BrainGCN} and \texttt{BrainGAT} simply amounts to setting the \texttt{conv\_type} parameter to either \texttt{GCN} or \texttt{GAT}, and setting the convolutional layers to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} respectively, reusing the rest of the code. Both \texttt{GCNConv} and \texttt{GATConv} are implemented in PyTorch Geometric library.
 
 
 \begin{center}
@@ -244,7 +247,7 @@ The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between 
 
 The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and to report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
-\begin{figure}[]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
     \caption{GNN training and evaluation component.}\label{gnn-training-eval-component}
@@ -268,8 +271,8 @@ As a result, many hyperparameter combinations cause the model to run into memory
     
     Dimensionality reduction is possible, but from experience in the Data Science unit of assessment, cutting out half of the low-variance principal components can even worsen the predictive power and training time of the model instead of improving it. 
     
-    While the functional data modality and dimensionality reduction technique were implemented~– indeed the goal of the pipeline was to support \textit{flexibility} to construct any population graph if needed – they were not used in training.
-    \item \textit{Fixing the model size to a shallow network with a small number of units}. The learning rates were decreased and number of epochs increased to compensate for the smaller number of training parameters. The exact architecture is provided in the Appendix ?.
+    While the functional data modality and dimensionality reduction technique were implemented~– indeed the goal of the pipeline was to support \textit{flexibility} to construct any population graph if needed (requirement R2, see Section~\ref{section:requirements-analysis}) – they were not used in training.
+    \item \textit{Fixing the model size to a small set of shallow networks with a small number of units}. The learning rates were decreased and number of epochs increased to compensate for the smaller number of training parameters. The exact architecture is provided in the Appendix ?.
     \item \textit{Fixing the set of possible similarity feature sets and simlarity thresholds}. The default mode of averaging the feature-wise scores was used instead of arbitrary linear combinations, because, having no domain-specific knowledge of the relative importance of different confounders, this was the most non-informative, unbiased choice. From running some initial models, the feasible similarity thresholds have been all above 0.6, with even 0.7 or 0.8 often causing memory issues. This additionally motivated the use of as many non-imaging features as possible. \texttt{SEX} was always included in the feature sets because it is known to be an important confounder significantly affecting the volume of the brain and sometimes even requiring a separate model for every sex~\cite{kaufmann2019}. The full list of population graphs tested can be found in Appendix ?.
 \end{enumerate}
 
@@ -288,7 +291,7 @@ The summary of the above steps is shown in Figure~\ref{gnn-training-eval-compone
 
 To optimise the training procedure, for every fold the models are trained with \textit{early stopping}: while validation loss itself is not used to update the parameters, the training stops as validation loss begins to increase with decreasing training loss (indicating overfitting on training data). At this point the weights are reverted back to when the validation loss was the smallest. In this project, the models are trained for at least 1,000 epochs and stopped early if MSE does not decrease by at least 0.005 over 100 consecutive iterations. 
 
-As the hyperparameter tuning converges, the most promising model is selected to be tested on the hold-out test set. The metrics most commonly used in the literature for evaluating performance for the brain age (or any other regression) task are Pearson's correlation $r$ and coefficient of determination $r^2$~\cite{pervaiz2020optimising, niu2019improved}.
+As the hyperparameter tuning converges, the most promising model for each of the \texttt{BrainGCN} and \texttt{BrainGAT} architectures is selected to be tested on the hold-out test set. The metrics most commonly used in the literature for evaluating performance for the brain age (or any other regression) task are Pearson's correlation $r$ and coefficient of determination $r^2$~\cite{pervaiz2020optimising, niu2019improved}.
 
 \subsection{Robustness measurement}
 The proposed \textit{extension} for the training and evaluation component was to evaluate the robustness of the GNN models to the noise in the population graph, measured by the rate of performance drop with increasing noise. In this project, robustness is evaluated in two ways, testing for two different effects of noise: one of them associated with the noisy neuroimaging data, and the other with the population graph representation of the dataset.
@@ -302,17 +305,6 @@ The main advantage of using the population graph of all subjects (rather than tr
 % The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
 
 The repository follows the structure of the five key project components shown in Figure~\ref{pipeline-overview}. Its overview is presented in Table~\ref{table:repository-overview}.
-
-% \begin{table}[]
-%     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
-%     \centering
-%     \begin{tabular}{lp{0.175\textwidth}p{0.475\textwidth}}
-%         \hline
-%     \textbf{Component} & \textbf{Filename} & \textbf{Description} \\ \hline
-%     \multirow{2}{*}{XXX} & \texttt{ukb\_preprocess.py} & \\\cline{2-3}
-%                      & \texttt{ukb\_preprocess_test.py} & \hline
-%     \end{tabular}
-% \end{table}
 
 
 \begin{center}
