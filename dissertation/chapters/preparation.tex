@@ -365,8 +365,8 @@ The predictive power of a model can be evaluated based on its performance on a s
 
 The project has three main stages that directly correspond to the Success Criteria of the Project Proposal (Appendix ?):
 
-\begin{enumerate}
-    \item Implementation of the population graph data structure, with nodes containing the individual neuroimaging data and edges representing associations between them based on pairwise similarity. This involves: \begin{enumerate}
+\begin{enumerate}[label=S\arabic*.]
+    \item Implementation of the population graph data structure, with nodes containing the individual neuroimaging data and edges representing associations between them based on pairwise similarity. This involves: \begin{enumerate}[label=\theenumi\arabic*.]
         \item Preprocessing of the functional, structural imaging and non-imaging data of the UKB subjects.
         \item Implementation of the customisable similarity metric that would compare two subjects and return the similarity score.
         \item A pipeline that would generate the population graph for a given set of subjects, their modalities, similarity metric and similarity threshold.
@@ -376,16 +376,17 @@ The project has three main stages that directly correspond to the Success Criter
     \item Training and evaluation of the two graph neural network architectures on the UKB population graph. This includes the \textit{extension} of implementing the robustness measurement framework.
 \end{enumerate}
 
-Since every stage depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). 
+Since every stage depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). This fits best with the \textit{waterfall model} of software development because the design of the pipeline directly corresponds to the three project stages, and implementation depends on how the different pipeline stages are designed to interact with each other.
 
-I also expect the first stage to be the most complex for the following reasons.
-\begin{enumerate}
+
+I expect stage S1 to be the most complex for the following reasons, which give a set of additional requirements.
+\begin{enumerate}[label=R\arabic*.]
     \item Care must be taken to make sure that the data is handled \textit{correctly}. This will require testing of the components which transform the data to the population graph data structure.
     \item The pipeline must be \textit{flexible} enough to support the various combinations of modalities, subjects, and similarity metrics, which will be ensured by independent support of every modality and the \textit{extension} of the project to support custom similarity functions.
     \item The pipeline has to be \textit{modular} enough to be easily extended to more datasets, modalities and processing options in the future. To achieve this, the pipeline will be split into independent components with their own designated function, so that they are easier to build upon independently.
 \end{enumerate} 
 
-This requirement in itself largely fulfils the proposed \textit{extension} of implementing the pipeline that can handle raw data at the one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Part II project. 
+These considerations by themselves largely fulfil the proposed \textit{extension} of implementing the pipeline that can handle raw data at the one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Part II project. 
 
 The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in the Implementation chapter.
 
