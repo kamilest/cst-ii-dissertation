@@ -85,9 +85,6 @@ For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) ther
 % \end{blockarray}
 %  \]
 
-\subsection{Testing}
-Following the requirement R1 for this project (see Section~\ref{section:requirements-analysis}), it is important to ensure that the data is preprocessed correctly. This component has an additional unit testing module to ensure that the similarity matrices are computed correctly. Functional connectivity matrices use a well-tested third-party library. 
-
 \section{Graph construction component}
 \label{section:graph-construction}
 The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features, but is not prepared for training – it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because this allows for the reuse of the same intermediate representation for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for the data processing in this component are schematically visualised in Figure~\ref{graph-construction-component}.
@@ -168,6 +165,9 @@ The population graph is stored in an extended \texttt{torch\_geometric.Data} obj
 \end{longtable}
 \end{center}
 
+\subsection{Testing}
+Following the requirement R1 for this project (see Section~\ref{section:requirements-analysis}), it is important to ensure that the data is preprocessed and collected into the population graph correctly. To this end, both the UKB preprocessing (Section~\ref{section:ukb-preprocessing}) and the graph construction components have unit test modules asserting the correctness of the similarity matrices and example graph topologies.
+
 \section{Graph transformation component}
 \label{section:graph-transformation}
 
@@ -202,7 +202,7 @@ Since the original neuroimaging dataframes and brain health masks are kept uncha
 % log=True, early_stopping=True, patience=10, delta=0.005, cv=False, fold=0, run_name=None,
 % min_epochs=1000):
 
-The graph neural network component contains implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, extending a shared \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. Then instantiating \texttt{BrainGCN} and \texttt{BrainGAT} simply amounts to setting the \texttt{conv\_type} parameter to either \texttt{GCN} or \texttt{GAT}, and setting the convolutional layers to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} respectively. Both \texttt{GCNConv} and \texttt{GATConv} are implemented in PyTorch Geometric library.
+The graph neural network component contains implementations for the graph neural network (GNN) architectures used in this project: the graph convolutional network (GCN, Section~\ref{training-gcn}) and the graph attention network (GAT, Section~\ref{training-gat}). The networks are implemented as two PyTorch modules called \texttt{BrainGCN} and \texttt{BrainGAT}, extending a shared \texttt{BrainGNN} module. Table~\ref{table:braingnn} presents the parameters used to define a \texttt{BrainGNN} instance. Then instantiating \texttt{BrainGCN} and \texttt{BrainGAT} simply amounts to setting the \texttt{conv\_type} parameter to either \texttt{GCN} or \texttt{GAT}, and setting the convolutional layers to either \texttt{torch\_geometric.nn.GCNConv} or \texttt{torch\_geometric.nn.GATConv} respectively, reusing the rest of the code. Both \texttt{GCNConv} and \texttt{GATConv} are implemented in PyTorch Geometric library.
 
 
 \begin{center}
@@ -247,7 +247,7 @@ The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between 
 
 The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and to report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
-\begin{figure}[]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
     \caption{GNN training and evaluation component.}\label{gnn-training-eval-component}
@@ -271,8 +271,8 @@ As a result, many hyperparameter combinations cause the model to run into memory
     
     Dimensionality reduction is possible, but from experience in the Data Science unit of assessment, cutting out half of the low-variance principal components can even worsen the predictive power and training time of the model instead of improving it. 
     
-    While the functional data modality and dimensionality reduction technique were implemented~– indeed the goal of the pipeline was to support \textit{flexibility} to construct any population graph if needed – they were not used in training.
-    \item \textit{Fixing the model size to a shallow network with a small number of units}. The learning rates were decreased and number of epochs increased to compensate for the smaller number of training parameters. The exact architecture is provided in the Appendix ?.
+    While the functional data modality and dimensionality reduction technique were implemented~– indeed the goal of the pipeline was to support \textit{flexibility} to construct any population graph if needed (requirement R2, see Section~\ref{section:requirements-analysis}) – they were not used in training.
+    \item \textit{Fixing the model size to a small set of shallow networks with a small number of units}. The learning rates were decreased and number of epochs increased to compensate for the smaller number of training parameters. The exact architecture is provided in the Appendix ?.
     \item \textit{Fixing the set of possible similarity feature sets and simlarity thresholds}. The default mode of averaging the feature-wise scores was used instead of arbitrary linear combinations, because, having no domain-specific knowledge of the relative importance of different confounders, this was the most non-informative, unbiased choice. From running some initial models, the feasible similarity thresholds have been all above 0.6, with even 0.7 or 0.8 often causing memory issues. This additionally motivated the use of as many non-imaging features as possible. \texttt{SEX} was always included in the feature sets because it is known to be an important confounder significantly affecting the volume of the brain and sometimes even requiring a separate model for every sex~\cite{kaufmann2019}. The full list of population graphs tested can be found in Appendix ?.
 \end{enumerate}
 
@@ -291,7 +291,7 @@ The summary of the above steps is shown in Figure~\ref{gnn-training-eval-compone
 
 To optimise the training procedure, for every fold the models are trained with \textit{early stopping}: while validation loss itself is not used to update the parameters, the training stops as validation loss begins to increase with decreasing training loss (indicating overfitting on training data). At this point the weights are reverted back to when the validation loss was the smallest. In this project, the models are trained for at least 1,000 epochs and stopped early if MSE does not decrease by at least 0.005 over 100 consecutive iterations. 
 
-As the hyperparameter tuning converges, the most promising model is selected to be tested on the hold-out test set. The metrics most commonly used in the literature for evaluating performance for the brain age (or any other regression) task are Pearson's correlation $r$ and coefficient of determination $r^2$~\cite{pervaiz2020optimising, niu2019improved}.
+As the hyperparameter tuning converges, the most promising model for each of the \texttt{BrainGCN} and \texttt{BrainGAT} architectures is selected to be tested on the hold-out test set. The metrics most commonly used in the literature for evaluating performance for the brain age (or any other regression) task are Pearson's correlation $r$ and coefficient of determination $r^2$~\cite{pervaiz2020optimising, niu2019improved}.
 
 \subsection{Robustness measurement}
 The proposed \textit{extension} for the training and evaluation component was to evaluate the robustness of the GNN models to the noise in the population graph, measured by the rate of performance drop with increasing noise. In this project, robustness is evaluated in two ways, testing for two different effects of noise: one of them associated with the noisy neuroimaging data, and the other with the population graph representation of the dataset.
@@ -305,17 +305,6 @@ The main advantage of using the population graph of all subjects (rather than tr
 % The repository overview should be around one page in length and should describe the high-level structure of the source code found in your source code Repository; ... could be implemented as a table with folders/file names and the functionality implemented in those files
 
 The repository follows the structure of the five key project components shown in Figure~\ref{pipeline-overview}. Its overview is presented in Table~\ref{table:repository-overview}.
-
-% \begin{table}[]
-%     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
-%     \centering
-%     \begin{tabular}{lp{0.175\textwidth}p{0.475\textwidth}}
-%         \hline
-%     \textbf{Component} & \textbf{Filename} & \textbf{Description} \\ \hline
-%     \multirow{2}{*}{XXX} & \texttt{ukb\_preprocess.py} & \\\cline{2-3}
-%                      & \texttt{ukb\_preprocess_test.py} & \hline
-%     \end{tabular}
-% \end{table}
 
 
 \begin{center}
