@@ -13,7 +13,7 @@ This chapter presents in more depth the brain age estimation problem (Section~\r
 \section{Brain age estimation}
 \label{brain-age-estimation}
 
-The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to a normal brain ageing process. 
+The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to the normal brain ageing process. 
 
 Following the formal framework of Niu et al.~\cite{niu2019improved}, the brain age $y_b$ can be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that is defined as the discrepancy between the chronological and the brain age:
 
@@ -36,24 +36,24 @@ Our goal is to estimate brain age $y_b$ as a function $f$ of brain imaging featu
     y_b = f(X) + \varepsilon_e,
 \end{equation}
 
-where $\varepsilon_e$ is the prediction error, while the estimate of \textit{chronological} age is instead (from Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2}):
+where $\varepsilon_e$ is the prediction error, while the estimate of \textit{chronological} age is instead (from Equations~\eqref{brainage:eq1} and~\eqref{brainage:eq2})
 
 \begin{align}
-    y_c &= f(X) + \varepsilon
+    y_c &= f(X) + \varepsilon,
         \label{brainage:eq3}
 \end{align}
 
 where $\varepsilon \coloneqq \varepsilon_e - \varepsilon_g$ is the error term consisting of both the brain age gap and the model prediction error.
 
-Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as predicted variable, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy subjects only, $f(\cdot)$ can explain both the apparent brain age \textit{and} true chronological age with $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error. When the same model is applied to non healthy patients, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap. To put it another way, if the model is trained both on healthy and non-healthy subjects to predict chronological age, it might learn the confounding effects of both normal (chronological) ageing, and disease-related (brain) ageing, thus hiding the brain age gaps we are actually interested in~\cite{dukart2011age}.
+Since the true brain age is unknown, any (semi-)supervised machine learning model can only use chronological age as predicted variable, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy subjects only, $f(\cdot)$ can explain both the apparent brain age \textit{and} the true chronological age with $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error. When the same model is applied to non-healthy patients, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap. On the other hand, if the model is trained  on both healthy and non-healthy subjects to predict chronological age, it might learn the confounding effects of both normal (chronological) ageing, and disease-related (brain) ageing, thus hiding the brain age gaps~\cite{dukart2011age}.
 
-An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of scope of this dissertation.
+An alternative method, which does not restrict training data only to healthy subjects, is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of the scope of this dissertation.
 
 \section{Dataset}
 \label{dataset}
 
-For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements, including genetic data. Of particular relevance to this dissertation are the UKB participants with structural and functional magnetic resonance imaging (MRI) data, a total of 17,550 subjects, which will be explained in more detail in this section. 
-% The training features, discussed below, are extracted from the structural and functional MRI images as well as the non-imaging data.
+For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow2015uk}, which is a continuous population-wide study of over 500,000 participants containing a wide range of measurements. Of particular relevance to this dissertation are the UKB participants with structural and functional magnetic resonance imaging (MRI) data, a total of 17,550 subjects. The features that have been extracted from these subjects are explained in more detail in this section. 
+
 
 \subsection{Structural features}
 
@@ -61,14 +61,14 @@ Structural MRI is used to analyse the anatomy of the brain. Its two main modalit
 
 \begin{table}[]
 \centering
-    \caption{Summary of the features derived from structural MRI, reported as an average over a particular brain region.}\label{table:structural-features}
+    \caption{Summary of the features derived from structural MRI, reported separately for every brain region.}\label{table:structural-features}
     
     \begin{tabular}{lp{11cm}}
         \hline
     \textbf{Structural feature}            & \textbf{Description} \\ \hline
-    Cortical thickness &  Average thickness of the cerebral cortex. \\
-    Surface area       &  Surface area of the cortex. \\
-    Grey matter volume &  Total volume of the grey matter component in the brain region. \\ \hline
+    Cortical thickness &  Average thickness of the cerebral cortex in a brain region. \\
+    Surface area       &  Surface area of the cerebral cortex in a brain region. \\
+    Grey matter volume &  Total volume of the grey matter component of a brain region. \\ \hline
     \end{tabular}
 \end{table}
 
@@ -115,14 +115,14 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 % TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated brain.
 
 \subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which corresponds to the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any bias in prediction that might be related to scan quality. This project will use Euler indices as node features.
+Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which represents the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
 
 
 \subsection{Neuroimaging data preprocessing}
 
 All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
 
-A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel\footnote{A \textit{voxel} is a discrete volumetric element.} measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 % TODO Insert a parcellated brain image
 
@@ -130,18 +130,18 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 
 \subsection{Non-imaging features}
 
-In this dissertation, the non-imaging data refers to all subject data that does not come from MRI scans. The features related to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. 
+In this dissertation, non-imaging data refers to all subject data that does not come from MRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table \ref{table:phenotype-features} summarises the non-imaging features selected for this project.
 
-\begin{table}[]
+\begin{table}[h]
     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
     \centering
     \begin{tabular}{cp{6cm}p{7.5cm}}
         \hline
     \textbf{Code} & \textbf{Non-imaging feature} & \textbf{Explanation} \\ \hline
     \texttt{AGE} & Chronological age &  Used as the training label. \\
-    \texttt{FI} & Fluid intelligence score &  Measures cognitive performance, related to increased brain activity~\cite{gray2003neural}. \\
+    \texttt{FI} & Fluid intelligence score &  Measures cognitive performance. Related to increased brain activity~\cite{gray2003neural}. \\
     \texttt{FTE} & Years of full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
-    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system. \\
+    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system\footnote{\url{https://icd.who.int/browse10/2019/en}}. \\
     \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed}. \\
     \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\ \hline
     \end{tabular}
@@ -154,11 +154,11 @@ The non-imaging data is used to compute the inter-subject similarity score, whic
 
 One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects for downstream machine learning tasks is a \textit{population graph} data structure, as it is presented by Parisot et al.~\cite{parisot2018disease}.
 
-The set of $N$ subjects $S$ is connected into a undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+The set of $N$ subjects $S$ is connected into an undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
 
 Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging information of the subjects to create edges between the nodes. 
 
-Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful.
+Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful. If carefully defined, the similarity metrics could include the domain expertise of neurologists and psychiatrists as well.
 
 Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
 
@@ -167,7 +167,7 @@ Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim
     \label{eq:similarity}
 \end{equation}
 
-Here $\{M_1, \dots, M_n\}$ is a set of non-imaging metrics that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when values for a given non-imaging feature $M_i$ match for two subjects $s_v$ and $s_w$. In practice, if the metric is floating-point number, ``matching'' could be defined in terms of non-imaging features being within some constant $\epsilon$. 
+Here $\{M_1, \dots, M_n\}$ is a set of non-imaging features that are used to compute subject similarity and $\mathbf{1}[\cdot]$ is an indicator function, in this case returning a non-zero value when the values for a given non-imaging feature $M_i$ match for the two subjects $s_v$ and $s_w$. In practice, if the metric is a real number, ``matching'' could be defined in terms of non-imaging features being within some constant $\epsilon > 0$. 
 
 To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neighbourhood to only highly similar subjects, a \textit{similarity threshold} $\mu$ is used such that
 
@@ -182,7 +182,9 @@ The population graphs can only be effectively accepted as input to machine learn
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-One of the strategies how the graphs can be represented in neural networks is based on spectral graph theory~\cite{hammond2011wavelets}. The main advantage of this approach that it makes the operations applied to every node independent of the local graph topology (the number of neighbours of a particular node), which is easier to optimise as the same operation can be applied to all nodes. The graph is therefore first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
+One of the approaches how the graphs can be represented in neural networks is based on spectral graph theory~\cite{hammond2011wavelets}. The main advantage of this strategy is that it makes the operations applied to every node independent of the local graph topology (the number of neighbours of a particular node). This is easier to optimise as the same operation can be applied to all nodes. 
+
+The graph is therefore first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
 
 \subsection{Graph spectral decomposition}
 
@@ -222,7 +224,7 @@ where $\odot$ is the element-wise (Hadamard) product~\cite{wu2019simplifying}.
 This section reviews the steps towards optimised graph convolutional networks (GCNs) as proposed by Kipf and Welling~\cite{kipf2017semi}.
 
 \subsubsection{ChebNets}
-To avoid the $O(n^2)$ filtering operation due to the matrix-vector multiplications in Equation~\eqref{eq:convolution}, Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
+To avoid the $O(N^2)$ filtering operation due to the matrix-vector multiplications in Equation~\eqref{eq:convolution}, Defferrard et al.'s~\cite{defferrard2016convolutional} ChebNets use recursively defined \textit{Chebyshev polynomials}
 
 \begin{gather}
     T_k(\mathbf{M}) = 2\mathbf{M}T_{k-1}(\mathbf{M}) - T_{k-2}(\mathbf{M}) \\
@@ -256,7 +258,7 @@ with $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$. The
 \subsubsection{GCNs}
 Kipf and Welling's GCNs~\cite{kipf2017semi} introduce further optimisations to ChebNets: 
 \begin{enumerate}
-    \item Taking $K=1$ makes the Equation~\eqref{eq:chebnet} linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
+    \item Taking $K=1$ makes Equation~\eqref{eq:chebnet} linear, which is more suitable for neural network architectures with linear layers and non-linearities between them.
     \item To minimise the number of trainable parameters, $\theta_0$ and $\theta_1$ become functions of a single parameter $\theta$: $\theta = \theta_0 = -\theta_1$.
     \item Further assuming $\lambda_{\mathrm{max}}\approx 2$ simplifies the computation of $\mathbf{\tilde{L}}$, since this eliminates the need for eigendecomposition of the Laplacian: $\mathbf{\tilde{L}} = 2\mathbf{L}/\lambda_{\mathrm{max}} - \mathbf{I}$ becomes $\mathbf{\tilde{L}} \approx \mathbf{L} - \mathbf{I}$.
 \end{enumerate}
@@ -359,6 +361,7 @@ The predictive power of a model can be evaluated based on its performance on a s
 
 
 \section{Requirements analysis and software engineering practice}
+\label{section:requirements-analysis}
 
 The project has three main stages that directly correspond to the Success Criteria of the Project Proposal (Appendix ?):
 
