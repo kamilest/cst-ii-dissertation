@@ -20,18 +20,24 @@ Following the \texttt{wandb} hyperparameter tuning process described in Section~
     \item All models whose 1 standard deviation interval from their MSE did not overlap with the 1 standard deviation interval of the reference MSE were filtered out.
 \end{enumerate}
 
-The performance of the best-scoring models selected by the above procedure are shown in Figures~\ref{figure:gcn-rank} and~\ref{figure:gat-rank} for the GCN and GAT model families respectively. The hyperparameters for each of the shortlisted models are listed in Appendix ?.
+The performance of the best-scoring models selected by the above procedure are shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the shortlisted models are listed in Appendix ?.
+
+% \begin{figure}[]
+%     \centering
+%     \includegraphics[width=\textwidth]{gcn_model_selection.pdf}
+%     \caption{Highest scoring population graph and GCN model parameter combinations.}\label{figure:gcn-rank}
+% \end{figure}
+
+% \begin{figure}[]
+%     \centering
+%     \includegraphics[width=\textwidth]{gat_model_selection.pdf}
+%     \caption{Highest scoring population graph and GAT model parameter combinations.}\label{figure:gat-rank}
+% \end{figure}
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=\textwidth]{gcn_model_selection.pdf}
-    \caption{Highest scoring population graph and GCN model parameter combinations.}\label{figure:gcn-rank}
-\end{figure}
-
-\begin{figure}[]
-    \centering
-    \includegraphics[width=\textwidth]{gat_model_selection.pdf}
-    \caption{Highest scoring population graph and GAT model parameter combinations.}\label{figure:gat-rank}
+    \includegraphics[width=\textwidth]{model_selection.pdf}
+    \caption{Highest scoring population graph and GNN model parameter combinations.}\label{figure:gat-gcn-rank}
 \end{figure}
 
 Although both best-ranked models (GCN1 and GAT1) seem to have relatively high variance, they still look the most promising and therefore have been selected for the evaluation procedure. Their population graph and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}.
