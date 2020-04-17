@@ -14,10 +14,10 @@
 \end{itemize}
 
 \section{Model ranking and selection}
-Following the \texttt{wandb} hyperparameter tuning process described in Section~\ref{section:training-procedure}, the models were selected according to the following procedure (applied separately to the GCN and GAT model families):
+Following the hyperparameter tuning process described in Section~\ref{section:training-procedure}, the models were selected according to the following procedure (applied separately to the GCN and GAT model families):
 \begin{enumerate}
     \item First, the models were ranked by ascending average MSE. The model with the lowest average MSE was chosen as the reference model.
-    \item All models whose 1 standard deviation interval from their MSE did not overlap with the 1 standard deviation interval of the reference MSE were filtered out.
+    \item All models whose 1 standard deviation interval from their MSE did not overlap with the 1 standard deviation interval of the reference model MSE were excluded from ranking.
 \end{enumerate}
 
 The performance of the best-scoring models selected by the above procedure are shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the shortlisted models are listed in Appendix ?.
@@ -40,7 +40,7 @@ The performance of the best-scoring models selected by the above procedure are s
     \caption{Highest scoring population graph and GNN model parameter combinations.}\label{figure:gat-gcn-rank}
 \end{figure}
 
-Although both best-ranked models (GCN1 and GAT1) seem to have relatively high variance, they still look the most promising and therefore have been selected for the evaluation procedure. Their population graph and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}.
+Although both best-ranked (reference) models (GCN1 and GAT1) seem to have relatively high variance, they still look the most promising and therefore have been selected for the evaluation procedure. Their population graph and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}.
 
 \begin{table}[]
     \caption{Best performing population graph and GNN model parameter combinations after model selection process.}\label{table:best-hyperparameters}
@@ -59,6 +59,20 @@ Although both best-ranked models (GCN1 and GAT1) seem to have relatively high va
 \end{tabular}
 \end{table}
 
+
+\label{section:evaluation-metrics}
+For sets of true labels $\mathbf{y}  = [y_1 \dots y_N]$ with mean $\bar{y}$ and predicted labels $\mathbf{\hat{y}} = [\hat{y}_1 \dots \hat{y}_N]$, \textit{Pearson's correlation} is computed as
+
+\begin{equation}
+    r(\mathbf{y}, \mathbf{\hat{y}}) = \frac{\mathrm{cov}(\mathbf{y}, \mathbf{\hat{y}})}{\sigma_{\mathbf{y}} \sigma_{\mathbf{\hat{y}}}},
+\end{equation}
+
+where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation. The \textit{coefficient of determination}, which indicates how much variance in the features $\mathbf{X}$ could be explained by the model, is computed as 
+\begin{equation}
+    r^2 = 1 - \frac{\sum_{i} (y_i - \bar{y})^2}{\sum_{i} (y_i - \hat{y}_i)^2}.
+\end{equation}
+
+Higher values for both metrics (with maximum 1) indicate a higher level of agreement between the true and predicted labels and therefore higher predictive power.
 
 % \section{Comparison against existing benchmarks}
 
