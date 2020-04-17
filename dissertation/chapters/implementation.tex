@@ -292,7 +292,18 @@ The summary of the above steps is shown in Figure~\ref{gnn-training-eval-compone
 
 To prevent overfitting and optimise the training procedure, for every fold the models are trained with \textit{early stopping}: while validation loss itself is not used to update the parameters, the training stops as validation loss begins to increase with decreasing training loss (indicating overfitting on training data). At this point the weights are reverted back to when the validation loss was the smallest. In this project, the models are trained for at least 1,000 epochs and stopped early if MSE does not decrease by at least 0.005 over 100 consecutive iterations. 
 
-As the hyperparameter tuning converges, the most promising model for each of the \texttt{BrainGCN} and \texttt{BrainGAT} architectures is selected to be tested on the hold-out test set. The metrics most commonly used in the literature for evaluating performance for the brain age (or any other regression) task are Pearson's correlation $r$ and coefficient of determination $r^2$~\cite{pervaiz2020optimising, niu2019improved}.
+As the hyperparameter tuning converges, the most promising model for each of the \texttt{BrainGCN} and \texttt{BrainGAT} architectures is selected to be tested on the hold-out test set. The metrics most commonly used in the literature for evaluating performance for the brain age (or any other regression) task~\cite{pervaiz2020optimising, niu2019improved} are Pearson's correlation $r$ and coefficient of determination $r^2$. For sets of true labels $\mathbf{y}  = [y_1 \dots y_N]$ with mean $\bar{y}$ and predicted labels $\mathbf{\hat{y}} = [\hat{y}_1 \dots \hat{y}_N]$, \textit{Pearson's correlation} is computed as
+
+\begin{equation}
+    r(\mathbf{y}, \mathbf{\hat{y}}) = \frac{\mathrm{cov}(\mathbf{y}, \mathbf{\hat{y}})}{\sigma_{\mathbf{y}} \sigma_{\mathbf{\hat{y}}}},
+\end{equation}
+
+where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation. The \textit{coefficient of determination}, which indicates how much variance in the features $\mathbf{X}$ could be explained by the model, is computed as 
+\begin{equation}
+    r^2 = 1 - \frac{\sum_{i} (y_i - \bar{y})^2}{\sum_{i} (y_i - \hat{y}_i)^2}.
+\end{equation}
+
+Higher values for both metrics (with maximum 1) indicate a higher level of agreement between the true and predicted labels and therefore higher predictive power.
 
 \subsection{Robustness measurement}
 The proposed \textit{extension} for the training and evaluation component was to evaluate the robustness of the GNN models to the noise in the population graph, measured by the rate of performance drop with increasing noise. In this project, robustness is evaluated in two ways, testing for two different effects of noise: one of them associated with the noisy neuroimaging data, and the other with the population graph representation of the dataset.
