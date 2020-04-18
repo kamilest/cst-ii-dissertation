@@ -16,11 +16,11 @@
 \section{Model ranking and selection}
 Following the hyperparameter tuning process described in Section~\ref{section:training-procedure}, the models were selected according to the following procedure (applied separately to the GCN and GAT model families):
 \begin{enumerate}
-    \item First, the models were ranked by ascending average MSE. The model with the lowest average MSE was chosen as the reference model.
+    \item First, the models were ranked by ascending average MSE loss. The model with the lowest average MSE was chosen as the reference model.
     \item All models whose 1 standard deviation interval from their MSE did not overlap with the 1 standard deviation interval of the reference model MSE were excluded from ranking.
 \end{enumerate}
 
-The performance of the best-scoring models selected by the above procedure are shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the shortlisted models are listed in Appendix ?.
+The cross-validation performance of the best-scoring models selected by the above procedure is shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the short-listed models are listed in Appendix~?.
 
 % \begin{figure}[]
 %     \centering
@@ -34,16 +34,16 @@ The performance of the best-scoring models selected by the above procedure are s
 %     \caption{Highest scoring population graph and GAT model parameter combinations.}\label{figure:gat-rank}
 % \end{figure}
 
-\begin{figure}[]
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{model_selection.pdf}
     \caption{Highest scoring population graph and GNN model parameter combinations.}\label{figure:gat-gcn-rank}
 \end{figure}
 
-Although both best-ranked (reference) models (GCN1 and GAT1) seem to have relatively high variance, they still look the most promising and therefore have been selected for the evaluation procedure. Their population graph and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}.
+Although both best-ranked (reference) models (GCN1 and GAT1) have relatively high variance, they still seem to be the most promising and therefore have been selected for further evaluation. Their population graph specification and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}.
 
 \begin{table}[]
-    \caption{Best performing population graph and GNN model parameter combinations after model selection process.}\label{table:best-hyperparameters}
+    \caption{Best performing population graph and GNN model parameter combinations during the model selection process.}\label{table:best-hyperparameters}
     \centering
     \small
     \begin{tabular}{p{0.3\textwidth}p{0.3\textwidth}p{0.3\textwidth}}
@@ -59,20 +59,44 @@ Although both best-ranked (reference) models (GCN1 and GAT1) seem to have relati
 \end{tabular}
 \end{table}
 
-
+\section{Evaluation metrics}
 \label{section:evaluation-metrics}
+The main performance metrics used for most regression problems, including brain age estimation task, are \textit{Pearson's correlation} and \textit{coefficient of determination}.
+
+\subsubsection{Pearson's correlation}
 For sets of true labels $\mathbf{y}  = [y_1 \dots y_N]$ with mean $\bar{y}$ and predicted labels $\mathbf{\hat{y}} = [\hat{y}_1 \dots \hat{y}_N]$, \textit{Pearson's correlation} is computed as
 
 \begin{equation}
     r(\mathbf{y}, \mathbf{\hat{y}}) = \frac{\mathrm{cov}(\mathbf{y}, \mathbf{\hat{y}})}{\sigma_{\mathbf{y}} \sigma_{\mathbf{\hat{y}}}},
 \end{equation}
 
-where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation. The \textit{coefficient of determination}, which indicates how much variance in the features $\mathbf{X}$ could be explained by the model, is computed as 
+where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation. 
+
+\subsubsection{Coefficient of determination}
+The \textit{coefficient of determination} indicates how much variance in the features $\mathbf{X}$ could be explained by the model. It is computed as 
 \begin{equation}
     r^2 = 1 - \frac{\sum_{i} (y_i - \bar{y})^2}{\sum_{i} (y_i - \hat{y}_i)^2}.
 \end{equation}
 
 Higher values for both metrics (with maximum 1) indicate a higher level of agreement between the true and predicted labels and therefore higher predictive power.
+
+
+\section{Test set performance of selected models}
+Generally in literature, after using cross-validation for model selection, the model is retrained on the entire dataset before giving a point estimate on a hold-out test set~\cite{raschka2018model}. This is because training on more data, especially when the dataset is small, allows to learn more patterns and therefore give better predictions on the unseen data. However, in this project the validation set was also used for early stopping since neural networks are especially prone to overfitting~\cite{prechelt1998automatic}. Some investigation of the hyperparameter tuning has shown that applying the stopping criteria discussed in Section~\ref{section:training-procedure} on just the training set would have still led to convergence only after the model has already overfit on the unseen validation labels. On the other hand, it is unclear how the stopping criteria should be adjusted when the training set size increases. 
+
+Considering that the UKB dataset is large and that retraining the model with more data but without early stopping might not pay off for the loss in generalisation, all cross-validation folds were kept for test set performance estimation. Table~\ref{table:test-performance} gives the hold-out test set estimates for the metrics discussed in Section~\ref{section:evaluation-metrics}.
+
+\begin{table}[h]
+    \caption{Average test set performance of GCN1 and GAT1 models. \\ The results are within one standard deviation.}\label{table:test-performance}
+    \centering
+    \small
+    \begin{tabular}{ccc}
+        \hline
+    \textbf{Model} & $r$ & $r^2$ \\  \hline
+        GCN1 & $0.675 \pm 0.008$ & $0.445 \pm 0.010$ \\
+        GAT1 & $0.670 \pm 0.005$ & $0.477 \pm 0.008$ \\ \hline
+\end{tabular}
+\end{table}
 
 % \section{Comparison against existing benchmarks}
 
