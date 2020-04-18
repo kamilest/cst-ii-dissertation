@@ -57,7 +57,7 @@ For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow201
 
 \subsection{Structural features}
 
-Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others. The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
+Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others (see Figures~\ref{figure:t1} and~\ref{figure:t2} for T1 and T2-weighted MRI images respectively). The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
 
 \begin{table}[]
 \centering
@@ -72,13 +72,24 @@ Structural MRI is used to analyse the anatomy of the brain. Its two main modalit
     \end{tabular}
 \end{table}
 
+\begin{figure}[]
+    \centering
+    \includegraphics[width=\textwidth]{T1.png}
+    \caption{The slices of the T1-weighted MRI image.}\label{figure:t1}
+\end{figure}
 
-% TODO Insert image of axial slice of t1, t2, and FLAIR brain scan
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=\textwidth]{T2.png}
+    \caption{The slices of the T2-weighted FLAIR MRI image.}\label{figure:t2}
+\end{figure}
+
 
 \subsection{Functional features}
 \label{fmri}
 
-Functional MRI (fMRI) data indirectly measures brain activity over time. It is represented by \textit{blood oxygenation level dependent} (BOLD) time-series that show changes in oxygenation of the blood vessels. Sudden increases in oxygen demand are related to higher brain activity in the corresponding brain region.
+Functional MRI (fMRI) data indirectly measures brain activity over time. It is represented by \textit{blood oxygenation level dependent} (BOLD) time-series (Figure~\ref{figure:fmri}) that show changes in oxygenation of the blood vessels. Sudden increases in oxygen demand are related to higher brain activity in the corresponding brain region.
 
 The two types of an fMRI image are \textit{task} fMRI, when the subject is asked to perform a specific cognitive task, and \textit{resting state} fMRI (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
@@ -111,8 +122,11 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 % Tiago's observation that partial correlation may give better results when including functional MRI time-series in the machine learning model.
 % From wiki on partial correlation: In probability theory and statistics, partial correlation measures the degree of association between two random variables, with the effect of a set of controlling random variables removed. If we are interested in finding whether or to what extent there is a numerical relationship between two variables of interest, using their correlation coefficient will give misleading results if there is another, confounding, variable that is numerically related to both variables of interest. This misleading information can be avoided by controlling for the confounding variable, which is done by computing the partial correlation coefficient. This is precisely the motivation for including other right-side variables in a multiple regression; but while multiple regression gives unbiased results for the effect size, it does not give a numerical value of a measure of the strength of the relationship between the two variables of interest.
 
-
-% TODO Insert diagram of fmri, corresponding BOLD timeseries and a parcellated brain.
+\begin{figure}[]
+    \centering
+    \includegraphics[width=\textwidth]{fmri.pdf}
+    \caption{The example BOLD time series.}\label{figure:fmri}
+\end{figure}
 
 \subsection{Euler indices}
 Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which represents the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
@@ -122,9 +136,15 @@ Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a qu
 
 All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) with standard UK Biobank pipelines\footnote{\url{https://biobank.ctsu.ox.ac.uk/crystal/crystal/docs/brain_mri.pdf}}. For the purpose of this study, the data was further \textit{parcellated} at the Department of Psychiatry by Dr Richard Bethlehem, Dr Rafael Romero-Garcia and Dr Lisa Ronan\footnote{\url{https://github.com/ucam-department-of-psychiatry/UKB}}.
 
-A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel\footnote{A \textit{voxel} is a discrete volumetric element.} measurements into per-parcel summaries. In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
+A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel\footnote{A \textit{voxel} is a discrete volumetric element.} measurements into per-parcel summaries (see Figure~\ref{figure:parcellated-brain} for an example). In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
-% TODO Insert a parcellated brain image
+
+
+\begin{figure}[]
+    \centering
+    \includegraphics[width=\textwidth]{parcellated_brain.png}
+    \caption{The slices of the MRI image with parcels highlighted in different colours.}\label{figure:parcellated-brain}
+\end{figure}
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
 
