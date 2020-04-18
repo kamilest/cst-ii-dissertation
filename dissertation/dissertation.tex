@@ -3,7 +3,7 @@
 \usepackage[pdfborder={0 0 0}]{hyperref}
 \urlstyle{same}
 \usepackage[UKenglish]{babel}
-% \usepackage[backend=biber,style=numeric,sorting=none]{biblat‌​ex}
+% \usepackage{bibunits}
 
 \usepackage[margin=25mm]{geometry}
 \usepackage[skip=2pt]{caption}
@@ -48,8 +48,11 @@
 % \renewcommand{\labelenumii}{\theenumii}
 % \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
 
+\usepackage[style=numeric,sorting=none]{biblat‌​ex}
+
+\addbibresource{references.bib}
 \begin{document}
-\bibliographystyle{unsrt}
+
 
 % \include{./chapters/proforma}
 
@@ -66,8 +69,10 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \addcontentsline{toc}{chapter}{Bibliography}
-\bibliography{references}
-
+\printbibliography
+% \bibliography{references}
+% \putbib[references]
+% \end{bibunit}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \appendix
@@ -75,7 +80,11 @@
 % Assessors like to see some sample code or example circuit diagrams, and appendices are the sensible places to include such items. Accordingly, software and hardware projects should incorporate appropriate appendices. Note that the 12,000 word limit does not include material in the appendices, but only in extremely unusual circumstances may appendices exceed 10–15 pages – if you feel that such unusual circumstances might apply to you you should ask your Director of Studies and Supervisor to apply to the Chairman of Examiners. It is quite in order to have no appendices. Appendices should appear between the bibliography and the project proposal.
 
 \include{./chapters/model_selection}
-% \chapter{Project Proposal}
+
+% \begin{bibunit}[unsrt]
+% \include{./proposal}
+% \putbib[references]
+% \end{bibunit}
 % \input{proposal}
 % \bibliography{references-proposal}
 
