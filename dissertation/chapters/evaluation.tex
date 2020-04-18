@@ -6,13 +6,6 @@
 
 % ~2,000 words
 
-\begin{itemize}
-    \item Permutation testing on features/labels or both, measuring $r$, $r^2$
-    \item Plot with test set performance of best GCN and best GAT model
-    \item Compare with literature on brain age estimation? (i.e. this model is quite poor)
-    \item Robustness of the graphs: adding percentage noise to nodes and removing percentage edges
-\end{itemize}
-
 \section{Model ranking and selection}
 Following the hyperparameter tuning process described in Section~\ref{section:training-procedure}, the models were selected according to the following procedure (applied separately to the GCN and GAT model families):
 \begin{enumerate}
@@ -101,8 +94,18 @@ Considering that the UKB dataset is large and that retraining the model with mor
 
 \section{Permutation testing}
 
-\section{Robustness measurement}
-Another useful metric to evaluate the performance of the 
+\section{Population graph robustness to noisy features}
+A desirable property for the real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in data.
+For example, as discussed in Section~\ref{section:implementation-robustness}, it is useful if the model can retain its performance even when the data contains particularly noisy MRI scans. Population graphs trained on graph neural networks could do this by exploiting the neighbourhoods that are hopefully less noisy than a given node. Whether they are actually capable of doing so could be tested by either adding noise to an increasing proportion of nodes or depriving the nodes from their neighbourhoods. 
+
+For the first type of robustness evaluation, the normalised feature tensor \texttt{x} of the population graph (see Table~\ref{table:population-graph}) is perturbed with the additive white Gaussian noise of variance 0.5 for the increasing proportion of nodes – the levels chosen were 1\%, 5\%, 10\%, 20\%, 30\% and 50\%. Following the renormalisation of the tensor, the model is retrained again on the training dataset and tested on the hold-out test set, measuring the drop in performance. To make sure that any effect on the evaluation metrics is due to added noise and not the chaning dataset split, the model is trained on a single dataset split while the noise is added to different subjects. For each of the GCN and GAT models, this results in five training procedures at each noise level.
+
+
+\section{Population graph robustness to loss of structure}
+The the purpose of the second type of robustness is to explore whether the population graph structure itself is useful in estimating the brain age for a particular node. To this end, instead of adding noise to the nodes, an increasing proportion of edges is removed from the population graph. Similarly to the previous section, the selected proportions of edges removed were 1\%, 5\%, 10\%, 20\%, 30\% and 50\%. For each of these levels the training procedure is carried out five times using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on the node features only. 
+
+
+
 
 
 % \section{Comparison against existing benchmarks}
