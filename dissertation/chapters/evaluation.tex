@@ -131,14 +131,21 @@ The effect of removing the edges on predictive power of the GNN models is shown 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{edge_noise_r.pdf}
-    \caption{The effect of removing the edges on $r$ performance metric.}\label{figure:edge-noise-r}
+    \caption{The effect of removing edges on $r$ performance metric, with error bars representing standard deviation}\label{figure:edge-noise-r}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{edge_noise_r2.pdf}
-    \caption{The effect of removing the edges on $r^2$ performance metric.}\label{figure:edge-noise-r2}
+    \caption{The effect of removing edges on $r^2$ performance metric, with error bars representing standard deviation.}\label{figure:edge-noise-r2}
 \end{figure}
+
+\subsubsection{Discussion}
+
+Compared to the results in the previous section where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes does \texttt{not} affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide and overlapping across most, if not all, edge loss levels for both evaluation metrics. 
+
+This experiment shows that for brain age estimation problem, the models relied more on the features of individual nodes rather than similarity metrics and in turn the neighbourhoods of other population graph nodes. This might mean that the similarity metrics were not informative enough to allow for effective sharing of feature and/or label information, or that the (brain) age depends more on the feature interactions within a single brain rather than particular signs that generalise to other individuals. In this is true, more powerful models that do not use the graph structure are more appropriate for the brain age estimation task.
+
 
 % \section{Comparison against existing benchmarks}
 
