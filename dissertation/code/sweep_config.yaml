@@ -1,0 +1,40 @@
+method: bayes
+metric:
+  goal: minimize
+  name: cv_validation_average_mse
+parameters:
+  dropout:
+    distribution: uniform
+    max: 0.5
+    min: 0
+  epochs:
+    value: 10000
+  layer_sizes:
+    distribution: categorical
+    values:
+    - [1024, 512, 512, 256, 256, 1]
+    - [2048, 1024, 512, 256, 128, 1]
+    - [1024, 512, 512, 512, 256, 256, 1]
+    - [1024, 512, 512, 256, 256, 128, 128, 1]
+    - [512, 512, 512, 256, 128, 1]
+    - [1024, 512, 256, 128, 128, 1]
+  learning_rate:
+    distribution: log_uniform
+    max: -2.995
+    min: -9.904
+  n_conv_layers:
+    distribution: int_uniform
+    max: 5
+    min: 1
+  similarity:
+    distribution: categorical
+    values:
+    - (['SEX', 'ICD10', 'FI', 'FTE', 'MEM'], 0.8)
+    - (['SEX', 'ICD10', 'FI', 'FTE', 'MEM'], 0.9)
+    - (['SEX', 'FTE', 'FI', 'MEM'], 0.8)
+    - (['SEX', 'ICD10', 'MEM', 'FTE'], 0.8)
+    - (['SEX', 'ICD10', 'MEM', 'FI'], 0.8)
+  weight_decay:
+    distribution: log_uniform
+    max: -2.995
+    min: -9.904

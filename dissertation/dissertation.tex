@@ -47,15 +47,17 @@
                                         % more readable
 % \renewcommand{\labelenumii}{\theenumii}
 % \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+\usepackage{chngcntr}
+
 
 \usepackage[backend=bibtex, style=numeric,sorting=none]{biblatex}
 \addbibresource{references.bib}
 
 \begin{document}
-
+\counterwithin{listing}{chapter}
 
 % \include{./chapters/proforma}
-% \begin{refsection}
+
 \pagestyle{headings}
 \include{./chapters/introduction}
 
@@ -70,7 +72,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \addcontentsline{toc}{chapter}{Bibliography}
 \printbibliography
-% \end{refsection}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

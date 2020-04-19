@@ -1,7 +1,20 @@
-\chapter{Hyperparameters of shortlisted models}
+\chapter{Hyperparameter search}
 \label{appendix:hyperparameters}
 
-This Appendix lists the full hyperparameter lists of the best performing models as selected in Evaluation procedure (Chapter~\ref{chapter:evaluation}, Section~\ref{section:model-ranking}). The Tables use encodings given in Tables~\ref{table:sf-encoding} and~\ref{table:ls-encoding}.
+This Appendix contains the hyperparameter search configuration and the hyperparameters for the best performing models as selected in Evaluation procedure (Chapter~\ref{chapter:evaluation}, Section~\ref{section:model-ranking}).
+
+\section{Hyperparameter tuning configuration}
+
+\bigskip
+\begin{code}
+\caption{Hyperparameter search configuration for the GCN and GAT model families.}
+\label{listing:sweep-config}
+\medskip
+\inputminted[frame=bottomline, linenos, breaklines=true, numberblanklines=false, style=colorful]{yaml}{code/sweep_config.yaml}
+\end{code}
+
+\section{Hyperparameters of shortlisted models}
+Tables~\ref{table:shortlisted-gcn} and~\ref{table:shortlisted-gat} use encodings given in Tables~\ref{table:sf-encoding} and~\ref{table:ls-encoding} for similarity feature sets and layer sizes respectively.
 
 \begin{table}[h]
     \caption{Similarity feature set encoding.}\label{table:sf-encoding}
