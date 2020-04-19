@@ -94,7 +94,19 @@ Considering that the UKB dataset is large and that retraining the model with mor
 \end{table}
 
 
-\section{Permutation testing}
+\section{Significance testing of model performance}
+A classical test for assessing whether the models have truly learnt the relationships between the input features and the response variable is called a \textit{permutation test}~\cite{ojala2010permutation}. The null hypothesis assumes that features and labels are independent (i.e. that there is no relationship between the neuroimaging and non-imaging data and brain age), and the distribution corresponding to this hypothesis is estimated by randomly permuting the labels in the dataset. The $p$-value for this test is computed as
+
+\begin{equation}
+    p = \frac{\sum_{i=1}^k 1[\mathcal{L}(f(\mathbf{X})), \pi(\mathbf{y})) \leq \mathcal{L}(f(\mathbf{X})), \mathbf{y})] + 1}{k+1}\label{eq:p-value}
+\end{equation}
+
+where $\mathbf{X}$ and $\mathbf{y}$ are feature and label vectors, $\mathcal{L}(\cdot, \cdot)$ is the loss function used to train the model (in this project MSE), $f(\cdot)$ is the learned prediction function, $\pi(\cdot)$ indicates a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
+
+In this project, $k=1000$ samples will be taken for each model family and the results will be claimed significant if the $p$-value in Equation~\eqref{eq:p-value} falls below the significance level $\alpha=0.05$. 
+
+returning the null distributions of GCN and GAT model performance shown in Figure~?.
+
 
 
 \section{Population graph robustness to noisy features}
@@ -104,8 +116,8 @@ For example, as discussed in Section~\ref{section:implementation-robustness}, it
 For the feature noise robustness evaluation, an increasing proportion of population graph nodes are corrupted by randomly permuting their features. Then the model is retrained and tested on the hold-out test set, measuring the change in performance. To make sure that any effect on the evaluation metrics is due to added noise and not the changing dataset split, the model is trained on a single dataset split while the noise is added to different subjects. Moreover, to ensure that the effect on test set performance is due to the interaction with neighbourhoods and not due to the individual node features, only the nodes in the training set will be corrupted. For each of the GCN and GAT models, the experiment is repeated five times for each noise level (1\%, 5\%, 10\%, 20\%, 30\%, 50\%, 80\%, and 95\% of training nodes).
 
 
-\section{Population graph robustness to loss of structure}
-The the purpose of the second type of robustness is to explore whether the population graph structure itself is useful in estimating the brain age for a particular node. To this end, instead of adding noise to the nodes, an increasing proportion of edges is removed from the population graph. The selected proportions of edges removed are the same as those in the previous section. For each of these levels the training procedure is carried out five times using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on the node features only. 
+\section{Population graph dependence on its edge structure}
+The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information which could be useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph, with the proportions of removed edges being the same as in the previous section. The training procedure is then repeated five times at each edge loss level using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
 
 
 
