@@ -98,15 +98,22 @@ Considering that the UKB dataset is large and that retraining the model with mor
 A classical test for assessing whether the models have truly learnt the relationships between the input features and the response variable is called a \textit{permutation test}~\cite{ojala2010permutation}. The null hypothesis assumes that features and labels are independent (i.e. that there is no relationship between the neuroimaging and non-imaging data and brain age), and the distribution corresponding to this hypothesis is estimated by randomly permuting the labels in the dataset. The $p$-value for this test is computed as
 
 \begin{equation}
-    p = \frac{\sum_{i=1}^k 1[\mathcal{L}(f(\mathbf{X})), \pi(\mathbf{y})) \leq \mathcal{L}(f(\mathbf{X})), \mathbf{y})] + 1}{k+1}\label{eq:p-value}
+    p = \frac{\sum_{i=1}^k \mathbb{1}\left[\mathcal{L}(f(\mathbf{X})), \pi(\mathbf{y})) \leq \mathcal{L}(f(\mathbf{X})), \mathbf{y})\right] + 1}{k+1}\label{eq:p-value}
 \end{equation}
 
-where $\mathbf{X}$ and $\mathbf{y}$ are feature and label vectors, $\mathcal{L}(\cdot, \cdot)$ is the loss function used to train the model (in this project MSE), $f(\cdot)$ is the learned prediction function, $\pi(\cdot)$ indicates a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
+where $\mathbf{X}$ and $\mathbf{y}$ are feature and label vectors, $\mathcal{L}(\cdot, \cdot)$ is the loss function used to train the model (in this project MSE), $f(\cdot)$ is the trained model, $\pi(\cdot)$ indicates a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
 
 In this project, $k=1000$ samples will be taken for each model family and the results will be claimed significant if the $p$-value in Equation~\eqref{eq:p-value} falls below the significance level $\alpha=0.05$. 
 
-returning the null distributions of GCN and GAT model performance shown in Figure~?.
+The null distributions of GCN and GAT model errors with permuted labels are shown in Figure~\ref{figure:permutation-test}, with the MSE for the original dataset indicated by the red line.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{permutation_test.pdf}
+    \caption{The null distribution of the label permutation test for GCN and GAT models. The red lines indicate the MSE for the original dataset.}\label{figure:permutation-test}
+\end{figure}
+
+The $p$-values, representing how likely it is to get the MSE lower than the original dataset MSE purely by chance, were equal to $p=0.001$ for both GCN and GAT models. This is lower than the chosen significance level $\alpha=0.05$ so the null hypothesis is rejected and the performance of both models is statistically significant.
 
 
 \section{Population graph robustness to noisy features}
