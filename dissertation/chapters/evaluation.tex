@@ -98,10 +98,10 @@ Considering that the UKB dataset is large and that retraining the model with mor
 A classical test for assessing whether the models have truly learnt the relationships between the input features and the response variable is called a \textit{permutation test}~\cite{ojala2010permutation}. The null hypothesis assumes that features and labels are independent (i.e. that there is no relationship between the neuroimaging and non-imaging data and brain age), and the distribution corresponding to this hypothesis is estimated by randomly permuting the labels in the dataset. The $p$-value for this test is computed as
 
 \begin{equation}
-    p = \frac{\sum_{i=1}^k \mathbb{1}\left[\mathcal{L}(f(\mathbf{X})), \pi(\mathbf{y})) \leq \mathcal{L}(f(\mathbf{X})), \mathbf{y})\right] + 1}{k+1}\label{eq:p-value}
+    p = \frac{\sum_{i=1}^k \mathbf{1}\left[\mathcal{L}(\mathbf{\hat{y}}, \pi(\mathbf{y})) \leq \mathcal{L}(\mathbf{\hat{y}}, \mathbf{y})\right] + 1}{k+1}\label{eq:p-value}
 \end{equation}
 
-where $\mathbf{X}$ and $\mathbf{y}$ are feature and label vectors, $\mathcal{L}(\cdot, \cdot)$ is the loss or error function used to train the model (in this project MSE), $f(\cdot)$ is the trained model, $\pi(\cdot)$ indicates a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
+where $\mathcal{L}(\cdot, \cdot)$ error function used to train the model (in this project MSE), $\pi(\cdot)$ indicates a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
 
 In this project, $k=1000$ samples will be taken for each model family and the results will be claimed significant if the $p$-value in Equation~\eqref{eq:p-value} falls below the significance level $\alpha=0.05$. 
 
