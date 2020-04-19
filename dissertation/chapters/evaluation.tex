@@ -82,7 +82,7 @@ Generally in literature, after using cross-validation for model selection, the m
 Considering that the UKB dataset is large and that retraining the model with more data but without early stopping might not pay off for the loss in generalisation, all cross-validation folds were kept for test set performance estimation. Table~\ref{table:test-performance} gives the hold-out test set estimates for the metrics discussed in Section~\ref{section:evaluation-metrics}.
 
 \begin{table}[h]
-    \caption{Average test set performance of GCN1 and GAT1 models. \\ The results are within one standard deviation.}\label{table:test-performance}
+    \caption{Test set performance of GCN and GAT models.}\label{table:test-performance}
     \centering
     \small
     \begin{tabular}{ccc}
@@ -123,12 +123,22 @@ For example, as discussed in Section~\ref{section:implementation-robustness}, it
 For the feature noise robustness evaluation, an increasing proportion of population graph nodes are corrupted by randomly permuting their features. Then the model is retrained and tested on the hold-out test set, measuring the change in performance. To make sure that any effect on the evaluation metrics is due to added noise and not the changing dataset split, the model is trained on a single dataset split while the noise is added to different subjects. Moreover, to ensure that the effect on test set performance is due to the interaction with neighbourhoods and not due to the individual node features, only the nodes in the training set will be corrupted. For each of the GCN and GAT models, the experiment is repeated five times for each noise level (1\%, 5\%, 10\%, 20\%, 30\%, 50\%, 80\%, and 95\% of training nodes).
 
 
-\section{Population graph dependence on its edge structure}
+\section{Population graph dependence on similarity metrics}
 The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information which could be useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph, with the proportions of removed edges being the same as in the previous section. The training procedure is then repeated five times at each edge loss level using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
 
+The effect of removing the edges on predictive power of the GNN models is shown in Figures~\ref{figure:edge-noise-r} and~\ref{figure:edge-noise-r2} for $r$ and $r^2$ evaluation metrics respectively.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{edge_noise_r.pdf}
+    \caption{The effect of removing the edges on $r$ performance metric.}\label{figure:edge-noise-r}
+\end{figure}
 
-
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{edge_noise_r2.pdf}
+    \caption{The effect of removing the edges on $r^2$ performance metric.}\label{figure:edge-noise-r2}
+\end{figure}
 
 % \section{Comparison against existing benchmarks}
 
