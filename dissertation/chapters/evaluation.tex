@@ -118,7 +118,7 @@ The null distributions of GCN and GAT model errors with permuted labels are show
 The $p$-values, representing how likely it is to get the MSE lower than the original dataset MSE purely by chance, were equal to $p=0.001$ for both GNN models. This is lower than the chosen significance level $\alpha=0.05$ so the null hypothesis is rejected and the performance of both models is statistically significant.
 
 
-\section{GNN robustness to noisy population graph features}
+\section{GNN robustness to population graph noise}
 \label{section:node-noise}
 A desirable property for the real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in data.
 For population graphs trained on graph neural networks, this could be estimated by adding noise to an increasing proportion of nodes. 
@@ -156,7 +156,7 @@ It is also possible to compare the relative GCN and GAT performance. While in th
 % In practice, in a big and well-curated dataset such as the UK Biobank, the existence of exact protocols for equipment and measurement taking should prevent there being too many unacceptably noisy scans. Even in that case, the noise would take a milder form than the complete shuffling of features that make the node data meaningless. Having that considered, at low proportions of added noise, both models have been able to retain most of their predictive power, which could indicate their generalisability to new contexts.
 
 
-\section{GNN dependence on population graph similarity metrics}
+\section{GNN dependence on population graph topology}
 \subsection{Experimental setup}
 The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information which could be useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph, with the proportions of removed edges being the same as in the previous section. The training procedure is then repeated five times at each edge loss level using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
 
@@ -178,7 +178,7 @@ The effect of removing the edges on predictive power of the GNN models is shown 
 \begin{figure}[h]
     \centering
     \includegraphics[]{edge_noise.pdf}
-    \caption{he effect of removing edges on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
+    \caption{The effect of removing edges on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
 \end{figure}
 
 
