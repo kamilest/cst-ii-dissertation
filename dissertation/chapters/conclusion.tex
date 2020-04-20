@@ -6,22 +6,22 @@
 
 \section{Successes and failures}
 
-discuss the success criteria: the population graph processing framework and the graph neural networks implemented. Extension of robustness evaluation was implemented, which is especially 
+The project has achieved all of its success criteria and requirements (Section~\ref{section:requirements-analysis}, Appendix~\ref{chapter:project-proposal} Project Proposal), representing the UKB dataset as a population graph, implementing the two GNN frameworks, and evaluating the results. It has also made a lot of progress on its \textit{extensions}, measuring the robustness of the GNN models and increasing the flexibility of the preprocessing pipeline to more preprocessing options.
 
-\section{The project in hindsight (lessons learnt)}
-Lessons learnt: graph \textit{representation} is more important than the framework used. Good representations of the dataset can help guide the learning algorithm in the right way as it gets the intuitions faster just because of the way the data was represented in the first place. It's not good if it captures bias, but in this case representation made the difference between the model not learning anything and the model getting great results.
+\section{The main lesson}
+This project has been exploring two things – the brain age estimation problem, and graph neural networks as a way of solving it. Both of those fields are currently at the height of their ongoing research, with some of the main references that this project heavily relied on being only a few months old~\cite{kaufmann2019, niu2019improved, pervaiz2020optimising}.
 
-Was a mistake analysing functional data first without analysing the other methods in detail. Functional imaging data by itself gave very high dimensionality which either could not be learnt by the network because of the low number of examples or other factors. Most of the literature uses just the structural data for age prediction, and indeed this turned out to be more effective. Also makes sense intuitively as structural features would be related to the signs of brain atrophy while it is not clear the pattern of how resting state brain activity would change with ageing brain.
+While I am very happy for having used this opportunity to \textit{learn} about the cutting-edge approaches in machine learning research and \textit{get hands-on experience} with the tools for implementing them, this project has taught me first-hand an important lesson in approaching predictive analysis problems: \textit{when developing models in practice, always try the simplest approaches first, and only then, if the model does not perform well, build up to sophisticated (``deep'') frameworks}. Both sophisticated graph neural network architectures were not even close to much simpler frameworks presented in literature. For this reason I am particularly proud of coming up with what I called the robustness measurement framework – it insightfully showed that the graph representation was not only not very useful for this problem (as removing edge information had no effect on model performance), but could even have a negative effect when the data is noisy.
 
-Mention Niu et al. 2019 raising the issue that there is systematic bias in brain age gap prediction but not many studies use this knowledge to correct for it. 
+% Mention Niu et al. 2019 raising the issue that there is systematic bias in brain age gap prediction but not many studies use this knowledge to correct for it. 
 
+\section{Towards a more powerful preprocessing pipeline}
+The main success of this project was therefore its step towards a preprocessing pipeline, which could process several brain imaging and non-imaging modalities at once into a unified and consistent manner. This is important in neuroimaging research regardless of the downstream task or analysis method: even for the same dataset the preprocessing workflow alone could change the results~\cite{salehi2020there}, while at the same time the workflows vary significantly between different research teams. For example, in a study by Botvinik-Nezer et al.~\cite{botvinik2019variability} none of the 70 teams chose the same workflow for an identical problem. Perhaps a different preprocessing pipeline would improve the results even for the brain age estimation task in this project.
 
-\section{Possible continuations of the project}
+The preprocessing framework is also a project that could especially benefit from good software engineering and computer science skills in order to design a general that is efficient, flexible and simple to apply to different contexts.
 \begin{itemize}
-    \item Include DNA methylation data as it is widely used in other studies and is claimed to improve the predictive power of the model \cite{cole2018brain}.
+    \item While it was not practical to do this extension for the UKB dataset that uses its own organisation, the preprocessing pipeline could be adapted to work with raw neuroimaging files, such as the standard BIDS\footnote{\urlstyle{https://bids.neuroimaging.io}} format, extending the framework to work with a many more neuroimaging datasets and parcellations (that would now be a part of the preprocessing framework).
+    \item Including more powerful functional imaging preprocessing and dimensionality reduction steps.
+    \item Including the option to use genetic data. DNA methylation and other genetic data is widely used in other neuroimaging studies, improving predictive power of the models \cite{cole2018brain,parisot2018disease}.
 \end{itemize}
 
-
-TODO in general lessons learnt and things for the future is that the memory issues and uninformed similarity metric and GNN architecture decisions severely restricted my hyperparameter search space, and very likely missed out on promising models with good test set performance. When I have time I would love to explore more hyperparameter options, consulting Dr Bethlehem and other experts on what other non-imaging features to include, how to combine them, how to adjust the architecture, and test new models on new data, for example on the recent UKB update which I did not have access to before, or some entirely new dataset. Alternatively, I could try training higher range of model hyperparameters on subsets of the UKB dataset, e.g. on 2,000-brain graphs which would decrease the parameters but allow for better exploration of the similarity matrix and GNN architecture possibilities.
-
-You could also mention trying the same model on different preprocessing pipelines for imaging data to see if that has an effect on the results (lots of literature claims it does!)
