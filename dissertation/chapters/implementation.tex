@@ -234,13 +234,20 @@ Listing~\ref{listing:braingnn} shows how the layers are combined in the \texttt{
 
 The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in lines 25 and 35 as a \textit{regularisation} technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
 
-\bigskip
-\begin{code}
-\caption{Simplified code snippet for \texttt{BrainGNN} instantiation and training.}
-\label{listing:braingnn}
-\medskip
-\inputminted[frame=bottomline, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
-\end{code}
+% \bigskip
+% \begin{code}
+% \caption{Simplified code snippet for \texttt{BrainGNN} instantiation and training.}
+% \label{listing:braingnn}
+% \medskip
+% \inputminted[frame=bottomline, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
+% \end{code}
+
+\begin{listing}
+    \caption{Simplified code snippet for \texttt{BrainGNN} instantiation and training.}
+    \label{listing:braingnn}
+    \medskip
+    \inputminted[frame=lines, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
+    \end{listing}
 
 \section{GNN training and evaluation component}
 \label{section:gnn-train-evaluate}
