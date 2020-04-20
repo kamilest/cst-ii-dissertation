@@ -8,25 +8,10 @@ class BrainGNN(torch.nn.Module):
         self.fc = torch.nn.ModuleList() # Fully connected layers.
         self.dropout = torch.nn.ModuleList() # Dropout layers.
 
+        # Add convolutional layers of conv_type
         # ...
-
-        # Add convolutional layers.
-        size = n_node_features
-        for i in range(n_conv_layers):
-            if conv_type == ConvTypes.GCN:
-                self.conv.append(torch.nn.GCNConv(size, layer_sizes[i]))
-            elif conv_type == ConvTypes.GAT:
-                self.conv.append(torch.nn.GATConv(size, layer_sizes[i]))
-            else:
-                self.conv.append(torch.nn.Linear(size, layer_sizes[i]))
-            size = layer_sizes[i]
-        
         # Add remaining fully connected and dropout layers.
-        for i in range(len(layer_sizes) - n_conv_layers):
-            self.fc.append(torch.nn.Linear(size, layer_sizes[n_conv_layers+i]))
-            size = layer_sizes[n_conv_layers+i]
-            if i < len(layer_sizes) - n_conv_layers - 1:
-                self.dropout.append(torch.nn.Dropout(dropout_p))
+        # ...       
 
     # Forward propagation shows how the layers are applied.
     def forward(self, graph):

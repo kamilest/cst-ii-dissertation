@@ -152,8 +152,8 @@ As expected, for both GCN and GAT models the performance was decreasing relative
 
 It is also possible to compare the relative GCN and GAT performance. While in this experiment the GAT model has higher (but similar) average scores at low noise levels, its performance drops faster, creating a wider gap between the scores, which could suggest that the GAT model is less robust to increasing noise. 
 
-\subsection{Discussion}
-In practice, in a big and well-curated dataset such as the UK Biobank, the existence of exact protocols for equipment and measurement taking should prevent there being too many unacceptably noisy scans. Even in that case, the noise would take a milder form than the complete shuffling of features that make the node data meaningless. Having that considered, at low proportions of added noise, both models have been able to retain most of their predictive power, which could indicate their generalisability to new contexts.
+% \subsection{Discussion}
+% In practice, in a big and well-curated dataset such as the UK Biobank, the existence of exact protocols for equipment and measurement taking should prevent there being too many unacceptably noisy scans. Even in that case, the noise would take a milder form than the complete shuffling of features that make the node data meaningless. Having that considered, at low proportions of added noise, both models have been able to retain most of their predictive power, which could indicate their generalisability to new contexts.
 
 
 \section{GNN dependence on population graph similarity metrics}
@@ -178,7 +178,7 @@ The effect of removing the edges on predictive power of the GNN models is shown 
 \begin{figure}[h]
     \centering
     \includegraphics[]{edge_noise.pdf}
-    \caption{he effect of removing edges on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
+    \caption{he effect of removing edges on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
 \end{figure}
 
 
