@@ -130,16 +130,22 @@ For the feature noise robustness evaluation, an increasing proportion of populat
 
 The results of corrupting the node features on the predictive power of GNN models are shown in Figure~\ref{figure:node-noise}.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[]{node_noise_r.pdf}
-%     \caption{The effect of permuting node features on $r$ performance metric, with error bars representing standard deviation}\label{figure:node-noise-r}
-% \end{figure}
-
 % \begin{figure}[h]
 %     \centering
-    \includegraphics[]{node_noise_r2.pdf}
-    \caption{The effect of permuting node features on $r$ and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
+%     \includegraphics[]{node_noise_r.pdf}
+% %     \caption{The effect of permuting node features on $r$ performance metric, with error bars representing standard deviation}\label{figure:node-noise-r}
+% % \end{figure}
+
+% % \begin{figure}[h]
+% %     \centering
+%     \includegraphics[]{node_noise_r2.pdf}
+%     \caption{The effect of permuting node features on $r$ and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
+% \end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[]{node_noise.pdf}
+    \caption{The effect of permuting node features on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
 \end{figure}
 
 As expected, for both GCN and GAT models the performance was decreasing relatively slowly as more training nodes got corrupted, and then dropped drastically when more than half of the training nodes had their features permuted. In case of the GAT model, the $r^2$ metric even fell below 0 (bottom of Figure~\ref{figure:node-noise}), which means that no variance could be explained and that the mean of the observed subject ages in the dataset is a better estimate of the brain age than the prediction of the GAT model. 
@@ -157,17 +163,24 @@ The assumption behind the population graph model is that the edge structure help
 \subsection{Results}
 The effect of removing the edges on predictive power of the GNN models is shown in Figure~\ref{figure:edge-noise}. Compared to the results in Section~\ref{section:node-noise} where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did \texttt{not} affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[]{edge_noise_r.pdf}
-%     \caption{The effect of removing edges on $r$ performance metric, with error bars representing standard deviation}\label{figure:edge-noise-r}
+% \begin{figure}[]
+%     \centering
+%     \includegraphics[]{edge_noise_r.pdf}
+% %     \caption{The effect of removing edges on $r$ performance metric, with error bars representing standard deviation}\label{figure:edge-noise-r}
+% % \end{figure}
+
+% % \begin{figure}[h]
+% %     \centering
+%     \includegraphics[]{edge_noise_r2.pdf}
+%     \caption{The effect of removing edges on $r$ and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
 % \end{figure}
 
-% \begin{figure}[h]
-%     \centering
-    \includegraphics[]{edge_noise_r2.pdf}
-    \caption{The effect of removing edges on $r$ and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
+\begin{figure}[h]
+    \centering
+    \includegraphics[]{edge_noise.pdf}
+    \caption{he effect of removing edges on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
 \end{figure}
+
 
 \section{Discussion}
  The edge removal experiment shows that for brain age estimation problem, the models relied more on the features of individual nodes rather than similarity metrics and in turn the neighbourhoods of other population graph nodes. This might mean that the similarity metrics were not informative enough to allow for effective sharing of feature and/or label information, or that the (brain) age depends more on the feature interactions within a single brain rather than particular signals that generalise to other individuals. Moreover, the node noisification experiment shows that the neighbours could be even \textit{harmful} as, due to experimental setup, the changes in performance in Figure~\ref{figure:node-noise} are only due to the changes in neighbouring nodes but not in the test nodes themselves.

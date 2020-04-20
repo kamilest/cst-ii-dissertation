@@ -57,7 +57,7 @@ For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow201
 
 \subsection{Structural features}
 
-Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others (see Figures~\ref{figure:t1} and~\ref{figure:t2} for T1 and T2-weighted MRI images respectively). The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
+Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others (see Figure~\ref{figure:t1-t2} for T1 and T2-weighted MRI images respectively). The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
 
 \begin{table}[]
 \centering
@@ -74,15 +74,9 @@ Structural MRI is used to analyse the anatomy of the brain. Its two main modalit
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=\textwidth]{T1.png}
-    \caption{The slices of the T1-weighted MRI image.}\label{figure:t1}
-\end{figure}
-
-
-\begin{figure}[]
-    \centering
-    \includegraphics[width=\textwidth]{T2.png}
-    \caption{The slices of the T2-weighted FLAIR MRI image.}\label{figure:t2}
+    \includegraphics[width=0.6\textwidth]{T1.png}
+    \includegraphics[width=0.6\textwidth]{T2.png}
+    \caption{The slices of the T1 (top) T2-weighted FLAIR (bottom) MRI image.}\label{figure:t1-t2}
 \end{figure}
 
 
@@ -142,7 +136,7 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 
 \begin{figure}[]
     \centering
-    \includegraphics[width=\textwidth]{parcellated_brain.png}
+    \includegraphics[width=0.6\textwidth]{parcellated_brain.png}
     \caption{The slices of the MRI image with parcels highlighted in different colours.}\label{figure:parcellated-brain}
 \end{figure}
 
