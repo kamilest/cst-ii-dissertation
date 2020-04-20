@@ -19,9 +19,9 @@ While I am very happy for having used this opportunity to \textit{learn} about t
 The main success of this project was therefore its step towards a preprocessing pipeline that could process several brain imaging and non-imaging modalities at once into a unified and consistent manner. This is important in neuroimaging research regardless of the downstream task or analysis method: even for the same dataset, the preprocessing workflow alone could change the results~\cite{salehi2020there}. At the same time, the workflows vary significantly between different research teams; for example, in a study by Botvinik-Nezer et al.~\cite{botvinik2019variability} none of the 70 teams chose the same workflow for an identical problem. Perhaps a different preprocessing pipeline would improve the results even for the brain age estimation task in this project.
 
 The preprocessing framework is also a project that could especially benefit from good software engineering and computer science skills in order to design a general that is efficient, flexible and simple to apply to different contexts.
-\begin{itemize}
-    \item While it was not practical to do this extension for the UKB dataset that uses its own organisation, the preprocessing pipeline could be adapted to work with raw neuroimaging files, such as the standard BIDS\footnote{\url{https://bids.neuroimaging.io}} format, extending the framework to work with a many more neuroimaging datasets and parcellations (that would now be a part of the preprocessing framework).
-    \item Including more powerful functional imaging preprocessing and dimensionality reduction steps.
-    \item Including the option to use genetic data. DNA methylation and other genetic data is widely used in other neuroimaging studies, improving predictive power of the models \cite{cole2018brain,parisot2018disease}.
-\end{itemize}
+
+While it was not practical to do this extension for the UKB dataset that uses its own organisation, the preprocessing pipeline could be adapted to \textit{work with raw neuroimaging files}, such as the standard BIDS\footnote{\url{https://bids.neuroimaging.io}} format, extending the framework to work with a many more neuroimaging datasets and parcellations (that would now be a part of the preprocessing framework).
+
+The options of using more powerful \textit{functional imaging preprocessing} and \textit{dimensionality reduction} techniques, as well as the option to use an additional modality of \textit{genetic data} (which is widely used in other neuroimaging studies, improving predictive power of the models \cite{cole2018brain,parisot2018disease}) could be included.
+
 
