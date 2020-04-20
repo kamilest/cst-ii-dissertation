@@ -102,7 +102,7 @@ A classical test for assessing whether the models have truly learnt the relation
     p = \frac{\sum_{i=1}^k \mathbf{1}\left[\mathcal{L}(\mathbf{\hat{y}}, \pi(\mathbf{y})) \leq \mathcal{L}(\mathbf{\hat{y}}, \mathbf{y})\right] + 1}{k+1}\label{eq:p-value}
 \end{equation}
 
-where $\mathcal{L}(\cdot, \cdot)$ error function used to train the model (in this project MSE), $\pi(\cdot)$ indicates a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
+where $\mathcal{L}(\cdot, \cdot)$ error function used to train the model (in this project MSE), $\pi(\cdot)$ is a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
 
 In this project, $k=1000$ samples will be taken for each model family and the results will be claimed significant if the $p$-value in Equation~\eqref{eq:p-value} falls below the significance level $\alpha=0.05$. 
 
@@ -121,7 +121,7 @@ The $p$-values, representing how likely it is to get the MSE lower than the orig
 \section{GNN robustness to noisy population graph features}
 \label{section:node-noise}
 A desirable property for the real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in data.
-For population graphs trained on graph neural networks, this could be estimated by exploiting the neighbourhoods that are hopefully less noisy than a given node. Whether they are actually capable of doing so could be tested by adding noise to an increasing proportion of nodes. 
+For population graphs trained on graph neural networks, this could be estimated by adding noise to an increasing proportion of nodes. 
 
 \subsection{Experimental setup}
 For the feature noise robustness evaluation, an increasing proportion of population graph nodes is corrupted by randomly permuting their features. Then the model is retrained and tested on the hold-out test set, measuring the change in performance. To make sure that any effect on the evaluation metrics is due to added noise and not the changing dataset split, the model is trained on a single dataset split while the noise is added to different subjects. Moreover, to ensure that the effect on test set performance is due to the interaction with neighbourhoods and not due to the individual node features, only the nodes in the training set will be corrupted. For each of the GCN and GAT models, the experiment is repeated five times for each noise level (1\%, 5\%, 10\%, 20\%, 30\%, 50\%, 80\%, and 95\% of training nodes).
