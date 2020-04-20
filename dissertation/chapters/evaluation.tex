@@ -155,7 +155,7 @@ In practice, in a big and well-curated dataset such as the UK Biobank, the exist
 The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information which could be useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph, with the proportions of removed edges being the same as in the previous section. The training procedure is then repeated five times at each edge loss level using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
 
 \subsection{Results}
-The effect of removing the edges on predictive power of the GNN models is shown in Figure~\ref{figure:edge-noise}.
+The effect of removing the edges on predictive power of the GNN models is shown in Figure~\ref{figure:edge-noise}. Compared to the results in Section~\ref{section:node-noise} where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did \texttt{not} affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
 
 \begin{figure}[h]
     \centering
@@ -168,8 +168,6 @@ The effect of removing the edges on predictive power of the GNN models is shown 
     \includegraphics[]{edge_noise_r2.pdf}
     \caption{The effect of removing edges on $r$ and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
 \end{figure}
-
-Compared to the results in Section~\ref{section:node-noise} where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did \texttt{not} affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
 
 \section{Discussion}
  The edge removal experiment shows that for brain age estimation problem, the models relied more on the features of individual nodes rather than similarity metrics and in turn the neighbourhoods of other population graph nodes. This might mean that the similarity metrics were not informative enough to allow for effective sharing of feature and/or label information, or that the (brain) age depends more on the feature interactions within a single brain rather than particular signals that generalise to other individuals. Moreover, the node noisification experiment shows that the neighbours could be even \textit{harmful} as, due to experimental setup, the changes in performance in Figure~\ref{figure:node-noise} are only due to the changes in neighbouring nodes but not in the test nodes themselves.
