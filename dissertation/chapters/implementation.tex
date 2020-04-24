@@ -42,6 +42,8 @@ The main function of the UKB preprocessing component is to prepare the raw or pa
 
 \subsection{Cleaning the dataset}
 The different modalities of the UKB data, shown in the white box in Figure~\ref{preprocessing-component}, have been provided separately from each other, with a small minority of subjects having the data available for some of the modalities but not others (for example due to data corruption or its retraction by the participant). To ensure consistent and smooth processing, the subjects with partially missing data (236 in total) have been excluded from further processing. The remaining 17,314 subjects with well-defined modalities have been collected into a \textit{subject index} (purple box at the bottom left), which was used to filter the data before its collection to the population graph construction component.
+% TODO rb643: as mentioned in another comment I think in future we can do a bit more data cleaning and include additional features in your similarity computation
+% TODO rb643: In future implementations it may be worth considering either cortex only or split matrices for cortical and subcortical
 
 \subsection{Precomputing connectivity matrices}
 The connectivity matrices involve computing pairwise correlations of 376 time-series (for 360 cortical and 16 subcortical regions) for every subject. With 20 gigabytes of raw time-series data across over 17,000 subjects, this introduces a high computational overhead (a few hours on a CPU) if the matrices are computed on the fly as the graph is constructed. An additional inefficiency comes from the computation being repeated whenever a population graph that uses the functional data is constructed. To avoid this, the matrices are computed once for each subject, flattened and their lower triangles stored as \texttt{numpy} arrays as part of the preprocessing component.
@@ -57,7 +59,7 @@ Having computed the feature-wise similarity matrices, their linear combination f
 
 For the \texttt{ICD10} metric, the subjects were considered to be \texttt{ICD10}-similar whenever they had at least one shared mental health or nervous system diagnosis, while two patients without any mental health or nervous system diagnoses were \textit{not} considered to be similar in order to avoid memory issues caused by a high number of edges (see Section~\ref{section:memory}). 
 
-The similarity computation was vectorised in order to make use of accelerating hardware and reduce the compute time: for the boolean \texttt{ICD10}-lookup matrix $\mathbf{F}_{\text{ICD10}}$ with rows indexed by subjects and columns by relevant \texttt{ICD10} diagnoses, the pairwise similarity matrix $\mathbf{M}_{\text{ICD10}}$ computation corresponds to 
+The similarity computation was vectorised in order to make use of hardware acceleration and reduce the compute time: for the boolean \texttt{ICD10}-lookup matrix $\mathbf{F}_{\text{ICD10}}$ with rows indexed by subjects and columns by relevant \texttt{ICD10} diagnoses, the pairwise similarity matrix $\mathbf{M}_{\text{ICD10}}$ computation corresponds to 
 
 \begin{equation}
     \mathbf{M}_{\text{ICD10}} = \mathbf{1}\left[\mathbf{F}_{\text{ICD10}}^{\ }\mathbf{F}_{\text{ICD10}}^{\mathrm{T}} \geq 1\right]
@@ -65,7 +67,7 @@ The similarity computation was vectorised in order to make use of accelerating h
 
 with the indicator function $\mathbf{1}[\cdot]$ applied element-wise.
 
-For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The computation is vectorised by exploiting \texttt{numpy}'s broadcasting operation\footnote{\url{https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html}} that copies rows and columns as necessary for the matrix dimensions to match. For the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
+For the remaining metrics (e.g. years of full-time education, \texttt{FTE}) there is only one integer or floating-point value per subject, with values  compared for equality. The computation is vectorised by exploiting tensor broadcasting semantics\footnote{\url{https://pytorch.org/docs/stable/notes/broadcasting.html}} that copies rows and columns as necessary for the matrix dimensions to match. For the vector of subject \texttt{FTE}s, $\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \in \mathbb{R}^{N \times 1}$ and $\mathbf{F}_{\text{FTE}} = [\mathbf{f}_{\text{FTE}}^{\mathrm{T}} \cdots \mathbf{f}_{\text{FTE}}^{\mathrm{T}}] \in \mathbb{R}^{N \times N}$, \texttt{FTE}-similarity matrix is defined as
 
 \begin{equation}
     \mathbf{M}_{\text{FTE}} = \mathbf{1}\left[\mathbf{F}_{\text{FTE}}^{\ } = \mathbf{F}_{\text{FTE}}^{\mathrm{T}} \right].
@@ -100,7 +102,7 @@ The inputs to the graph construction component can be categorised into four type
     \item \textit{Modality specification} describes which of the neuroimaging modalities should be used as node features. This could be any combination of functional, structural and quality control data, following the pipeline flexibility requirement R2 (Section~\ref{section:requirements-analysis}).
     \item \textit{Subject specification} takes in the number of (randomly selected) subjects that should be used to create the graph, or a list UKB identifiers for a graph containing a particular set of subjects. If no such parameter is provided, then all available data (filtered by the subject index described in the previous component) is used for population graph construction.
     \item \textit{Similarity specification}. 
-    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An \textit{extension} to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics, again increasing the flexibility of the pipeline. 
+    In its default implementation, the similarity score is computed as the average over a set of similarity features $\{M_1, \dots, M_n\}$ (see Equation~\eqref{eq:similarity}), in which case it is sufficient to specify the similarity feature set to be used. An extension to this is to accept an arbitrary linear combination of various similarity features, allowing for much richer similarity metrics, again increasing the flexibility of the pipeline (see Requirement R2 in Section~\ref{section:requirements-analysis}). 
     \item \textit{Similarity threshold}. A number $\mu \in [0,1]$ defining the threshold for the similarity metric above which an edge will be added to the graph (see Equation~\eqref{eq:similarity-threshold}).
 \end{enumerate}
 
@@ -154,7 +156,7 @@ The population graph is stored in an extended \texttt{torch\_geometric.Data} obj
     \texttt{edge\_index} & $2\times 2|E|$ \hfill\newline long tensor & \texttt{edge\_index}$[0][i]=s_v$ and \hfill \newline \texttt{edge\_index}$[1][i]=s_w$ indicate a directed \hfill \newline edge $s_v \leadsto s_w$. To represent the undirected edge $(s_v, s_w) \in E$, another directed edge $s_w \leadsto s_v$ is added. \\
     \texttt{functional\_data} & dataframe & Row-indexed by subject with columns containing the flattened functional connectivity matrix entries. Empty if no functional data is used in the population graph. \\
     \texttt{structural\_data} & dictionary of \hfill \newline dataframes & Dictionary is indexed by the structural data modality, in this case cortical thickness, surface area, and grey matter volume. The corresponding dataframes are row-indexed by subject with columns containing the features of the relevant structural data modality. The dataframes are empty if no structural data is used. \\
-    \texttt{quality\_control\_data} & dataframe & Row-indexed by subject with the columns containing Euler indices for the left and right hemispheres of the brain. Empty if no quality control data is used. \\
+    \texttt{quality\_control\_data} & dataframe & Row-indexed by subject with two columns containing Euler indices for the left and right hemispheres of the brain. Empty if no quality control data is used. \\
     \texttt{x} & $N \times F$ \hfill\newline float tensor & \textit{Unused at the intermediate stage.} Contains the full normalised feature vector (of $F$ features) for every graph node (subject). \\
     \texttt{y} & $N \times 1$ \hfill \newline float tensor & Contains the labels of training data, in this case chronological age. \\
     \texttt{brain\_health\_mask} & boolean array & \texttt{True} indicates that the subject has a healthy brain and can be used for training, and \texttt{False} otherwise. \\
@@ -185,8 +187,9 @@ The first operation for preparing the population graph for training involves set
 
 Following the brain age estimation method (Section~\ref{brain-age-estimation}), the masks are intersected with the \texttt{brain\_health\_mask}. Similarly to the reasoning behind the brain health masks, the three training masks are used to determine which nodes should be used to compute the loss function during various stages of training. For example, the model parameters are only updated based on the loss function for the subjects filtered with the \texttt{training\_mask}, and validation loss is computed only for the subjects filtered with the \texttt{validation\_mask}.
 
+% TODO rb643: Again more for future implementation: I've been playing around with running PCA on the raw time-series as well as Diffusion Embedding on the connectivity matrices and they provide strikingly similar results. Thus is might be computationally efficient to use raw time-series PCA in the future. Generally only the first half dozen PC's are interesting anyway
 \subsection{Functional connectivity matrix dimensionality reduction}
-The flattened functional connectivity matrix results in over 75,000 features per patient. Since the population graph cannot be split into parts and during training must be kept entirely in memory, along with all model parameters, this quickly runs into memory issues when the entire dataset is used. To mitigate this issue, some techniques may be applied to reduce the dimensionality of functional data. This project uses principal component analysis (PCA) as the dimensionality reduction technique of choice as it is one the simplest to implement. When the functional data is used to construct the population graph, PCA transformation is fitted to the training set as specified by the \texttt{training\_mask}, and the same transformation is applied to the remaining subjects. This dimensionality reduction technique is optional, and it is possible to define how many principal components should be kept after the transformation, to control the information loss.
+The flattened functional connectivity matrix results in over 75,000 features per patient. Since the population graph cannot be split into parts and during training must be kept entirely in memory, along with all model parameters, this quickly runs into memory issues when the entire dataset is used. To mitigate this issue, some techniques may be applied to reduce the dimensionality of functional data. This project uses principal component analysis (PCA) as the dimensionality reduction technique of choice as it is one the simplest to implement. When the functional data is used to construct the population graph, PCA transformation is fitted to the training set as specified by the \texttt{training\_mask}, and the same transformation is applied to the remaining subjects. This dimensionality reduction technique is optional, and it is possible to define how many principal components should be kept after the transformation, to control the information loss (by default only 1\% of the most important components are kept for the number of functional features for them to have the same order of magnitude as the structural ones). 
 
 \subsection{Structural MRI and quality control data normalisation}
 Next, the raw features stored under \texttt{structural\_data} and \texttt{quality\_control\_data} are normalised to be in the range between $-1$ and $1$ with mean 0. Similar to the previous section, to avoid data leakage standard scaler is fitted to the training set only (as specified by the \texttt{training\_mask}) and then applied to the validation and test sets. A separate transformation is applied to each structural data modality (cortical thickness, surface area, grey matter volume) and the quality control modality.
@@ -224,9 +227,9 @@ The graph neural network component contains implementations for the graph neural
         
         \texttt{conv\_type} & string & Indicates the type of graph convolutional layer to be used (graph convolution or graph attentional layer). \\
         \texttt{layer\_sizes} & integer array & Lists the number of units in every hidden layer. The length of the array corresponds to the total number of hidden layers. \\
-        \texttt{n\_conv\_layers} & integer & Number of convolutional layers. Must be in range $[0, \text{\texttt{layer\_sizes}}]$. The sizes of those layers are determined by the first \texttt{n\_conv\_layers} values of the \texttt{layer\_sizes} and \texttt{n\_node\_features} parameters. \\
+        \texttt{n\_conv\_layers} & integer & Number of convolutional layers. Must be in range $[0, \text{\texttt{len(layer\_sizes})}]$. The sizes of those layers are determined by the first \texttt{n\_conv\_layers} values of the \texttt{layer\_sizes} and \texttt{n\_node\_features} parameters. \\
         \texttt{num\_node\_features} & integer & Indicates the number of input features. \\ 
-        \texttt{dropout\_p} & float & The probability of ignoring the node in a hidden layer at training time. Used as a regularisation technique to reduce overfitting.
+        \texttt{dropout\_p} & float $\in [0,1]$& The probability of ignoring the node in a hidden layer at training time. Used as a regularisation technique to reduce overfitting.
     \end{longtable}
     \end{center}
 
@@ -252,7 +255,7 @@ The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between 
 \section{GNN training and evaluation component}
 \label{section:gnn-train-evaluate}
 
-The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and to report the results of the best model. A further \textit{extension} to this is the \textit{robustness evaluation} component, where robustness in this project is defined as the rate of the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
+The main function of the GNN training and evaluation component is to select the best combination of population graph and GNN hyperparameters for each of the GCN and GAT architectures, and to report the results of the best model. It also contains the \textit{robustness evaluation} component, where robustness in this project is conceptualised as the predictive power drop when noise is added to the population graph nodes and/or edges. The schematic overview of the GNN training and evaluation component is shown in Figure~\ref{gnn-training-eval-component}.
 
 \begin{figure}[h]
     \centering
@@ -269,6 +272,8 @@ Having considered this, this section discusses further the motivation and reason
 
 \subsubsection{Memory constraints}
 \label{section:memory}
+% Tiago:  I won't get to the evaluation section today. It will be important to have in some part of your discussion the challenges of memory. That this is one big bottleneck in this type of analysis that needs to be tackled in the future. In case you don't mention this already
+
 In the brain age estimation task with population graphs, the entire population graph containing node neuroimaging features, edges, GNN model training parameters and intermediate training states must be stored in memory at the same time. In addition, the population graph cannot be split into smaller independent batches since all nodes of the graph must be updated in a single training step, and it would be a non-trivial task to keep track of the edges and other interactions between the batches.
 
 As a result, many hyperparameter combinations cause the model to run into memory issues. In practice, the models were limited to up to 8 gigabytes of GPU memory. This motivated the following hyperparameter constraints:

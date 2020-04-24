@@ -22,4 +22,9 @@ While it was not practical to do this extension for the UKB dataset that uses it
 
 The options of using more powerful \textit{functional imaging preprocessing} and \textit{dimensionality reduction} techniques, as well as the option to use an additional modality of \textit{genetic data} (which is widely used in other neuroimaging studies, improving predictive power of the models \cite{cole2018brain,parisot2018disease}) could be included.
 
+% TODO: you should mention in your future work that you've used a linear data reduction technique. Given how noisy and non-linear the fMRI is, future work should explore better ways to get a good representation of fmri timeseries, which maybe would help in this prediction task, but out of scope of dissertation
+% Apr 23, 2020 1:31 AM
+% Tiago Manuel: besides you are backed up by niu's paper saying that fmri might not be useful. but still the reasoning point of linear/non linear interactions maintains
 
+
+% rb643: Again more for future implementation: I've been playing around with running PCA on the raw time-series as well as Diffusion Embedding on the connectivity matrices and they provide strikingly similar results. Thus is might be computationally efficient to use raw time-series PCA in the future. Generally only the first half dozen PC's are interesting anyway
