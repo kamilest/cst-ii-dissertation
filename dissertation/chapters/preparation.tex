@@ -13,7 +13,7 @@ This chapter presents in more depth the brain age estimation problem (Section~\r
 \section{Brain age estimation}
 \label{brain-age-estimation}
 
-The \textit{brain age} is defined as the \textit{apparent} age of the brain tissue, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to the normal brain ageing process. 
+The \textit{brain age} is defined as the \textit{apparent} age of the brain, compared to the person's true (or \textit{chronological}) age. For example, a highly atrophied brain of a young person may appear to have a higher brain age than a healthy brain of an older person, because gradual atrophy is related to the normal brain ageing process. 
 
 Following the formal framework of Niu et al.~\cite{niu2019improved}, the brain age $y_b$ can be expressed as the sum of the known chronological age $y_c$ and the unknown \textit{brain age gap} $\varepsilon_g$ that is defined as the discrepancy between the chronological and the brain age:
 
@@ -57,7 +57,7 @@ For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow201
 
 \subsection{Structural features}
 
-Structural MRI is used to analyse the anatomy of the brain. Its two main modalities are the two types of an MRI image called T1-weighted and T2-weighted FLAIR, where each type emphasises different aspects of the scan and highlights some features more than the others (see Figure~\ref{figure:t1-t2} for T1 and T2-weighted MRI images respectively). The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
+Structural MRI is used to analyse the anatomy of the brain. The two main MRI modalities included in UKB are T1-weighted and T2-weighted FLAIR scans, each acquisition type captures a different type of tissue contrast (see Figure~\ref{figure:t1-t2} for T1 and T2-weighted MRI images). The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). In brief, Freesurfer (v6.0) was used to reconstruct the grey/white-matter boundary and the outer pial layers of the cortex making use of the T1 weighted image as well as the T2 weighted FLAIR image to enhance the boundary contrast. Subsequent structural measures such as for example cortical thickness were extracted between those boundaries in the Human Connectome Parcellation scheme containing 3680 cortical regions \cite{glasser2013minimal}.
 
 \begin{table}[]
 \centering
@@ -87,7 +87,7 @@ Functional MRI (fMRI) data indirectly measures brain activity over time. It is r
 
 The two types of an fMRI image are \textit{task} fMRI, when the subject is asked to perform a specific cognitive task, and \textit{resting state} fMRI (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
-For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is estimated by correlating the time-series of every pair of brain regions together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). 
+For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is conceptualised as the correlation between the time-series of every pair of brain regions together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). 
 
 
 % As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
@@ -119,11 +119,11 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{fmri.pdf}
-    \caption{The example BOLD time series.}\label{figure:fmri}
+    \caption{An example of a BOLD time series, for a brain region.}\label{figure:fmri}
 \end{figure}
 
 \subsection{Euler indices}
-Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which represents the number of times the Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
+The Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which represents the number of times the HCP Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
 
 
 \subsection{Neuroimaging data preprocessing}
@@ -144,7 +144,7 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 
 \subsection{Non-imaging features}
 
-In this dissertation, non-imaging data refers to all subject data that does not come from MRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table \ref{table:phenotype-features} summarises the non-imaging features selected for this project.
+In this dissertation, non-imaging data refers to all subject data that does not come from MRI and fMRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table \ref{table:phenotype-features} summarises the non-imaging features selected for this project.
 
 \begin{table}[h]
     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
@@ -196,7 +196,7 @@ The population graphs can only be effectively accepted as input to machine learn
 \label{training-gcn}
 % What is actually essential about the graph convolutional networks?
 
-One of the approaches how the graphs can be represented in neural networks is based on spectral graph theory~\cite{hammond2011wavelets}. The main advantage of this strategy is that it makes the operations applied to every node independent of the local graph topology (the number of neighbours of a particular node). This is easier to optimise as the same operation can be applied to all nodes. 
+One of the approaches of how the graphs can be represented in neural networks is based on spectral graph theory~\cite{hammond2011wavelets}. The main advantage of this strategy is that it makes the operations applied to every node independent of the local graph topology (the number of neighbours of a particular node). This is easier to optimise as the same operation can be applied to all nodes. 
 
 The graph is therefore first transformed from spatial (Euclidean) to spectral (Fourier) domain. The more expensive convolution operation in the Euclidean domain corresponds to a cheaper multiplication operation in the Fourier domain.
 
@@ -394,17 +394,17 @@ I expect stage S1 to be the most complex for the following additional requiremen
 \begin{enumerate}[label=R\arabic*.]
     \item Care must be taken to make sure that the data is handled \textit{correctly}. This will require testing of the components which transform the data to the population graph data structure.
     \item The pipeline must be \textit{flexible} enough to support the various combinations of modalities, subjects, and similarity metrics, which will be ensured by independent support of every modality and the \textit{extension} of the project to support custom similarity functions.
-    \item The pipeline has to be \textit{modular} enough to be easily extended to more datasets, modalities and processing options in the future. To achieve this, the pipeline will be split into independent components with their own designated function, so that they are easier to build upon independently.
+    \item The pipeline has to be \textit{modular} enough to be easily extended to more datasets, modalities and processing options in the future. To achieve this, the pipeline will be split into independent components with their own designated functionality, so that they are easier to build upon independently.
 \end{enumerate} 
 
-These considerations by themselves largely fulfil the proposed \textit{extension} of implementing the pipeline that can handle raw data at the one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Part II project. 
+These considerations by themselves largely fulfil the proposed \textit{extension} of implementing the pipeline that can handle raw data at the one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Computer Science Part II project. 
 
 The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in Chapter~\ref{chapter:implementation}.
 
 \section{Software engineering practice}
 Since every stage discussed in the previous section depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). This fits best with the \textit{waterfall model} of software development because the project is relatively small and has a straightforward set of requirements, the design of the pipeline directly corresponds to the three project stages, and implementation depends on how the different pipeline stages are designed to interact with each other. Chapter~\ref{chapter:implementation} walks through the schematic design diagrams that were used as foundation for the component implementation.
 
-To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of consistent code style (adhering to PEP8\footnote{\url{https://www.python.org/dev/peps/pep-0008/}} style guide), comprehensive documentation, unit testing, code reuse, version control (through a \texttt{git} repository), and backup strategies (regular backups to an external disk, GitHub repository, Google Drive) will be applied.
+To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of consistent code style (adhering to PEP8\footnote{\url{https://www.python.org/dev/peps/pep-0008/}} style guide), comprehensive documentation, unit testing, code reuse, version control (through a \texttt{git} repository), and backup strategies (regular backups to an external disk, GitHub repository, and Google Drive) will be applied.
 
 \section{Choice of tools}
 
