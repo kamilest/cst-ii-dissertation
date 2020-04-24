@@ -386,10 +386,10 @@ The project has three main stages that directly correspond to the Success Criter
 \begin{enumerate}[label=S\arabic*.]
     \item Implementation of the population graph data structure, with nodes containing the individual neuroimaging data and edges representing associations between them based on pairwise similarity. This involves: \begin{enumerate}[label=\theenumi\arabic*.]
         \item Preprocessing of the functional, structural imaging and non-imaging data of the UKB subjects.
-        \item Implementation of the customisable similarity metric that would compare two subjects and return the similarity score.
+        \item Implementation of the similarity functions that would compare two subjects and return similarity scores in increasingly flexible manner: the basic function as defined in Equation~\eqref{eq:similarity}, and extensions for accepting any linear combinations of similarity features and arbitrary similarity functions.
         % TODO RB: For when you have more time we can think further about how to optimise that by perhaps including more measures. Not for now though :)
         \item A pipeline that would generate the population graph for a given set of subjects, their modalities, similarity metric and similarity threshold.
-        \item An extension for supporting higher flexibility in similarity metrics by including the similarity score as an edge feature rather than having a 1-weighted edge whenever the similarity score exceeds a given threshold.
+        % An extension for supporting higher flexibility in similarity metrics by including the similarity score as an edge feature rather than having a 1-weighted edge whenever the similarity score exceeds a given threshold
     \end{enumerate}
     \item Implementation of the graph convolutional network (GCN) and graph attention network (GAT) architectures for the age regression task. 
     \item Training and evaluation of the two graph neural network architectures on the UKB population graph. This includes the extension of implementing the robustness measurement framework.
