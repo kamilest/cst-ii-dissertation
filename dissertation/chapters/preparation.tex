@@ -57,7 +57,10 @@ For this project I will use the The United Kingdom Biobank (UKB)~\cite{sudlow201
 
 \subsection{Structural features}
 
-Structural MRI is used to analyse the anatomy of the brain. The two main MRI modalities included in UKB are T1-weighted and T2-weighted FLAIR scans, each capturing a different type of tissue contrast (see Figure~\ref{figure:t1-t2} for T1 and T2-weighted MRI images). The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). In brief, Freesurfer (v6.0) was used to reconstruct the grey/white-matter boundary and the outer pial layers of the cortex making use of the T1 weighted image as well as the T2 weighted FLAIR image to enhance the boundary contrast. Subsequent structural measures such as for example cortical thickness were extracted between those boundaries in the Human Connectome Parcellation scheme containing 3680 cortical regions \cite{glasser2013minimal}.
+Structural MRI is used to analyse the anatomy of the brain. The two main MRI modalities included in UKB are T1-weighted and T2-weighted FLAIR scans, each capturing a different type of tissue contrast (see Figure~\ref{figure:t1-t2} for T1 and T2-weighted MRI images). The structural features used in this project – \textit{cortical thickness}, \textit{surface area} and \textit{grey matter volume} (see Table~\ref{table:structural-features}) – have been extracted from structural MRI images using the Human Connectome Project (HCP) Freesurfer pipeline (see Glasser et al.~\cite{glasser2013minimal} for further discussion of features and preprocessing steps). 
+
+% In brief, Freesurfer (v6.0) was used to reconstruct the grey/white-matter boundary and the outer pial layers of the cortex making use of the T1 weighted image as well as the T2 weighted FLAIR image to enhance the boundary contrast. Subsequent structural measures such as for example cortical thickness were extracted between those boundaries in the Human Connectome Parcellation scheme containing 3680 cortical regions \cite{glasser2013minimal}.
+
 
 \begin{table}[]
 \centering
@@ -119,11 +122,11 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{fmri.pdf}
-    \caption{An example of a BOLD time series, for a brain region.}\label{figure:fmri}
+    \caption{An example of a BOLD time series for a single brain region.}\label{figure:fmri}
 \end{figure}
 
 \subsection{Euler indices}
-The Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which represents the number of times the HCP Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019}. Alternatively, they can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
+The Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which represents the number of times the HCP Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019} (in this project this was not needed because the indices were generally low). Alternatively, Euler indices can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
 
 
 \subsection{Neuroimaging data preprocessing}
@@ -144,7 +147,7 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 
 \subsection{Non-imaging features}
 
-In this dissertation, non-imaging data refers to all subject data that does not come from MRI and fMRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table \ref{table:phenotype-features} summarises the non-imaging features selected for this project.
+In this dissertation, non-imaging data refers to all subject data that does not come from structural MRI and fMRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table \ref{table:phenotype-features} summarises the non-imaging features selected for this project.
 
 \begin{table}[h]
     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
