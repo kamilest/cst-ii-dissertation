@@ -122,11 +122,11 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{fmri.pdf}
-    \caption{An example of a BOLD time series for a single brain region.}\label{figure:fmri}
+    \caption{An example of a BOLD time-series for a single brain region.}\label{figure:fmri}
 \end{figure}
 
 \subsection{Euler indices}
-The Euler index\footnote{\url{https://www.ncbi.nlm.nih.gov/pubmed/29278774}} is a quality control metric which represents the number of times the HCP Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019} (in this project this was not needed because the indices were generally low). Alternatively, Euler indices can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
+The Euler index~\cite{rosen2018quantitative} is a quality control metric which represents the number of times the HCP Freesurfer brain reconstruction software failed to seamlessly connect two 2D slices of an MRI image into the 3D representation of the brain. The higher the Euler index, the worse is the quality of the scan. Euler indices might be used to remove the subjects with low-quality scans to avoid them affecting the analysis~\cite{kaufmann2019} (in this project this was not needed because the indices were generally low). Alternatively, Euler indices can be used as a covariate in a machine learning model (as a brain similarity metric or a node feature) to correct for any scan quality-related bias in prediction. This project will use Euler indices as node features for consistency in keeping neuroimaging features in nodes and non-imaging features in edges.
 
 
 \subsection{Neuroimaging data preprocessing}
@@ -136,8 +136,7 @@ All MRI and fMRI data in UKB was preprocessed (denoised and motion-corrected) wi
 A \textit{parcellation} splits an image of a brain into biologically meaningful regions for downstream analysis, compressing per-voxel\footnote{A \textit{voxel} is a discrete volumetric element.} measurements into per-parcel summaries (see Figure~\ref{figure:parcellated-brain} for an example). In this dissertation, the neuroimaging data will be parcellated with one of the most common parcellations developed by Glasser et al.~\cite{glasser2016multi}, which divides the brain into 360 cortical regions and 16 subcortical regions. 
 
 
-
-\begin{figure}[]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.6\textwidth]{parcellated_brain.png}
     \caption{The slices of the MRI image with parcels highlighted in different colours.}\label{figure:parcellated-brain}
@@ -148,7 +147,7 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 \subsection{Non-imaging features}
 
 In this dissertation, non-imaging data refers to all subject data that does not come from structural MRI and fMRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table \ref{table:phenotype-features} summarises the non-imaging features selected for this project.
-
+\stepcounter{footnote}
 \begin{table}[h]
     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
     \centering
@@ -158,11 +157,13 @@ In this dissertation, non-imaging data refers to all subject data that does not 
     \texttt{AGE} & Chronological age &  Used as the training label. \\
     \texttt{FI} & Fluid intelligence score &  Measures cognitive performance. Related to increased brain activity~\cite{gray2003neural}. \\
     \texttt{FTE} & Years of full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
-    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system\footnote{\url{https://icd.who.int/browse10/2019/en}}. \\
+    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system\footnotemark[\value{footnote}]. \\
     \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed}. \\
     \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\ \hline
     \end{tabular}
 \end{table}
+\footnotetext[\value{footnote}]{\url{https://icd.who.int/browse10/2019/en}}
+\stepcounter{footnote}
 
 The non-imaging data is used to compute the inter-subject similarity score, which will determine the edges of the population graph.
 
@@ -175,7 +176,7 @@ The set of $N$ subjects $S$ is connected into an undirected population graph $G 
 
 Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging information of the subjects to create edges between the nodes. 
 
-Defining a good similarity metric is important to correct for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful. If carefully defined, the similarity metrics could include the domain expertise of neurologists and psychiatrists as well.
+Defining a good similarity metric is important to account for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful. If carefully defined, the similarity metrics could include the domain expertise of neurologists and psychiatrists as well.
 
 Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
 
@@ -318,7 +319,7 @@ In contrast to the \textit{spectral} GCN that relies on the computation within t
 % \textit{Self-attention} is also added in to the concept where different parts of the node's neighbourhood are considered with different importance weights, getting a representation of the rest of the neighbourhood. 
 
 \subsection{Graph attentional layer}
-Analogously to the previous section, we consider an input layer $\mathbf{H}^{(l-1)} \in \mathbb{R}^{|V|\times C_{l-1}}$ (with $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{|V|\times C_{0}}$ as before) and the GAT layer $\mathbf{H}^{(l)} \in \mathbb{R}^{|V|\times C_{l}}$. Denote the input layer $\mathbf{H}^{(l-1)}$ as $[\mathbf{h}_1^{(l-1)} \cdots \mathbf{h}_{|V|}^{(l-1)}]^{\mathrm{T}}$, and $\mathbf{H}^{(l)}$ as $[\mathbf{h}_1^{(l)} \cdots \mathbf{h}_{|V|}^{(l)}]^{\mathrm{T}}$. For a trainable weight matrix $\mathbf{W}^{(l)} \in \mathbb{R}^{C_{l} \times C_{l-1}}$ and an \textit{attentional mechanism} $a: \mathbb{R}^{C_{l}} \times \mathbb{R}^{C_{l}} \rightarrow \mathbb{R}$ we compute (unnormalised) \textit{attentional coefficients} $e_{ij}$:
+Analogously to the previous section, we consider an input layer $\mathbf{H}^{(l-1)} \in \mathbb{R}^{N\times C_{l-1}}$ (with $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{N\times C_{0}}$ as before) and the GAT layer $\mathbf{H}^{(l)} \in \mathbb{R}^{N\times C_{l}}$. Denote the input layer $\mathbf{H}^{(l-1)}$ as $[\mathbf{h}_1^{(l-1)} \cdots \mathbf{h}_{N}^{(l-1)}]^{\mathrm{T}}$, and $\mathbf{H}^{(l)}$ as $[\mathbf{h}_1^{(l)} \cdots \mathbf{h}_{N}^{(l)}]^{\mathrm{T}}$. For a trainable weight matrix $\mathbf{W}^{(l)} \in \mathbb{R}^{C_{l} \times C_{l-1}}$ and an \textit{attentional mechanism} $a: \mathbb{R}^{C_{l}} \times \mathbb{R}^{C_{l}} \rightarrow \mathbb{R}$ we compute (unnormalised) \textit{attentional coefficients} $e_{ij}$:
 
 \begin{equation}
     e_{ij} = a(\mathbf{W}^{(l)}\mathbf{h}_i^{(l-1)}, \mathbf{W}^{(l)}\mathbf{h}_j^{(l-1)}).
@@ -386,11 +387,12 @@ The project has three main stages that directly correspond to the Success Criter
     \item Implementation of the population graph data structure, with nodes containing the individual neuroimaging data and edges representing associations between them based on pairwise similarity. This involves: \begin{enumerate}[label=\theenumi\arabic*.]
         \item Preprocessing of the functional, structural imaging and non-imaging data of the UKB subjects.
         \item Implementation of the customisable similarity metric that would compare two subjects and return the similarity score.
+        % TODO RB: For when you have more time we can think further about how to optimise that by perhaps including more measures. Not for now though :)
         \item A pipeline that would generate the population graph for a given set of subjects, their modalities, similarity metric and similarity threshold.
-        \item An \textit{extension} for supporting higher flexibility in similarity metrics by including the similarity score as an edge feature rather than having a 1-weighted edge whenever the similarity score exceeds a given threshold.
+        \item An extension for supporting higher flexibility in similarity metrics by including the similarity score as an edge feature rather than having a 1-weighted edge whenever the similarity score exceeds a given threshold.
     \end{enumerate}
     \item Implementation of the graph convolutional network (GCN) and graph attention network (GAT) architectures for the age regression task. 
-    \item Training and evaluation of the two graph neural network architectures on the UKB population graph. This includes the \textit{extension} of implementing the robustness measurement framework.
+    \item Training and evaluation of the two graph neural network architectures on the UKB population graph. This includes the extension of implementing the robustness measurement framework.
 \end{enumerate}
 
 I expect stage S1 to be the most complex for the following additional requirements.
@@ -405,7 +407,7 @@ These considerations by themselves largely fulfil the proposed \textit{extension
 The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in Chapter~\ref{chapter:implementation}.
 
 \section{Software engineering practice}
-Since every stage discussed in the previous section depends on the implementation of the previous one, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). This fits best with the \textit{waterfall model} of software development because the project is relatively small and has a straightforward set of requirements, the design of the pipeline directly corresponds to the three project stages, and implementation depends on how the different pipeline stages are designed to interact with each other. Chapter~\ref{chapter:implementation} walks through the schematic design diagrams that were used as foundation for the component implementation.
+Since every stage discussed in the previous section depends on the implementation of the stage before it, the straightforward workflow is to carry out the three stages in order (except for the extensions, which would be implemented last). This fits best with the \textit{waterfall model} of software development because the project is relatively small and has a straightforward set of requirements, the design of the pipeline directly corresponds to the three project stages, and implementation depends on how the different pipeline stages are designed to interact with each other. Chapter~\ref{chapter:implementation} walks through the schematic design diagrams that were used as foundation for the component implementation.
 
 To track the workflow, prevent loss of data and ease the readability and/or any future extensions to this project, the common practices of consistent code style (adhering to PEP8\footnote{\url{https://www.python.org/dev/peps/pep-0008/}} style guide), comprehensive documentation, unit testing, code reuse, version control (through a \texttt{git} repository), and backup strategies (regular backups to an external disk, GitHub repository, and Google Drive) will be applied.
 
@@ -425,7 +427,7 @@ For model logging, visualisation and hyperparameter tuning, I will use the free 
 
 
 \section{Starting point}
-The discussion of the architectures proposed in this section assumes the knowledge of the Computer Science Tripos courses relating to scientific computing, artificial intelligence, machine learning, and information theory. The conceptual understanding of the brain age estimation, neuroimaging data processing and graph neural networks (none of which I had previous experience with) required the study of papers cited as well as other supporting resources.
+The discussion of the architectures proposed in this section assumes or uses the knowledge of the Computer Science Tripos courses: IA NST Mathematics, IA Scientific Computing, IA Machine Learning and Real-world Data, IB Foundations of Data Science, IB Artificial Intelligence, II Data Science: Principles and Practice, II Machine Learning and Bayesian Inference. The conceptual understanding of the brain age estimation, neuroimaging data processing and graph neural networks (none of which I had previous experience with) required the study of papers cited as well as other supporting resources.
 
 The code builds on implementations provided by the packages listed in the previous section. I had no previous experience with most of them.
 
