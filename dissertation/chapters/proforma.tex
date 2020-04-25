@@ -33,11 +33,13 @@ I, Kamilė Stankevičiūtė of Gonville \& Caius College, being a candidate for 
 \chapter*{Proforma}
 
 \begin{tabular}{ll}
-Candidate number:   & ?                  \\
+Candidate number:   & 2419E                  \\
 Project title:      & Graph neural networks for age prediction from neuroimaging data \\
 Examination:        & Computer Science Tripos -- Part II 2020 \\
-Word count:         & 10227\footnotemark[1] \\
-Lines of code:      & TODO  \\
+Word count:         & 10463\footnotemark[1] \\
+% git ls-files | grep "\.py$" | xargs wc -l
+% cloc $(git ls-files)
+Lines of code:      & 1619  \\
 Project originator: & Mr Tiago Azevedo                        \\
 Supervisors:        & Mr Tiago Azevedo, Mr Alexander Campbell \\ 
 \end{tabular}
@@ -49,10 +51,14 @@ Supervisors:        & Mr Tiago Azevedo, Mr Alexander Campbell \\
 \section*{Original aims of the project}
 % At most 100 words describing the original aims of the project.
 
-To implement the population graph paradigm in modelling multi-modal structural  and functional brain imaging data along with non-imaging information of individual patients. Implement and apply different graph neural network architectures – Graph Convolutional Network (GCN) and Graph Attention Network (GAT) – for a subject brain age prediction task. Evaluate the robustness of graph neural networks to noisy and missing data, comparing their performance against each other and with other known benchmarks.
+To approach the brain age prediction problem using population graph data structure, combining the richness of multi-modal structural and functional neuroimaging as well as non-imaging data in a single flexible pipeline.
+To implement and apply different graph neural network architectures – Graph Convolutional Network (GCN) and Graph Attention Network (GAT) – which would use the population graphs for subject brain age prediction task. Evaluate the two models using standard metrics for regression problems.
+
+% To implement the population graph paradigm in modelling multi-modal structural  and functional brain imaging data along with non-imaging information of individual patients. Implement and apply different graph neural network architectures . Evaluate the robustness of graph neural networks to noisy and missing data, comparing their performance against each other and with other known benchmarks.
 
 \section*{Work completed}
 % At most 100 words summarising the work completed.
+A flexible pipeline for construction of custom population graphs from minimally preprocessed neuroimaging data. The two graph neural network architectures, trained on population graphs to predict subject brain age. Evaluation of the models against standard metrics and an additional robustness measurement framework, measuring the model tolerance for two kinds of population graph noise.
 
 \section*{Special difficulties}
 
@@ -60,7 +66,7 @@ None.
 
 \tableofcontents
 
-\newpage
-\section*{Acknowledgements}
+% \newpage
+% \section*{Acknowledgements}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
