@@ -32,7 +32,7 @@ The cross-validation performance of the best-scoring models selected by the abov
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{model_selection.pdf}
-    \caption{Highest scoring population graph and GNN model parameter combinations.}\label{figure:gat-gcn-rank}
+    \caption{Highest scoring population graph and GNN model parameter combinations. The models are named according to their convolution type and their rank by ascending average MSE loss (indicated by the green triangle).}\label{figure:gat-gcn-rank}
 \end{figure}
 
 Although both best-ranked (reference) models (GCN1 and GAT1) have relatively high variance, they still seem to be the most promising and therefore have been selected for further evaluation. Their population graph specification and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}.
@@ -82,17 +82,18 @@ Generally in literature, after using cross-validation for model selection, the m
 Considering that the UKB dataset is large and that retraining the model using more data but without early stopping might not pay off for the loss in generalisation, all cross-validation folds were kept for test set performance estimation. Table~\ref{table:test-performance} gives the hold-out test set estimates for the metrics discussed in Section~\ref{section:evaluation-metrics}.
 
 \begin{table}[h]
-    \caption{Test set performance of GCN and GAT models (over five early stopping folds of the training set).}\label{table:test-performance}
+    \caption{Test set performance of GCN1 and GAT1 models (over the five early stopping folds of the training set).}\label{table:test-performance}
     \centering
     \small
     \begin{tabular}{cccc}
         \hline
-    \textbf{Model} & \textbf{MSE} & $r$ & $r^2$ \\  \hline
+    \textbf{Model} & MSE & $r$ & $r^2$ \\  \hline
         GCN1 & $28.045 \pm 0.595$ & $0.675 \pm 0.008$ & $0.445 \pm 0.010$ \\
-        GAT1 & $27.543018 \pm 0.758$ & $0.670 \pm 0.005$ & $0.477 \pm 0.008$ \\ \hline
+        GAT1 & $27.543 \pm 0.758$ & $0.670 \pm 0.005$ & $0.477 \pm 0.008$ \\ \hline
 \end{tabular}
 \end{table}
 
+The following sections will consider a single fold of GCN1 and GAT1 models (having the same training/validation/test split) to ensure that any variation is due to the experimental setup and not the model weights or distributions of subjects across the folds. The fold was selected arbitrarily to be the first one returned by the stratified splitting procedure.
 
 \section{Significance testing of model performance}
 \subsection{Experimental setup}
@@ -120,7 +121,7 @@ The $p$-values, representing how likely it is to get the MSE lower than the orig
 
 \section{GNN robustness to population graph noise}
 \label{section:node-noise}
-A desirable property for the real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in data.
+A desirable property for the real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in input data.
 For population graphs trained on graph neural networks, this could be estimated by adding noise to an increasing proportion of nodes. 
 
 \subsection{Experimental setup}
@@ -158,7 +159,7 @@ It is also possible to compare the relative GCN and GAT performance. While in th
 
 \section{GNN dependence on population graph topology}
 \subsection{Experimental setup}
-The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information which could be useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph, with the proportions of removed edges being the same as in the previous section. The training procedure is then repeated five times at each edge loss level using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
+The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information which could be useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph, with the proportions of removed edges being the same as in the previous section. The training procedure is then repeated five times at each percentage of removed edges using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
 
 \subsection{Results}
 The effect of removing the edges on predictive power of the GNN models is shown in Figure~\ref{figure:edge-noise}. Compared to the results in Section~\ref{section:node-noise} where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did \texttt{not} affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
