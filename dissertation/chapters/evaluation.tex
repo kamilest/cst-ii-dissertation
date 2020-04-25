@@ -70,7 +70,7 @@ where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for st
 \subsubsection{Coefficient of determination}
 The \textit{coefficient of determination} indicates how much variance in the features $\mathbf{X}$ could be explained by the model. It is computed as 
 \begin{equation}
-    r^2 = 1 - \frac{\sum_{i} (y_i - \bar{y})^2}{\sum_{i} (y_i - \hat{y}_i)^2}.
+    r^2(\mathbf{y}, \mathbf{\hat{y}}) = 1 - \frac{\sum_{i} (y_i - \bar{y})^2}{\sum_{i} (y_i - \hat{y}_i)^2}.
 \end{equation}
 
 Higher values for both metrics (with maximum 1) indicate a higher level of agreement between the true and predicted labels and therefore higher predictive power.
@@ -79,17 +79,17 @@ Higher values for both metrics (with maximum 1) indicate a higher level of agree
 \section{Test set performance of selected models}
 Generally in literature, after using cross-validation for model selection, the model is retrained on the entire dataset before giving a point estimate on a hold-out test set~\cite{raschka2018model}. This is because training on more data, especially when the dataset is small, allows to learn more patterns and therefore give better predictions on the unseen data. However, in this project the validation set was also used for early stopping since neural networks are especially prone to overfitting~\cite{prechelt1998automatic}. Some investigation of the hyperparameter tuning has shown that applying the stopping criteria discussed in Section~\ref{section:training-procedure} on just the training set would have still led to convergence only after the model has already overfit on the unseen validation labels. On the other hand, it is unclear how the stopping criteria should be adjusted when the training set size increases. 
 
-Considering that the UKB dataset is large and that retraining the model with more data but without early stopping might not pay off for the loss in generalisation, all cross-validation folds were kept for test set performance estimation. Table~\ref{table:test-performance} gives the hold-out test set estimates for the metrics discussed in Section~\ref{section:evaluation-metrics}.
+Considering that the UKB dataset is large and that retraining the model using more data but without early stopping might not pay off for the loss in generalisation, all cross-validation folds were kept for test set performance estimation. Table~\ref{table:test-performance} gives the hold-out test set estimates for the metrics discussed in Section~\ref{section:evaluation-metrics}.
 
 \begin{table}[h]
-    \caption{Test set performance of GCN and GAT models.}\label{table:test-performance}
+    \caption{Test set performance of GCN and GAT models (over five early stopping folds of the training set).}\label{table:test-performance}
     \centering
     \small
-    \begin{tabular}{ccc}
+    \begin{tabular}{cccc}
         \hline
-    \textbf{Model} & $r$ & $r^2$ \\  \hline
-        GCN1 & $0.675 \pm 0.008$ & $0.445 \pm 0.010$ \\
-        GAT1 & $0.670 \pm 0.005$ & $0.477 \pm 0.008$ \\ \hline
+    \textbf{Model} & \textbf{MSE} & $r$ & $r^2$ \\  \hline
+        GCN1 & $28.045 \pm 0.595$ & $0.675 \pm 0.008$ & $0.445 \pm 0.010$ \\
+        GAT1 & $27.543018 \pm 0.758$ & $0.670 \pm 0.005$ & $0.477 \pm 0.008$ \\ \hline
 \end{tabular}
 \end{table}
 
