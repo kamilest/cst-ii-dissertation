@@ -8,7 +8,7 @@
 %  ~2,500 words
 
 
-This chapter presents in more depth the brain age estimation problem (Section~\ref{brain-age-estimation}) and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing them (Sections~\ref{training-gcn} and~\ref{training-gat}).
+This chapter presents the brain age estimation problem (Section~\ref{brain-age-estimation}) in more depth and the dataset used for the brain age estimation task (Section~\ref{dataset}). It also gives background on population graphs (Section~\ref{population-graphs}) as well as the neural network architectures for implementing them (Sections~\ref{training-gcn} and~\ref{training-gat}).
 
 \section{Brain age estimation}
 \label{brain-age-estimation}
@@ -45,7 +45,7 @@ where $\varepsilon_e$ is the prediction error, while the estimate of \textit{chr
 
 where $\varepsilon \coloneqq \varepsilon_e - \varepsilon_g$ is the error term consisting of both the brain age gap and the model prediction error.
 
-Since the brain age $y_b$ is unknown, any (semi-)supervised machine learning model can only use chronological age as predicted variable, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy subjects only, $f(\cdot)$ can explain both the apparent brain age \textit{and} the chronological age with $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error $\varepsilon_e$. When the same model is applied to non-healthy subjects, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap. On the other hand, if the model is trained on both healthy and non-healthy subjects at the same time, it might learn the combined confounding effects of both normal (chronological) and disease-related (brain) ageing, thus hiding the brain age gaps~\cite{dukart2011age}.
+Since the brain age $y_b$ is unknown, any (semi-)supervised machine learning model can only use chronological age as a predicted variable, following Equation~\eqref{brainage:eq3}. However, if the model is trained on healthy subjects only, $f(\cdot)$ can explain both the apparent brain age \textit{and} the chronological age with $X$, since for healthy subjects $y_b \approx y_c$ (Equation~\eqref{brainage:assume}) and any variance in $\varepsilon$ is assumed to contain just the prediction error $\varepsilon_e$. When the same model is applied to non-healthy subjects, $f(\cdot)$ explains the chronological age assuming the brain is healthy, and any \textit{additional} unexplained variance in $\varepsilon$ is assumed to be the brain age gap. On the other hand, if the model is trained on both healthy and non-healthy subjects at the same time, it might learn the combined confounding effects of both normal (chronological) and disease-related (brain) ageing, thus hiding the brain age gaps~\cite{dukart2011age}.
 
 An alternative method that does not restrict training data only to healthy subjects is proposed in Niu et al.~\cite{niu2019improved}. However, it requires experimentally verifying (e.g. through subjects' performance in cognitive behaviour tests) that $\varepsilon$ depends primarily on the brain age gap $\varepsilon_g$ and not the brain age prediction error $\varepsilon_e$, which is out of the scope of this dissertation.
 
@@ -79,7 +79,7 @@ Structural MRI is used to analyse the anatomy of the brain. The two main MRI mod
     \centering
     \includegraphics[width=0.6\textwidth]{T1.png}
     \includegraphics[width=0.6\textwidth]{T2.png}
-    \caption{The slices of the T1 (top) T2-weighted FLAIR (bottom) MRI image.}\label{figure:t1-t2}
+    \caption{The slices of the T1 (top) T2-weighted FLAIR MRI image.}\label{figure:t1-t2}
 \end{figure}
 
 
@@ -122,7 +122,7 @@ For the purposes of machine learning analysis, \textit{functional connectivity m
 \begin{figure}[]
     \centering
     \includegraphics[width=\textwidth]{fmri.pdf}
-    \caption{An example of a BOLD time-series for a single brain region.}\label{figure:fmri}
+    \caption{An example BOLD time-series for a single brain region.}\label{figure:fmri}
 \end{figure}
 
 \subsection{Euler indices}
@@ -139,7 +139,7 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.6\textwidth]{parcellated_brain.png}
-    \caption{The slices of the MRI image with parcels highlighted in different colours.}\label{figure:parcellated-brain}
+    \caption{Slices of an MRI image with parcels highlighted in different colours.}\label{figure:parcellated-brain}
 \end{figure}
 
 % When the brain is imaged there is a choice whether to warp the image of the brain to the fixed atlas or whether to warp the atlas to match the variable brain images. The former makes it easier to process a dataset of many images and find the matching regions of two brains faster, but the latter remains more faithful to the unique structure of the individual patient's brain. 
@@ -178,7 +178,7 @@ Each node $v \in V$ is a vector containing the individual subject's neuroimaging
 
 Defining a good similarity metric is important to account for the confounding effects on the feature vectors (e.g. the subject's sex affects the brain volume) as well as to cluster subjects into the most informative neighbourhoods. For example, in this dissertation the neighbourhoods that have similar brain age gaps could be useful. If carefully defined, the similarity metrics could include the domain expertise of neurologists and psychiatrists as well.
 
-Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar are the subjects):
+Similarity metrics are defined using a \textit{similarity function} $\mathrm{sim}(\cdot, \cdot)$ which takes two subjects and returns the similarity score between them (the higher the score, the more similar the subjects):
 
 \begin{equation}
     \mathrm{sim}(s_v, s_w) = \frac{1}{n}\sum_{i=1}^{n} \mathbf{1}[M_i(s_v) = M_i(s_w)].
@@ -220,7 +220,7 @@ The positive semidefinite graph Laplacian matrix is decomposed as
     \mathbf{L} = \mathbf{U\Lambda U}^\mathrm{T},
 \end{equation}
 
-where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{F}$ (e.g. a graph node with $F$ features), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse~\cite{wu2019simplifying}.
+where $\mathbf{\Lambda}$ is the diagonal eigenvalue matrix, and $\mathbf{U}$ is the eigenbasis defining the graph Fourier domain: for a signal $\mathbf{x} \in \mathbb{R}^{F}$ (i.e. a graph node with $F$ features), $\mathbf{\hat{x}} = \mathbf{U}^\mathrm{T}\mathbf{x}$ is the \textit{graph Fourier transform} of $\mathbf{x}$, and $\mathbf{x} = \mathbf{U}\mathbf{\hat{x}}$ is its inverse~\cite{wu2019simplifying}.
 
 % Eigenvalues as graph frequencies and learning as a low-pass filter of frequencies.
 % Fourier transform as transformation to the eigenbasis obtained through graph Laplacian diagonalisation.
@@ -290,7 +290,7 @@ This results in convolution approximation:
     &= \theta(\mathbf{I} + \mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2})\mathbf{x}
 \end{align}
 
-Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in Equation~\eqref{eq:gcnconv1} ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$, 
+Finally, to avoid the numerical instability of repeated convolutions due to the eigenvalues of the matrix in Equation~\eqref{eq:gcnconv1} ranging in $[0, 2]$, a \textit{renormalisation trick} is applied by adding self-loops to the graph nodes: taking $\mathbf{\tilde{A}} = \mathbf{A} + \mathbf{I}$ and $\mathbf{\tilde{D}}$ the degree matrix of $\mathbf{\tilde{A}}$: 
 
 \begin{equation}
     \label{eq:gcnconv2}
@@ -305,7 +305,7 @@ Finally, to avoid the numerical instability of repeated convolutions due to the 
 \subsection{Graph convolutional layer}
 The graph convolution operation in Equation~(\ref{eq:gcnconv2}) is generalised to the entire layer of the network as follows. 
 
-Let $\mathbf{H}^{(l-1)} \in \mathbb{R}^{N\times C_{l-1}}$ be the input layer of a neural network with $C_{l-1}$ input channels, $\mathbf{H}^{(l)} \in \mathbb{R}^{N\times C_{l}}$ be the GCN layer with $C_{l}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{N \times C_0}$ containing $C_0$ input features for each of the $N$ nodes in the population graph (in this case the neuroimaging data for $N$ subjects). For the weight matrix $\mathbf{\Theta}^{(l)} \in \mathbb{R}^{C_{l-1}\times C_{l}}$ and an activation function $\sigma(\cdot)$,
+Let $\mathbf{H}^{(l-1)} \in \mathbb{R}^{N\times C_{l-1}}$ be the input layer of a neural network with $C_{l-1}$ input channels, $\mathbf{H}^{(l)} \in \mathbb{R}^{N\times C_{l}}$ be the GCN layer with $C_{l}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{N \times C_0}$ containing $C_0$ input features for each of the $N$ nodes in the population graph (in this case the neuroimaging data for $N$ subjects). For the weight matrix $\mathbf{\Theta}^{(l)} \in \mathbb{R}^{C_{l-1}\times C_{l}}$ and an activation function $\sigma(\cdot)$:
 
 \begin{equation}
     \mathbf{H}^{(l)} \leftarrow \sigma( \mathbf{\tilde{D}}^{-1/2}\mathbf{\tilde{A}}\mathbf{\tilde{D}}^{-1/2}\mathbf{H}^{(l-1)}\mathbf{\Theta}^{(l)}).
@@ -402,7 +402,7 @@ I expect stage S1 to be the most complex for the following additional requiremen
     \item The pipeline has to be \textit{modular} enough to be easily extended to more datasets, modalities and processing options in the future. To achieve this, the pipeline will be split into independent components with their own designated functionality, so that they are easier to build upon independently.
 \end{enumerate} 
 
-These considerations by themselves largely fulfil the proposed \textit{extension} of implementing the pipeline that can handle raw data at the one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Computer Science Part II project. 
+These considerations by themselves largely fulfil the proposed \textit{extension} of implementing the pipeline that can handle raw data at one of its earliest processing stages in an end-to-end manner – indeed any earlier stage would require advanced neuroimaging processing expertise that would be out of scope of a Computer Science Part II project. 
 
 The full design of the neuroimaging processing pipeline with respect to those requirements, as well as the GCN and GAT architectures and their evaluation, is discussed in Chapter~\ref{chapter:implementation}.
 
