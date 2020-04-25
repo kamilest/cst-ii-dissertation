@@ -35,7 +35,7 @@ The cross-validation performance of the best-scoring models selected by the abov
     \caption{Highest scoring population graph and GNN model parameter combinations. The models are named according to their convolution type and their rank by ascending average MSE loss (indicated by the green triangle).}\label{figure:gat-gcn-rank}
 \end{figure}
 
-Although both best-ranked (reference) models (GCN1 and GAT1) have relatively high variance, they still seem to be the most promising and therefore have been selected for further evaluation. Their population graph specification and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}. 
+Although both best-ranked (reference) models (GCN1 and GAT1) have relatively high variance, they still seem to be the most promising and therefore have been selected for further evaluation. Their population graph specification and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}. While the hyperparameters for the two architectures are very different, 
 
 \begin{table}[]
     \caption{Best performing population graph and GNN model parameter combinations during the model selection process.}\label{table:best-hyperparameters}
@@ -150,8 +150,6 @@ The results of corrupting the node features on the predictive power of GNN model
 \end{figure}
 
 As expected, for both GCN and GAT models the performance was decreasing relatively slowly as more training nodes got corrupted, and then dropped drastically when more than half of the training nodes had their features permuted. In case of the GAT model, the $r^2$ metric even fell below 0 (bottom of Figure~\ref{figure:node-noise}), which means that no variance could be explained and that the mean of the observed subject ages in the dataset is a better estimate of the brain age than the prediction of the GAT model. 
-
-It is also possible to compare the relative GCN and GAT performance. While in this experiment the GAT model has higher (but similar) average scores at low noise levels, its performance drops faster, creating a wider gap between the scores, which could suggest that the GAT model is less robust to increasing noise. 
 
 % \subsection{Discussion}
 % In practice, in a big and well-curated dataset such as the UK Biobank, the existence of exact protocols for equipment and measurement taking should prevent there being too many unacceptably noisy scans. Even in that case, the noise would take a milder form than the complete shuffling of features that make the node data meaningless. Having that considered, at low proportions of added noise, both models have been able to retain most of their predictive power, which could indicate their generalisability to new contexts.
