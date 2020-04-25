@@ -232,7 +232,7 @@ The graph neural network component contains implementations for the graph neural
 
 Listing~\ref{listing:braingnn} shows how the layers are combined in the \texttt{BrainGNN} architecture for a given set of parameters in Table~\ref{table:braingnn}. Hyperbolic tangent ($\tanh(\cdot)$) was chosen as the non-linearity (activation function) between each layer. This is because the population graph features and weights in neurons may be negative, in which case other popular activation functions such as $\mathrm{ReLU}(\cdot)$ may have an undesirable asymmetric response.
 
-The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in lines 25 and 35 as a \textit{regularisation} technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
+The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in line 21 as a \textit{regularisation} technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
 
 % \bigskip
 % \begin{code}
