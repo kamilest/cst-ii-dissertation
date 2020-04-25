@@ -236,7 +236,7 @@ The graph neural network component contains implementations for the graph neural
 
 Listing~\ref{listing:braingnn} shows how the layers are combined in the \texttt{BrainGNN} architecture for a given set of parameters in Table~\ref{table:braingnn}. Hyperbolic tangent ($\tanh(\cdot)$) was chosen as the non-linearity (activation function) between each layer. This is because the population graph features and weights in neurons may be negative, in which case other popular activation functions such as $\mathrm{ReLU}(\cdot)$ may have an undesirable asymmetric response.
 
-The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in lines 25 and 35 as a \textit{regularisation} technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
+The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in line 21 as a \textit{regularisation} technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
 
 % \bigskip
 % \begin{code}
@@ -364,7 +364,7 @@ The repository follows the structure of the five key project components shown in
             & \texttt{brain\_gnn\_evaluate.py} & Population graph noisification and robustness measurement procedure (Section~\ref{section:gnn-train-evaluate}). \\
             & \texttt{brain\_gnn\_train.py} & Cross-validation training procedure (Section~\ref{section:gnn-train-evaluate}). \\
             & \texttt{wandb\_sweep.yaml} & Initial hyperparameter distributions used by \texttt{wandb} (Listing~\ref{listing:sweep-config}). \\
-            & \texttt{wandb\_train.yaml} & Command line script used by \texttt{wandb} to automatically test new hyperparameters. \\
+            & \texttt{wandb\_train.py} & Command line script used by \texttt{wandb} to automatically test new hyperparameters. \\
     % \end{tabular}
     % \end{table}
 \end{longtable}

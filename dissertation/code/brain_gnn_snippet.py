@@ -1,7 +1,6 @@
 class BrainGNN(torch.nn.Module):
     def __init__(self, conv_type, n_node_features, n_conv_layers, 
                 layer_sizes, dropout_p):
-        # ...
 
         # Refer to the layers of the same type through a list.
         self.conv = torch.nn.ModuleList() # Convolutional layers.
