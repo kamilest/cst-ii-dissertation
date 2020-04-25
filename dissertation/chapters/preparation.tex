@@ -146,7 +146,8 @@ A \textit{parcellation} splits an image of a brain into biologically meaningful 
 
 \subsection{Non-imaging features}
 
-In this dissertation, non-imaging data refers to all subject data that does not come from structural MRI and fMRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table \ref{table:phenotype-features} summarises the non-imaging features selected for this project.
+In this dissertation, non-imaging data refers to all subject data that does not come from structural MRI and fMRI scans. The features useful to this project include the subject's binary (biological) sex, the psychiatric disorder diagnoses, mental health status, education, and other variables that might have a confounding effect on structure and functional connectivity of the brain~\cite{ruigrok2014meta} and consequently affect the brain age. Table~\ref{table:phenotype-features} summarises the non-imaging features used in this project. The features have been selected as very likely to affect brain ageing and/or neuroimaging scans, and cited as common confounders in literature (see Table~\ref{table:phenotype-features} for explanations).
+
 \stepcounter{footnote}
 \begin{table}[h]
     \caption{Summary of the non-imaging features used in this project.}\label{table:phenotype-features}
@@ -157,7 +158,7 @@ In this dissertation, non-imaging data refers to all subject data that does not 
     \texttt{AGE} & Chronological age &  Used as the training label. \\
     \texttt{FI} & Fluid intelligence score &  Measures cognitive performance. Related to increased brain activity~\cite{gray2003neural}. \\
     \texttt{FTE} & Years of full-time education &  Associated with brain age gaps~\cite{steffener2016differences} and other brain health conditions~\cite{brayne2010education}.\\
-    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain. Diagnoses were grouped by categories following the ICD10 system\footnotemark[\value{footnote}]. \\
+    \texttt{ICD10} & Mental and brain health (from ICD10 diagnosis code data) & Subject mental health and nervous system disease diagnoses that might affect the structure and function of the brain~\cite{kaufmann2019}. Diagnoses were grouped by categories following the ICD10 system\footnotemark[\value{footnote}]. \\
     \texttt{MEM} & Prospective memory result & Memory generally declines with age, and is related to changing brain activity patterns~\cite{grady2000changes, kliegel2006delayed}. \\
     \texttt{SEX} & Binary sex (male or female) & Highly affects the size and volume of the brain~\cite{ruigrok2014meta}. \\ \hline
     \end{tabular}
