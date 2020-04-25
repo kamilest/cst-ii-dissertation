@@ -187,10 +187,3 @@ The effect of removing the edges on predictive power of the GNN models is shown 
  The edge removal experiment shows that for brain age estimation problem, the models relied more on the features of individual nodes rather than similarity metrics and in turn the neighbourhoods of other population graph nodes. This might mean that the similarity metrics were not informative enough to allow for effective sharing of feature and/or label information, or that the (brain) age depends more on the feature interactions within a single brain rather than particular signals that generalise to other individuals. Moreover, the node noisification experiment shows that the neighbours could be even \textit{harmful} as, due to experimental setup, the changes in performance in Figure~\ref{figure:node-noise} are only due to the changes in neighbouring nodes but not in the test nodes themselves.
 
 If this is true, more powerful models that do not use the graph structure might be more appropriate for the brain age estimation task. This is consistent with considerably better brain age estimation performance of other non-GNN models found in literature (such as $r=0.93$ in Kaufmann et al.~\cite{kaufmann2019} using an XGBoost model, and $r=0.94, r^2=0.88$ in Cole et al.~\cite{cole2018brain} using a Gaussian process regression model), and even ``consistently poor'' performance of GNN models when applied to a similar task (to the point that in Pervaiz et al.~\cite{pervaiz2020optimising} the GNN results were dropped altogether from further discussion).
-
-
-% \section{Comparison against existing benchmarks}
-
-% Compare to the Kaufmann et al.'s \textit{xgboost} approach \cite{kaufmann2019} ($r \sim 0.93$); and the other package that was cited in the same paper.
-% Possibly compare to other non-graph (relatively baseline) (neural network) architectures, e.g. ElasticNet, MLP,...
-
