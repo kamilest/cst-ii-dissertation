@@ -56,7 +56,7 @@ Although both best-ranked (reference) models (GCN1 and GAT1) have relatively hig
 
 \section{Evaluation metrics}
 \label{section:evaluation-metrics}
-The main performance metrics used for most regression problems, including brain age estimation task, are \textit{Pearson's correlation} and \textit{coefficient of determination}.
+The main performance metrics used for most regression problems, including the brain age estimation task, are \textit{Pearson's correlation} and \textit{coefficient of determination}.
 
 \subsubsection{Pearson's correlation}
 For sets of true labels $\mathbf{y}  = [y_1 \dots y_N]$ with mean $\bar{y}$ and predicted labels $\mathbf{\hat{y}} = [\hat{y}_1 \dots \hat{y}_N]$, \textit{Pearson's correlation} is computed as
@@ -97,13 +97,13 @@ The following sections will consider a single fold of GCN1 and GAT1 models (havi
 
 \section{Significance testing of model performance}
 \subsection{Experimental setup}
-A classical test for assessing whether the models have truly learnt the relationships between the input features and the response variable is called a \textit{permutation test}~\cite{ojala2010permutation}. The null hypothesis assumes that features and labels are independent (i.e. that there is no relationship between the neuroimaging and non-imaging data and brain age), and the distribution corresponding to this hypothesis is estimated by randomly permuting the labels in the dataset. The $p$-value for this test is computed as
+A classical test for assessing whether the models have truly learnt the relationships between the input features and the response variable is called a \textit{permutation test}~\cite{ojala2010permutation}. The null hypothesis assumes that features and labels are independent (i.e.\ that there is no relationship between the neuroimaging and non-imaging data and brain age), and the distribution corresponding to this hypothesis is estimated by randomly permuting the labels in the dataset. The $p$-value for this test is computed as
 
 \begin{equation}
     p = \frac{\sum_{i=1}^k \mathbf{1}\left[\mathcal{L}(\mathbf{\hat{y}}, \pi(\mathbf{y})) \leq \mathcal{L}(\mathbf{\hat{y}}, \mathbf{y})\right] + 1}{k+1}\label{eq:p-value}
 \end{equation}
 
-where $\mathcal{L}(\cdot, \cdot)$ error function used to train the model (in this project MSE), $\pi(\cdot)$ is a permutation function which uniformly returns a random permutation of the argument, and $k$ is the number of samples.
+where $\mathcal{L}(\cdot, \cdot)$ error function used to train the model (in this project MSE), $\pi(\cdot)$ is a permutation function that uniformly returns a random permutation of the argument, and $k$ is the number of samples.
 
 In this project, $k=1000$ samples will be taken for each model family and the results will be claimed significant if the $p$-value in Equation~\eqref{eq:p-value} falls below the significance level $\alpha=0.05$. 
 
@@ -121,7 +121,7 @@ The $p$-values, representing how likely it is to get the MSE lower than the orig
 
 \section{GNN robustness to population graph noise}
 \label{section:node-noise}
-A desirable property for the real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in input data.
+A desirable property for real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in input data.
 For population graphs trained on graph neural networks, this could be estimated by adding noise to an increasing proportion of nodes. 
 
 \subsection{Experimental setup}
@@ -188,4 +188,4 @@ If this is true, more powerful models that do not use the graph structure might 
 
 At the same time, the graph neural networks should not be discredited too early. The main advantage of population graphs to combine both imaging and non-imaging modalities for different sub-populations at once is still something that is not as practical to do with other brain age prediction approaches, but has achieved state-of-the-art results in similar applications~\cite{parisot2018disease}. The population graphs also make an effort to account for a diversity of confounding effects, which in other approaches is done by separating or prefiltering the data, potentially making the models less generalisable to real clinical settings.
 
-In this project, the population graphs have been constrained to only five out of over 700 non-imaging features (possibly resulting in poor similarity scoring, especially when equally weighted), and GNN architectures have been severely limited because of memory constraints (including the omission of an entire modality of features). Addressing both of those limitations as well as trying alternative graph neural network architectures could give a better picture of the potential of this approach.
+In this project, the population graphs have been constrained to only five out of over 700 non-imaging features (possibly resulting in poor similarity scoring, especially when equally weighted), and GNN architectures have been severely limited because of memory constraints (including the omission of an entire modality of features). Addressing both of these limitations as well as trying alternative graph neural network architectures could give a better picture of the potential of this approach.
