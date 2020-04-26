@@ -304,7 +304,7 @@ Finally, to avoid the numerical instability of repeated convolutions due to the 
 % extension: an alternative to Chebyshev polynomials (extension): cayleynet--probably too difficult to implement
 
 \subsection{Graph convolutional layer}
-The graph convolution operation in Equation~(\ref{eq:gcnconv2}) is generalised to the entire layer of the network as follows. 
+The graph convolution operation in Equation~\ref{eq:gcnconv2} is generalised to the entire layer of the network as follows. 
 
 Let $\mathbf{H}^{(l-1)} \in \mathbb{R}^{N\times C_{l-1}}$ be the input layer of a neural network with $C_{l-1}$ input channels, $\mathbf{H}^{(l)} \in \mathbb{R}^{N\times C_{l}}$ be the GCN layer with $C_{l}$ output channels, and $\mathbf{H}^{(0)} = \mathbf{X} \in \mathbb{R}^{N \times C_0}$ containing $C_0$ input features for each of the $N$ nodes in the population graph (in this case the neuroimaging data for $N$ subjects). For the weight matrix $\mathbf{\Theta}^{(l)} \in \mathbb{R}^{C_{l-1}\times C_{l}}$ and an activation function $\sigma(\cdot)$:
 

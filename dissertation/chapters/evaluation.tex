@@ -12,7 +12,7 @@
 Following the hyperparameter tuning process described in Section~\ref{section:training-procedure}, the models were selected according to the following procedure (applied separately to the GCN and GAT model families):
 \begin{enumerate}
     \item First, the models were ranked by ascending average MSE loss. The model with the lowest average MSE was chosen as the reference model.
-    \item All models whose 1 standard deviation interval from their MSE did not overlap with the 1 standard deviation interval of the reference model MSE were excluded from ranking.
+    \item All models whose one standard deviation interval from their MSE did not overlap with the one standard deviation interval of the reference model MSE were excluded from ranking.
 \end{enumerate}
 
 The cross-validation performance of the best-scoring models selected by the above procedure is shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the short-listed models are listed in Tables~\ref{table:shortlisted-gcn} and~\ref{table:shortlisted-gat} (Appendix~\ref{appendix:hyperparameters}).
