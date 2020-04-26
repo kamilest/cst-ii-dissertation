@@ -316,7 +316,7 @@ MRI data can be very noisy~\cite{pervaiz2020optimising,niu2019improved}, and mos
 %Intuitively, since the GNN architectures account for the features and labels of the node's neighbourhood when predicting some response variable, incorporating features of less noisy neighbours could improve the prediction for a noisy node. 
 To test how the model performance changes with noise, increasing proportions of nodes could be corrupted. One way to do this would be to add Gaussian noise, but this leaves it unclear how to choose the optimal noise amplitude. A more aggressive way would be to corrupt the nodes completely by, for example, permuting their features.
 
-Another advantage of using the population graph (rather than treating every subject as an independent example) is that the associations between subjects (captured through graph edges and defined by subject similarities) incorporate additional non-imaging information which could improve the predictions and account for confounding effects. To test whether the model relies on edge information, some fraction of edges that should have been present in the population graph could be removed, observing the change in model performance. 
+Another advantage of using the population graph (rather than treating every subject as an independent example) is that the associations between subjects (captured through graph edges and defined by subject similarities) incorporate additional non-imaging information which could improve the predictions and account for confounding effects. To test how much the model relies on edge information, some fraction of edges that should have been present in the population graph could be removed, observing the change in model performance. 
 
 
 \section{Repository overview}

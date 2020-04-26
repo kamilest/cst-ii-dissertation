@@ -90,7 +90,7 @@ Functional MRI (fMRI) data indirectly measures brain activity over time. It is r
 
 The two types of an fMRI image are \textit{task} fMRI, when the subject is asked to perform a specific cognitive task, and \textit{resting state} fMRI (rs-fMRI), when the subject is not performing any particular task. This project will use rs-fMRI data.
 
-For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is conceptualised as the correlation between the time-series of every pair of brain regions together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). 
+For the purposes of machine learning analysis, \textit{functional connectivity matrices} will be derived from rs-fMRI and used as input features to the graph neural network models. Functional connectivity is conceptualised as the correlation between the time-series of every pair of brain regions together under the assumption that parts of the brain that have related functions would also have similar activity patterns (highly correlated time-series). This is a highly researched common practice for representing brain connectivity~\cite{biswal1995functional, smith2009correspondence}.
 
 
 % As a consequence, we would expect higher correlation between the corresponding BOLD time-series. For time-series $T_1$ and $T_2$, \textit{Pearson's correlation} (denoted as $r$) is computed as
@@ -173,7 +173,7 @@ The non-imaging data is used to compute the inter-subject similarity score, whic
 
 One useful way to combine the multiple types of neuroimaging data and represent the relations between subjects for downstream machine learning tasks is a \textit{population graph} data structure, as it is presented by Parisot et al.~\cite{parisot2018disease}.
 
-The set of $N$ subjects $S$ is connected into an undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject), and $E$ is the set of edges (representing the similarity of subjects).
+The set of $N$ subjects $S$ is connected into an undirected population graph $G = (V, E)$, where $V$ is the set of graph nodes (with one node uniquely representing one subject, $|S| = |V|$), and $E$ is the set of edges (representing the similarity of subjects).
 
 Each node $v \in V$ is a vector containing the individual subject's neuroimaging data, whether structural, functional, or both. The edge $(v, w) \in E$ connects subjects $s_v, s_w \in S$ based on some \textit{similarity metric} that uses the non-imaging information of the subjects to create edges between the nodes. 
 
@@ -195,7 +195,7 @@ To avoid memory issues when $|E| \sim O(N^2)$ and minimise the size of the neigh
     \label{eq:similarity-threshold}
 \end{equation}
 
-The population graphs can only be effectively accepted as input to machine learning models that are capable of operating on graph-structured data. The two following sections will discuss two types of \textit{graph neural networks} (GNNs) that will be implemented in this dissertation for this purpose, namely graph convolutional and graph attention networks.
+The population graphs can only be effectively accepted as input to machine learning models that are capable of operating on graph-structured data. The two following sections will discuss two types of \textit{graph neural networks} (GNNs) that will be implemented in this dissertation for this purpose, namely graph convolutional and graph attention networks. The choice of these particular GNN architectures was based on them being the most popular in their very different approaches – the former works in spectral (Fourier) domain, and the latter in spatial domain.
 
 \section{Graph convolutional networks}
 \label{training-gcn}
