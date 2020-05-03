@@ -74,20 +74,6 @@ For the remaining metrics (e.g.\ years of full-time education, \texttt{FTE}) the
     \mathbf{M}_{\text{FTE}} = \mathbf{1}\left[\mathbf{F}_{\text{FTE}}^{\ } = \mathbf{F}_{\text{FTE}}^{\mathrm{T}} \right].
 \end{equation}
 
-
-% \[
-% \begin{blockarray}{rccccc}
-%  & b & c & d & e & f \\
-% \begin{block}{r[ccccc]}
-%   \text{UKB} & 1 & 1 & 1 & 1 & f \\
-%   0 & 1 & 0 & 0 & 1 & g \\
-%   0 & 0 & 1 & 0 & 1 & h \\
-%   0 & 0 & 0 & 1 & 1 & i \\
-%   0 & 0 & 0 & 0 & 1 & j \\
-% \end{block}
-% \end{blockarray}
-%  \]
-
 \section{Graph construction component}
 \label{section:graph-construction}
 The next stage of the pipeline involves constructing the ``intermediate representation'' of the population graph. The intermediate representation contains the graph topology and node features, but is not prepared for training – it is not split into training, validation and test sets, and its features are not normalised. The two stages are separate because this allows for the reuse of the same intermediate representation for different dataset splits and other training parameters without having to reconstruct the edges in $O(N^2)$ time for $N$ subjects. The steps for the data processing in this component are schematically visualised in Figure~\ref{graph-construction-component}.

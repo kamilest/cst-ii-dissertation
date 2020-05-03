@@ -17,22 +17,10 @@ Following the hyperparameter tuning process described in Section~\ref{section:tr
 
 The cross-validation performance of the best-scoring models selected by the above procedure is shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the short-listed models are listed in Tables~\ref{table:shortlisted-gcn} and~\ref{table:shortlisted-gat} (Appendix~\ref{appendix:hyperparameters}).
 
-% \begin{figure}[]
-%     \centering
-%     \includegraphics[width=\textwidth]{gcn_model_selection.pdf}
-%     \caption{Highest scoring population graph and GCN model parameter combinations.}\label{figure:gcn-rank}
-% \end{figure}
-
-% \begin{figure}[]
-%     \centering
-%     \includegraphics[width=\textwidth]{gat_model_selection.pdf}
-%     \caption{Highest scoring population graph and GAT model parameter combinations.}\label{figure:gat-rank}
-% \end{figure}
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{model_selection.pdf}
-    \caption{Highest scoring population graph and GNN model parameter combinations. The models are named according to their convolution type and their rank by ascending average MSE loss (indicated by the green triangle).}\label{figure:gat-gcn-rank}
+    \caption{Highest scoring population graph and GNN parameter combinations for GCN (left) and GAT models. The models are named according to their convolution type and their rank by ascending average MSE loss (indicated by the green triangle).}\label{figure:gat-gcn-rank}
 \end{figure}
 
 Although both best-ranked (reference) models (GCN1 and GAT1) have relatively high variance, they still seem to be the most promising and therefore have been selected for further evaluation. Their population graph specification and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}. While the hyperparameters for the two architectures are very different, it is hard to make a definite qualitative comparison between them because of high and not clearly systematic variation in hyperparameter combinations over all short-listed models (Appendix~\ref{appendix:hyperparameters}).
@@ -103,7 +91,7 @@ A classical test for assessing whether the models have truly learnt the relation
     p = \frac{\sum_{i=1}^k \mathbf{1}\left[\mathcal{L}(\mathbf{\hat{y}}, \pi(\mathbf{y})) \leq \mathcal{L}(\mathbf{\hat{y}}, \mathbf{y})\right] + 1}{k+1}\label{eq:p-value}
 \end{equation}
 
-where $\mathcal{L}(\cdot, \cdot)$ error function used to train the model (in this project MSE), $\pi(\cdot)$ is a permutation function that uniformly returns a random permutation of the argument, and $k$ is the number of samples.
+where $\mathcal{L}(\cdot, \cdot)$ is the error function used to train the model (in this project MSE), $\pi(\cdot)$ is a function that uniformly at random returns a permutation of the argument, and $k$ is the number of samples.
 
 In this project, $k=1000$ samples will be taken for each model family and the results will be claimed significant if the $p$-value in Equation~\eqref{eq:p-value} falls below the significance level $\alpha=0.05$. 
 
@@ -113,43 +101,31 @@ The null distributions of GCN and GAT model errors with permuted labels are show
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{permutation_test.pdf}
-    \caption{The null distribution of the label permutation test for GCN and GAT models. The red lines indicate MSE for the original dataset.}\label{figure:permutation-test}
+    \caption{The null distribution of the label permutation test for GCN (left) and GAT models. The red lines indicate MSE for the original dataset.}\label{figure:permutation-test}
 \end{figure}
 
 The $p$-values, representing how likely it is to get the MSE lower than the original dataset MSE purely by chance, were equal to $p=0.001$ for both GNN models. This is lower than the chosen significance level $\alpha=0.05$ so the null hypothesis is rejected and the performance of both models is statistically significant.
 
 
-\section{GNN robustness to population graph noise}
+\section{GNN robustness to population graph node feature noise}
 \label{section:node-noise}
-A desirable property for real-world machine learning models is their robustness, defined as tolerance to the noise and inconsistency in input data.
+A desirable property for real-world machine learning models is their robustness, here defined as tolerance to the noise and inconsistency in input data.
 For population graphs trained on graph neural networks, this could be estimated by adding noise to an increasing proportion of nodes. 
 
 \subsection{Experimental setup}
-For the feature noise robustness evaluation, an increasing proportion of population graph nodes is corrupted by randomly permuting their features. Then the model is retrained and tested on the hold-out test set, measuring the change in performance. To make sure that any effect on the evaluation metrics is due to added noise and not the changing dataset split, the model is trained on a single dataset split while the noise is added to different subjects. Moreover, to ensure that the effect on test set performance is due to the interaction with neighbourhoods and not due to the individual node features, only the nodes in the training set will be corrupted. For each of the GCN and GAT models, the experiment is repeated five times for each noise level (1\%, 5\%, 10\%, 20\%, 30\%, 50\%, 80\%, and 95\% of training nodes).
+For the feature noise robustness evaluation, an increasing proportion of population graph nodes is corrupted by randomly permuting their features. Then the model is retrained and tested on the hold-out test set, measuring the change in performance. To make sure that any effect on the evaluation metrics is due to added noise and not the changing dataset splits, the model is trained on a single dataset split while the noise is added to different subjects. Moreover, to ensure that the effect on test set performance is due to the interaction with neighbourhoods and not due to the individual node features, only the nodes in the training set will be corrupted. For each of the GCN and GAT models, the experiment is repeated five times for each noise level (1\%, 5\%, 10\%, 20\%, 30\%, 50\%, 80\%, and 95\% of training nodes).
 
 \subsection{Results}
 
-The results of corrupting the node features on the predictive power of GNN models are shown in Figure~\ref{figure:node-noise}.
-
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[]{node_noise_r.pdf}
-% %     \caption{The effect of permuting node features on $r$ performance metric, with error bars representing standard deviation}\label{figure:node-noise-r}
-% % \end{figure}
-
-% % \begin{figure}[h]
-% %     \centering
-%     \includegraphics[]{node_noise_r2.pdf}
-%     \caption{The effect of permuting node features on $r$ and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
-% \end{figure}
+The results of node feature corruption on the predictive power of GNN models are shown in Figure~\ref{figure:node-noise}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[]{node_noise.pdf}
-    \caption{The effect of permuting node features on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
+    \caption{The effect of permuting node features on $r$ (left) and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:node-noise}
 \end{figure}
 
-As expected, for both GCN and GAT models the performance was decreasing relatively slowly as more training nodes got corrupted, and then dropped drastically when more than half of the training nodes had their features permuted. In case of the GAT model, the $r^2$ metric even fell below 0 (bottom of Figure~\ref{figure:node-noise}), which means that no variance could be explained and that the mean of the observed subject ages in the dataset is a better estimate of the brain age than the prediction of the GAT model. 
+As expected, for both GCN and GAT models the performance was decreasing relatively slowly as more training nodes got corrupted, and then dropped drastically when more than half of the training nodes had their features permuted. In case of the GAT model, the $r^2$ metric fell below 0 (bottom of Figure~\ref{figure:node-noise}), which means that no variance could be explained and that the mean of the observed subject ages in the dataset is a better estimate of the brain age than the predictions of the GAT model. 
 
 % \subsection{Discussion}
 % In practice, in a big and well-curated dataset such as the UK Biobank, the existence of exact protocols for equipment and measurement taking should prevent there being too many unacceptably noisy scans. Even in that case, the noise would take a milder form than the complete shuffling of features that make the node data meaningless. Having that considered, at low proportions of added noise, both models have been able to retain most of their predictive power, which could indicate their generalisability to new contexts.
@@ -157,29 +133,18 @@ As expected, for both GCN and GAT models the performance was decreasing relative
 
 \section{GNN dependence on population graph topology}
 \subsection{Experimental setup}
-The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information which could be useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph, with the proportions of removed edges being the same as in the previous section. The training procedure is then repeated five times at each percentage of removed edges using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
+The assumption behind the population graph model is that the edge structure helps to control for confounding effects while giving additional information useful for brain age prediction. One experiment to test this is to remove an increasing proportion of edges from the population graph (here the proportions of removed edges being the same as in the previous section). The training procedure is then repeated five times at each percentage of removed edges using a different random seed. The more edges are removed, the less neighbourhood structure the graph neural network models can exploit, having to rely on individual node features. 
 
 \subsection{Results}
-The effect of removing the edges on predictive power of the GNN models is shown in Figure~\ref{figure:edge-noise}. Compared to the results in Section~\ref{section:node-noise} where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did \texttt{not} affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
-
-% \begin{figure}[]
-%     \centering
-%     \includegraphics[]{edge_noise_r.pdf}
-% %     \caption{The effect of removing edges on $r$ performance metric, with error bars representing standard deviation}\label{figure:edge-noise-r}
-% % \end{figure}
-
-% % \begin{figure}[h]
-% %     \centering
-%     \includegraphics[]{edge_noise_r2.pdf}
-%     \caption{The effect of removing edges on $r$ and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
-% \end{figure}
+The effect of removing the edges on predictive power of the GNN models is shown in Figure~\ref{figure:edge-noise}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[]{edge_noise.pdf}
-    \caption{The effect of removing edges on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
+    \caption{The effect of removing edges on $r$ (left) and $r^2$ performance metrics, with error bars representing standard deviation.}\label{figure:edge-noise}
 \end{figure}
 
+Compared to the results in Section~\ref{section:node-noise}, where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did not affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
 
 \section{Discussion}
  The edge removal experiment shows that for brain age estimation problem, the models relied more on the features of individual nodes rather than similarity metrics and in turn the neighbourhoods of other population graph nodes. This might mean that the similarity metrics were not informative enough to allow for effective sharing of feature and/or label information, or that the (brain) age depends more on the feature interactions within a single brain rather than particular signals that generalise to other individuals. Moreover, the node noisification experiment shows that the neighbours could be even \textit{harmful} as, due to experimental setup, the changes in performance in Figure~\ref{figure:node-noise} are only due to the changes in neighbouring nodes but not in the test nodes themselves.
