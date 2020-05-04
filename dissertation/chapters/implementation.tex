@@ -10,12 +10,6 @@
 % Tangent works better than correlation or partial correlation.
 \section{Overview}
 
-\begin{figure}[]
-    \centering
-    \includegraphics[width=\textwidth]{pipeline_overview.pdf}
-    \caption{Overview of the key project components.}\label{pipeline-overview}
-\end{figure}
-
 This project can be divided into five key components, as illustrated in Figure~\ref{pipeline-overview}:
 \begin{enumerate}
     \item Preparation of the United Kingdom Biobank (UKB) dataset;
@@ -24,6 +18,12 @@ This project can be divided into five key components, as illustrated in Figure~\
     \item Training on graph neural network architectures;
     \item Evaluation of the graph neural network performance.
 \end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{pipeline_overview.pdf}
+    \caption{Overview of the key project components.}\label{pipeline-overview}
+\end{figure}
 
 The work was split into these particular components so that each of them can carry out a single task independently of the other parts of the program (other than the clearly defined input/output communication), following requirement R3 (see Section~\ref{section:requirements-analysis}). This makes the overall project easier to implement, understand and extend in the future, generalising it to other datasets and preprocessing methods. 
 
@@ -37,7 +37,9 @@ The main function of the UKB preprocessing component is to prepare the raw or pa
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{preprocessing_component.pdf}
-    \caption{Overview of the UKB preprocessing component.}\label{preprocessing-component}
+    \caption{\textit{Overview of the UKB preprocessing component.} 
+    This component precomputes the similarity matrices from non-imaging data, and functional connectivity matrices from fMRI data. A unifying subject index is collected to keep track of the subjects across modalities and filter the data for the graph construction component.
+    }\label{preprocessing-component}
 \end{figure}
 
 \subsection{Cleaning the dataset}
@@ -80,7 +82,9 @@ The next stage of the pipeline involves constructing the ``intermediate represen
 
 \begin{figure}[h]
     \includegraphics[width=\textwidth]{graph_construction_component.pdf}
-    \caption{Graph construction component.}\label{graph-construction-component}
+    \caption{\textit{Overview of the graph construction component.}
+    The raw and preprocessed UKB data is collected according to the graph specification, and combined into the intermediate population graph representation containing the different modalities of brain imaging features, the node labels and the edges.
+    }\label{graph-construction-component}
 \end{figure}
 
 \subsection{Inputs}
@@ -165,7 +169,9 @@ The graph transformation component is responsible for preparing the intermediate
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{graph_transformation_component.pdf}
-    \caption{Graph transformation component.}\label{graph-transformation-component}
+    \caption{\textit{Overview of the graph transformation component.}
+    This component first sets the training, validation and test masks of the intermediate population graph. The masks are further used to reduce the dimensionality of fMRI data and normalise the remaining brain imaging data. The different brain imaging data modalities are combined into a single (node) feature tensor and assigned to the intermediate population graph (now masked with training sets), preparing it for training in the GNN training and evaluation component.
+    }\label{graph-transformation-component}
 \end{figure}
 
 \subsection{Setting the training masks}
@@ -184,7 +190,7 @@ Next, the raw features stored under \texttt{structural\_data} and \texttt{qualit
 \subsection{Setting the transformed feature tensor}
 The transformed functional, structural and quality control features are concatenated together into a single tensor, which is assigned to \texttt{x} in the population graph data structure (Table~\ref{table:population-graph}). This completes graph transformation for training.
 
-Since the original neuroimaging dataframes and brain health masks are kept unchanged in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different training mask set, which will reset the values in the corresponding population graph fields. This explains the communication loop between the graph transformation and GNN training and evaluation components in Figure~\ref{graph-transformation-component}.
+Since the original neuroimaging dataframes and brain health masks are kept unchanged in the data structure, the same population graph can be prepared for, say, a different training fold by simply going through the transformation component again but with a different set of training masks, which will reset the values in the corresponding population graph fields.
 
 \section{GNN architecture component}
 \label{section:gnn-architecture}
@@ -222,22 +228,22 @@ The graph neural network component contains implementations for the graph neural
 
 Listing~\ref{listing:braingnn} shows how the layers are combined in the \texttt{BrainGNN} architecture for a given set of parameters in Table~\ref{table:braingnn}. Hyperbolic tangent ($\tanh(\cdot)$) was chosen as the non-linearity (activation function) between each layer. This is because the population graph features and weights in neurons may be negative, in which case other popular activation functions such as $\mathrm{ReLU}(\cdot)$ may have an undesirable asymmetric response.
 
-The \textit{dropout} (\texttt{torch.nn.Dropout}) layers have been added between the every fully connected layer in line 21 as a \textit{regularisation} technique to avoid overfitting. With probability \texttt{dropout\_p}, a unit in the layer is ignored at training time (its weight is zeroed) with the goal that the neural network does not rely on any particular neuron when predicting age, therefore learning more robust features.
+A \textit{dropout} (\texttt{torch.nn.Dropout}) layer was added between every fully connected layer in line 21 as a \textit{regularisation} technique to avoid overfitting. At each training step, a unit's weight is zeroed with probability \texttt{dropout\_p}, so that the neural network does not rely on any particular units when predicting age and learns more robust features.
 
-% \bigskip
-% \begin{code}
-% \caption{Simplified code snippet for \texttt{BrainGNN} instantiation and training.}
-% \label{listing:braingnn}
-% \medskip
-% \inputminted[frame=bottomline, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
-% \end{code}
+\bigskip
+\begin{code}
+\caption{Simplified code snippet for \texttt{BrainGNN} instantiation and training.}
+\label{listing:braingnn}
+\medskip
+\inputminted[frame=lines, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
+\end{code}
 
-\begin{listing}
-    \caption{Simplified code snippet for \texttt{BrainGNN} instantiation and training.}
-    \label{listing:braingnn}
-    \medskip
-    \inputminted[frame=lines, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
-    \end{listing}
+% \begin{listing}
+%     \caption{Simplified code snippet for \texttt{BrainGNN} instantiation and training.}
+%     \label{listing:braingnn}
+%     \medskip
+%     \inputminted[frame=lines, linenos, breaklines=true, numberblanklines=false, style=colorful]{python}{code/brain_gnn_snippet.py}
+%     \end{listing}
 
 \section{GNN training and evaluation component}
 \label{section:gnn-train-evaluate}
@@ -247,7 +253,9 @@ The main function of the GNN training and evaluation component is to select the 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{gnn_training_eval_component.pdf}
-    \caption{GNN training and evaluation component.}\label{gnn-training-eval-component}
+    \caption{\textit{Overview of the GNN training and evaluation component}.
+    The component first generates sets of training, validation and test masks for a required number of folds, used to prepare the population graphs for training. Next, the model selection sub-component repeatedly generates new sets of hyperparameters, training various GNN and population graph combinations, and collecting their cross-validation performance scores on the validation set. As the hyperparameter tuning converges, the optimal GNN model is evaluated on the test set. Finally, the robustness measurement framework noisifies the nodes and edges of the optimal population graph, and evaluates the change in performance of the optimal GNN model.
+    }\label{gnn-training-eval-component}
 \end{figure}
 
 \subsection{Model selection}
@@ -344,7 +352,7 @@ The repository follows the structure of the five key project components shown in
             & \texttt{graph\_transform.py} & Functionality described in Section~\ref{section:graph-transformation}.\\ \hline
             % & \texttt{ukb\_preprocess\_test.py} &  \\   
     GNN architectures
-            & \texttt{brain\_gnn.py} & Implementation of \texttt{BrainGNN} and extending classes \texttt{BrainGAT}, \texttt{BrainGCN} (Section~\ref{section:gnn-architecture}).\\ \hline
+            & \texttt{brain\_gnn.py} & Implementation of \texttt{BrainGNN} and subclasses \texttt{BrainGAT}, \texttt{BrainGCN} (Section~\ref{section:gnn-architecture}).\\ \hline
             % & \texttt{ukb\_preprocess\_test.py} &  \\   
     GNN training
             & \texttt{brain\_gnn\_evaluate.py} & Population graph noisification and robustness measurement procedure (Section~\ref{section:gnn-train-evaluate}). \\
