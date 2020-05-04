@@ -147,46 +147,46 @@ The effect of removing the edges on predictive power of the GNN models is shown 
 Compared to the results in Section~\ref{section:node-noise}, where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did not affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
 
 \section{Discussion}
- The edge removal experiment shows that for brain age estimation problem, the models relied more on the features of individual nodes rather than similarity metrics and in turn the neighbourhoods of other population graph nodes. This might mean that the similarity metrics were not informative enough to allow for effective sharing of feature and/or label information, or that the (brain) age depends more on the feature interactions within a single brain rather than particular signals that generalise to other individuals. Moreover, the node noisification experiment shows that the neighbours could be even \textit{harmful} as, due to experimental setup, the changes in performance in Figure~\ref{figure:node-noise} are only due to the changes in neighbouring nodes but not in the test nodes themselves.
+ The node noisification experiment shows that the neighbours could drastically worsen the predictions for the uncorrupted test nodes, provided that enough nodes in the training set are corrupted. This result is expected because not only the noise could propagate to the neighbourhoods, affecting individual predictions, but also because there is less useful training data available for the GNN architectures to learn from.
+ 
+The edge removal experiment shows that the models relied more on the features of individual nodes rather than the graph structure defined by the similarity metrics. This might mean that the (brain) age depends more on the feature interactions within a single brain rather than general features shared across the brains; however, it seems more likely that the similarity metrics used (and the simple averaging technique to combine them) were not informative enough to allow for effective sharing of feature and/or label information. For example, the work by Parisot et al.~\cite{parisot2018disease}, which used population graphs to achieve state-of-the-art results in brain disorder classification, shows that results can vary significantly based on the selection of similarity features alone, with up to 20\% difference in mean accuracy scores. 
 
-If this is true, more powerful models that do not use the graph structure might be more appropriate for the brain age estimation task. This is consistent with considerably better brain age estimation performance of other non-GNN models found in literature (such as $r=0.93$ in Kaufmann et al.~\cite{kaufmann2019} using an XGBoost model, and $r=0.94, r^2=0.88$ in Cole et al.~\cite{cole2018brain} using a Gaussian process regression model), and even ``consistently poor'' performance of GNN models when applied to a similar task (to the point that in Pervaiz et al.~\cite{pervaiz2020optimising} the GNN results were dropped altogether from further discussion).
+Many non-GNN models found in literature on brain age estimation have much better performance, including an XGBoost model in Kaufmann et al.~\cite{kaufmann2019} with $r=0.93$ (female) and $r=0.94$ (male), Gaussian process regression model in Cole et al.~\cite{cole2018brain} with $r=0.94, r^2=0.88$, and similar results in a variety of models using the BrainAGE technique, summarised in Franke \& Gaser~\cite{franke2019ten}. However, these approaches often use very small (<100 people) and less diverse datasets, deal with important confounding effects (such as sex and brain health) by fitting separate models, and filter out low-quality scans. While this improves the performance, it might also affect the applicability of these models to real clinical settings where the data quality is less consistent. On the other hand, the population graph approach used in this dissertation aims to target all those limitations while having considerable resource (memory) and modelling (similarity metric) constraints, including the omission of an entire modality of features.
 
-At the same time, the graph neural networks should not be discredited too early. The main advantage of population graphs to combine both imaging and non-imaging modalities for different sub-populations at once is still something that is not as practical to do with other brain age prediction approaches, but has achieved state-of-the-art results in similar applications, namely in Parisot et al.~\cite{parisot2018disease}. The population graphs also make an effort to account for a diversity of confounding effects, which in other approaches is done by separating or prefiltering the data, potentially making the models less generalisable to real clinical settings.
+% , and even ``consistently poor'' performance of GNN models when applied to a similar task (to the point that in Pervaiz et al.~\cite{pervaiz2020optimising} the GNN results were dropped altogether from further discussion).
 
-In this project, the population graphs have been constrained to only five out of over 700 non-imaging features (possibly resulting in poor similarity scoring, especially when equally weighted), and GNN architectures have been severely limited because of memory constraints (including the omission of an entire modality of features). Addressing both of these limitations as well as trying alternative graph neural network architectures could give a much better picture of the potential of this approach.
+% The main advantage of population graphs to combine both imaging and non-imaging modalities for different sub-populations at once is still something that is not as practical to do with other brain age prediction approaches, but 
 
+% your work was also an effort to consider other covariates/confounds in your prediction model, while other work just removes it through some sort of regression, thus possibily destroying some signal in the data.
 
-Evaluation: 
-had project proposal with certain requirements and properties that have all been implemented in an efficient manner
+% approach making easier to preprocess this type of node features
 
-looking at the results draw in things that were ticked off in plan
-
-medical data is notoriously heterogeneous
-there are huge confounding features
-
-GNNs are a good way to summarise them but they might be not as good at accounting for confounding factors/noise 
-
-Parisot paper has state-of-the-art results using this technique, but it didn't work (yet) for the age prediction task—it is out of scope of this dissertation to find the explanation for this
-
-Conclusion:
-
-in the broader scientific field
-
-reproducibility crisis in neuroimaging
-openneuro
+% In this project, the population graphs have been constrained to only five out of over 700 non-imaging features (possibly resulting in poor similarity scoring, especially when equally weighted), and GNN architectures have been severely limited because of memory constraints (including the omission of an entire modality of features). Addressing both of these limitations as well as trying alternative graph neural network architectures could give a much better picture of the potential of this approach.
 
 
-1) methodological advancement in the fields of GNNs
+% Evaluation: 
+% had project proposal with certain requirements and properties that have all been implemented in an efficient manner
 
-2) methodological and tool advancement in the field of computational neuroscience, which could be later interfaced and shared with wider neuroimaging community
-* neuroimaging pipelines are not standardised and there is a community effort do develop methodologies to make them consistent across various researhc papers
-* this dissertation has built a general reproducible pipeline adapted to machine learning with graph neural networks
-* this pipeline allows to try out more different state-of-the-art GNN architectures and population graphs quickly and efficiently
-* future work to make a better interface for this pipeline and share it with the wider neuroscience community. As I have been working with the experts in the field through the duration of this project 
-* opens up possibilities to incorporating new modalities at scale with growing datasets in the future
+% medical data is notoriously heterogeneous
+% there are huge confounding features
+
+% GNNs are a good way to summarise them but they might be not as good at accounting for confounding factors/noise 
+% Conclusion:
+
+% in the broader scientific field
+
+% reproducibility crisis in neuroimaging
+% openneuro
 
 
-3) neuroscience findings
+% 1) methodological advancement in the fields of GNNs
+% 2) methodological and tool advancement in the field of computational neuroscience, which could be later interfaced and shared with wider neuroimaging community
+% * neuroimaging pipelines are not standardised and there is a community effort do develop methodologies to make them consistent across various researhc papers
+% * this dissertation has built a general reproducible pipeline adapted to machine learning with graph neural networks
+% * this pipeline allows to try out more different state-of-the-art GNN architectures and population graphs quickly and efficiently
+% * future work to make a better interface for this pipeline and share it with the wider neuroscience community. As I have been working with the experts in the field through the duration of this project 
+% * opens up possibilities to incorporating new modalities at scale with growing datasets in the future
 
-this could be transfer the modular system for the different datasets (HCP)
+% 3) neuroscience findings
+% this could be transfer the modular system for the different datasets (HCP)
 
