@@ -1,14 +1,15 @@
 % Template for a Computer Science Tripos Part II project dissertation
 \documentclass[12pt,a4paper,twoside, hidelinks]{report}
+\usepackage[export]{adjustbox}
 \usepackage[hyphens]{url}
 \usepackage[pdfborder={0 0 0}]{hyperref}
-\usepackage[export]{adjustbox}
-
 \urlstyle{same}
+\usepackage[margin=25mm]{geometry}
+
 \usepackage[UKenglish]{babel}
 % \usepackage{bibunits}
 
-\usepackage[margin=25mm]{geometry}
+
 \usepackage[skip=2pt]{caption}
 \usepackage{verbatim}
 \usepackage{docmute} % only needed to allow inclusion of proposal.tex
@@ -63,12 +64,14 @@
 \usepackage[backend=bibtex, style=numeric,sorting=none]{biblatex}
 \addbibresource{references.bib}
 
+\begin{document}
+\counterwithin{listing}{chapter}
+
+
 %TC:group table 0 1
 %TC:group tabular 1 1
 %TC:group longtable 1 1
 
-\begin{document}
-\counterwithin{listing}{chapter}
 
 %TC:ignore
 \include{./chapters/proforma}
