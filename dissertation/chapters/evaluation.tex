@@ -13,13 +13,13 @@ This chapter presents the best-performing GCN and GAT models (Section~\ref{secti
 \label{section:model-ranking}
 After the hyperparameter tuning process from Section~\ref{section:training-procedure}, models were selected according to the following procedure (applied separately to the GCN and GAT model families):
 \begin{enumerate}
-    \item models were ranked by ascending average MSE loss. The model with the lowest average MSE was chosen as the reference model.
-    \item models whose one standard deviation interval from their MSE did not overlap with the one standard deviation interval of the reference model MSE were excluded from ranking.
+    \item Models were ranked by ascending average MSE loss. The model with the lowest average MSE was chosen as the reference model.
+    \item Models whose one standard deviation interval from their MSE did not overlap with the one standard deviation interval of the reference model MSE were excluded from ranking.
 \end{enumerate}
 
 Cross-validation performances of the best-scoring models selected are shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the short-listed models are listed in Tables~\ref{table:shortlisted-gcn} and~\ref{table:shortlisted-gat} (Appendix~\ref{appendix:hyperparameters}).
 
-\begin{figure}[h]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{model_selection.pdf}
     \caption{Highest scoring population graph and GNN parameter combinations for GCN (left) and GAT (right). The models are named according to their convolution type and ranked by ascending average MSE loss (indicated by the green triangle).}\label{figure:gat-gcn-rank}
