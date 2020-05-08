@@ -11,21 +11,21 @@ This chapter presents the best-performing GCN and GAT models (Section~\ref{secti
 
 \section{Model ranking and selection}
 \label{section:model-ranking}
-Following the hyperparameter tuning process described in Section~\ref{section:training-procedure}, the models were selected according to the following procedure (applied separately to the GCN and GAT model families):
+After the hyperparameter tuning process from Section~\ref{section:training-procedure}, models were selected according to the following procedure (applied separately to the GCN and GAT model families):
 \begin{enumerate}
-    \item First, the models were ranked by ascending average MSE loss. The model with the lowest average MSE was chosen as the reference model.
-    \item All models whose one standard deviation interval from their MSE did not overlap with the one standard deviation interval of the reference model MSE were excluded from ranking.
+    \item models were ranked by ascending average MSE loss. The model with the lowest average MSE was chosen as the reference model.
+    \item models whose one standard deviation interval from their MSE did not overlap with the one standard deviation interval of the reference model MSE were excluded from ranking.
 \end{enumerate}
 
-The cross-validation performance of the best-scoring models selected by the above procedure is shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the short-listed models are listed in Tables~\ref{table:shortlisted-gcn} and~\ref{table:shortlisted-gat} (Appendix~\ref{appendix:hyperparameters}).
+Cross-validation performances of the best-scoring models selected are shown in Figure~\ref{figure:gat-gcn-rank}. The hyperparameters for each of the short-listed models are listed in Tables~\ref{table:shortlisted-gcn} and~\ref{table:shortlisted-gat} (Appendix~\ref{appendix:hyperparameters}).
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{model_selection.pdf}
-    \caption{Highest scoring population graph and GNN parameter combinations for GCN (left) and GAT (right) models. The models are named according to their convolution type and their rank by ascending average MSE loss (indicated by the green triangle).}\label{figure:gat-gcn-rank}
+    \caption{Highest scoring population graph and GNN parameter combinations for GCN (left) and GAT (right). The models are named according to their convolution type and ranked by ascending average MSE loss (indicated by the green triangle).}\label{figure:gat-gcn-rank}
 \end{figure}
 
-Although both best-ranked (reference) models (GCN1 and GAT1) have relatively high variance, they still seem to be the most promising and therefore have been selected for further evaluation. Their population graph specification and GNN architecture hyperparameters are listed in Table~\ref{table:best-hyperparameters}. While the hyperparameters for the two architectures are very different, it is hard to make a definite qualitative comparison between them because of high and not clearly systematic variation in hyperparameter combinations over all short-listed models (Appendix~\ref{appendix:hyperparameters}).
+The best-ranked GCN1 and GAT1 models seemed to be the most promising and therefore have been selected for further evaluation. Their population graph specification, GNN architecture and hyperparamters are listed in Table~\ref{table:best-hyperparameters}. While the hyperparameters for the two architectures are very different, it is hard to make a definite qualitative comparison between them because of high and non-systematic variation in hyperparameter combinations over all short-listed models (Appendix~\ref{appendix:hyperparameters}).
 
 \begin{table}[]
     \caption{Best performing population graph and GNN model parameter combinations during the model selection process.}\label{table:best-hyperparameters}
@@ -46,7 +46,7 @@ Although both best-ranked (reference) models (GCN1 and GAT1) have relatively hig
 
 \section{Evaluation metrics}
 \label{section:evaluation-metrics}
-The main performance metrics used for most regression problems, including the brain age estimation task, are \textit{Pearson's correlation} and \textit{coefficient of determination}.
+The main performance metrics used for regression problems, including the brain age estimation task, are \textit{Pearson's correlation} and \textit{coefficient of determination}.
 
 \subsubsection{Pearson's correlation}
 For sets of true labels $\mathbf{y}  = [y_1 \dots y_N]$ with mean $\bar{y}$ and predicted labels $\mathbf{\hat{y}} = [\hat{y}_1 \dots \hat{y}_N]$, \textit{Pearson's correlation} is computed as
@@ -58,7 +58,7 @@ For sets of true labels $\mathbf{y}  = [y_1 \dots y_N]$ with mean $\bar{y}$ and 
 where $\mathrm{cov}(\cdot, \cdot)$ denotes covariance and $\sigma$ stands for standard deviation. 
 
 \subsubsection{Coefficient of determination}
-The \textit{coefficient of determination} indicates how much variance in the features $\mathbf{X}$ could be explained by the model. It is computed as 
+The \textit{coefficient of determination} indicates how much variance between predicted ($\mathbf{\hat{y}}$) and actual ($\mathbf{y}$) labels could be explained by the model. It is computed as 
 \begin{equation}
     r^2(\mathbf{y}, \mathbf{\hat{y}}) = 1 - \frac{\sum_{i} (y_i - \bar{y})^2}{\sum_{i} (y_i - \hat{y}_i)^2}.
 \end{equation}
@@ -68,9 +68,9 @@ Higher values for both metrics (with maximum 1) indicate a higher level of agree
 
 \section{Test set performance of selected models}
 \label{section:test-set-performance}
-Generally in literature, after using cross-validation for model selection, the model is retrained on the entire dataset before giving a point estimate on a hold-out test set~\cite{raschka2018model}. This is because training on more data, especially when the dataset is small, allows to learn more patterns and therefore give better predictions on the unseen data. However, in this project the validation set was also used for early stopping since neural networks are especially prone to overfitting~\cite{prechelt1998automatic}. Some investigation of the hyperparameter tuning has shown that applying the stopping criteria discussed in Section~\ref{section:training-procedure} on just the training set would have still led to convergence only after the model has already overfit on the unseen validation labels. On the other hand, it is unclear how the stopping criteria should be adjusted when the training set size increases. 
+In general, after using cross-validation for model selection, the model is retrained on the entire dataset before giving a point estimate on a hold-out test set~\cite{raschka2018model}. This is because training on more data, especially when the dataset is small, gives better generalisation and therefore better predictions on the unseen data. However, in this project the validation set was also used for early stopping since neural networks are especially prone to overfitting~\cite{prechelt1998automatic}. Investigation of hyperparameter tuning has shown that applying the stopping criteria discussed in Section~\ref{section:training-procedure} on just the training set would have still led to convergence only after the model had already overfit on the unseen validation labels. On the other hand, it is unclear how the stopping criteria should be adjusted when the training set size increases. 
 
-Considering that the UKB dataset is large and that retraining the model using more data but without early stopping might not pay off for the loss in generalisation, all cross-validation folds were kept for test set performance estimation. Table~\ref{table:test-performance} gives the hold-out test set estimates for the metrics discussed in Section~\ref{section:evaluation-metrics}.
+Considering that the UKB dataset is large and that retraining the model using more data but without early stopping might not improve generalisation, all cross-validation folds were kept for test set performance estimation. Table~\ref{table:test-performance} gives the hold-out test set estimates for the metrics discussed in Section~\ref{section:evaluation-metrics}.
 
 \begin{table}[h]
     \caption{Test set performance of GCN1 and GAT1 models (over the five early stopping folds of the training set).}\label{table:test-performance}
@@ -129,7 +129,7 @@ The results of node feature corruption on the predictive power of GNN models are
     \caption{The effect of permuting node features on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing one standard deviation.}\label{figure:node-noise}
 \end{figure}
 
-As expected, for both GCN and GAT models the performance was decreasing relatively slowly as more training nodes got corrupted, and then dropped drastically when more than half of the training nodes had their features permuted. In case of the GAT model, the $r^2$ metric fell below 0 (bottom of Figure~\ref{figure:node-noise}), which means that no variance could be explained and that the mean of the observed subject ages in the dataset is a better estimate of the brain age than the predictions of the GAT model. 
+As expected, for both GCN and GAT models the performance was decreasing as more training nodes were corrupted, and then dropped drastically when more than half of the training nodes had their features permuted. In case of the GAT model, the $r^2$ metric fell below 0 (bottom of Figure~\ref{figure:node-noise}), which means that no variance could be explained and that the mean of the observed subject ages in the dataset is a better estimate of the brain age than the predictions of the GAT model. 
 
 % \subsection{Discussion}
 % In practice, in a big and well-curated dataset such as the UK Biobank, the existence of exact protocols for equipment and measurement taking should prevent there being too many unacceptably noisy scans. Even in that case, the noise would take a milder form than the complete shuffling of features that make the node data meaningless. Having that considered, at low proportions of added noise, both models have been able to retain most of their predictive power, which could indicate their generalisability to new contexts.
@@ -149,13 +149,13 @@ The effect of removing the edges on predictive power of the GNN models is shown 
     \caption{The effect of removing edges on $r$ (left) and $r^2$ (right) performance metrics, with error bars representing one standard deviation.}\label{figure:edge-noise}
 \end{figure}
 
-Compared to the results in Section~\ref{section:node-noise}, where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did not affect the predictive power of the models. This could be inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
+Compared to the results in Section~\ref{section:node-noise}, where the predictive power drastically dropped with increased noise, the loss of information contained in edges and neighbourhoods of similar nodes did not affect the predictive power of the models. This is inferred from the standard deviation intervals being quite wide for both evaluation metrics, overlapping across most, if not all, edge loss levels.
 
 \section{Discussion}
 \label{section:discussion}
-The node noisification experiment shows that high levels of node corruption in the training set could drastically worsen the predictions for the uncorrupted test nodes. This result is expected because not only the noise could propagate to neighbourhoods, affecting individual predictions, but also because there is less useful training data available for the GNN architectures to learn from.
+The node feature noise experiment shows that high levels of node corruption in the training set could drastically worsen the predictions for the uncorrupted test nodes. This result is expected as not only does the noise propagate to neighbourhoods affecting individual predictions, but there is also less useful training data available for the GNN architectures to learn from.
  
-The edge removal experiment shows that the models relied more on the features of individual nodes rather than the graph structure defined by the similarity metrics. One explanation could be that the brain age depends more on the feature interactions within a single brain rather than the more universal signs of ageing; however, it seems more likely that the similarity metrics used (and the simple averaging technique to combine them) were not informative enough to allow for effective sharing of feature and label information. For example, the work by Parisot et al.~\cite{parisot2018disease}, which used population graphs to achieve state-of-the-art results in brain disorder classification, shows that results can vary significantly based on the selection of similarity features alone, with up to 20\% difference in mean accuracy scores. 
+The edge removal experiment shows that the models rely more on the features of individual nodes rather than the graph structure defined by the similarity metrics. One explanation could be that the brain age depends more on the feature interactions within a single brain rather than the more universal signs of ageing; however, it seems more likely that the similarity metrics used (and the simple averaging technique to combine them) were not informative enough to allow for effective sharing of feature and label information. For example, the work by Parisot et al.~\cite{parisot2018disease}, which used population graphs to achieve state-of-the-art results in brain disorder classification, shows that results can vary significantly based on the selection of similarity features alone, with up to 20\% difference in mean accuracy scores. 
 
 In literature on brain age estimation, many alternative models perform better than the proposed GNN models, including an XGBoost model in Kaufmann~et~al.~\cite{kaufmann2019} with $r=0.93$ (female) and $r=0.94$ (male), a § process regression model in Cole et al.~\cite{cole2018brain} with $r=0.94, r^2=0.88$, and similar results in a variety of models using the BrainAGE technique, summarised in Franke \& Gaser~\cite{franke2019ten}. However, these approaches often eliminate important confounding (e.g. sex and brain health) effects by fitting separate models, use very small (i.e. a few hundred people) and consequently less diverse datasets, and filter out low-quality scans. While this improves the performance, it might affect the applicability of these models to real clinical settings, where data quality is less consistent. 
 The approach used in this dissertation aims for a more general solution by training a single model on a large, diverse, and minimally preprocessed dataset while having considerable resource (memory) and modelling (similarity metric) constraints. 
