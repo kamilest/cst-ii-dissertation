@@ -1,3 +1,0 @@
-Cole 2018
-
-(Figure 2a). Cross-validation results gave a correlation between brain-predicted age and chronological age of r=0.94, (Po0.001, corrected after 1000 permutations) and explained 88% of the variance (R2). The mean absolute error of prediction was 5.02 years and the root mean square error was 6.31 years. This training stage validated our model of brain-predicted age, for use in predicting age with neuroimaging data collected in other samples.
